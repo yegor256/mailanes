@@ -1,0 +1,35 @@
+AllCops:
+  Exclude:
+    - 'bin/**/*'
+    - 'assets/**/*'
+  DisplayCopNames: true
+  TargetRubyVersion: 2.2
+
+Metrics/CyclomaticComplexity:
+  Max: 25
+Metrics/MethodLength:
+  Enabled: false
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/BlockLength:
+  Max: 100
+Metrics/ClassLength:
+  Max: 300
+Layout/EndOfLine:
+  EnforcedStyle: lf
+Metrics/ParameterLists:
+  Max: 10
+Layout/AlignParameters:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Max: 25
+Metrics/LineLength:
+  Max: 120
+Style/MultilineBlockChain:
+  Enabled: false
+Layout/MultilineOperationIndentation:
+  Enabled: false
+Naming/UncommunicativeMethodParamName:
+  MinNameLength: 1

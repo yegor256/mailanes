@@ -1,0 +1,50 @@
+!!! 5
+%html
+  %head
+    %title= title
+    %meta{charset:'UTF-8'}
+    %meta{name: 'viewport', content: 'width=device-width, initial-scale=1.0'}
+    %meta{name: 'keywords', content: 'search engine'}
+    %meta{name: 'description', content: 'Hand made search engine'}
+    %link{href: 'https://cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-css.min.css', rel: 'stylesheet'}
+    %link{href: 'https://www.yegor256.com/css/icons.css', rel: 'stylesheet'}
+    %link{rel: 'shortcut icon', href: url('/logo-64.png')}
+    %script{src: 'https://code.jquery.com/jquery-3.3.1.min.js'}
+    :css
+      .item { display: inline; list-style: none; margin-right: .4em; margin-left: .4em; }
+      .small { font-size: .8em; line-height: 1.2em; }
+      .gray { color: gray; }
+      .red { color: #A22522; }
+  %body
+    %section
+      %header
+        %nav
+          %ul
+            %li
+              %a{href: url('/')}
+                %img.logo{src: url('/logo.svg'), style:'width:92px;height:92px;'}
+        %nav
+          %ul
+            %li
+              %a{href: url('/lists')}
+                Lists
+            %li
+              %a{href: url('/lanes')}
+                Lanes
+            %li
+              %a{href: url('/logout')}
+                Logout
+      %article
+        = yield
+      %footer.small.gray
+        %nav
+          %ul
+            %li
+              &copy; 2018 Mailanes
+        %nav
+          %ul
+            %li
+              = "v#{ver}"
+            %li
+              %a{href: 'https://iplocation.com/?ip=' + request_ip}
+                = request_ip
