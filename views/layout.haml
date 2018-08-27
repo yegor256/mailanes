@@ -11,6 +11,7 @@
     %link{rel: 'shortcut icon', href: url('/logo-64.png')}
     %script{src: 'https://code.jquery.com/jquery-3.3.1.min.js'}
     :css
+      .logo { width: 92px; height: 92px; }
       .item { display: inline; list-style: none; margin-right: .4em; margin-left: .4em; }
       .small { font-size: .8em; line-height: 1.2em; }
       .gray { color: gray; }
@@ -22,18 +23,26 @@
           %ul
             %li
               %a{href: url('/')}
-                %img.logo{src: url('/logo.svg'), style:'width:92px;height:92px;'}
+                %img.logo{src: url('/logo.svg')}
         %nav
           %ul
+            %li
+              - if defined? guser
+                %a{href: '/home'}
+                  = "@#{guser[:login]}"
+              - else
+                %a{href: login_link}
+                  Login
             %li
               %a{href: url('/lists')}
                 Lists
             %li
               %a{href: url('/lanes')}
                 Lanes
-            %li
-              %a{href: url('/logout')}
-                Logout
+            - if defined? guser
+              %li
+                %a{href: '/logout'}
+                  Logout
       %article
         = yield
       %footer.small.gray
