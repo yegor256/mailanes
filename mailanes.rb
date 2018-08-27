@@ -68,7 +68,6 @@ configure do
     config['github']['client_secret'],
     'https://www.mailanes.com/github-callback'
   )
-  set :codec, GLogin::Codec.new(config['pass_encryption_secret'])
 end
 
 before '/*' do
