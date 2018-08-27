@@ -27,9 +27,9 @@
         %nav
           %ul
             %li
-              - if defined? guser
+              - if defined? user
                 %a{href: '/home'}
-                  = "@#{guser[:login]}"
+                  = "@#{user[:login]}"
               - else
                 %a{href: login_link}
                   Login
@@ -39,7 +39,7 @@
             %li
               %a{href: url('/lanes')}
                 Lanes
-            - if defined? guser
+            - if defined? user
               %li
                 %a{href: '/logout'}
                   Logout
