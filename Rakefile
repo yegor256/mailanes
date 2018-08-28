@@ -22,6 +22,7 @@ require 'rubygems'
 require 'rake'
 require 'rdoc'
 require 'rake/clean'
+require 'English'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -54,22 +55,31 @@ end
 
 desc 'Start PostgreSQL Local server'
 task :pgsql do
-  FileUtils.rm_rf('target/pgsql')
-  # pid = Process.spawn('mvn', 'install', '--quiet', chdir: 'dynamodb-local')
-  # at_exit do
-  #   `kill -TERM #{pid}`
-  #   puts "DynamoDB Local killed in PID #{pid}"
-  # end
-  # begin
-  #   puts 'DynamoDB Local table: ' + Dynamo.new.aws.describe_table(
-  #     table_name: 'mailanes-tuples'
-  #   )[:table][:table_status]
-  # rescue StandardError => e
-  #   puts e.message
-  #   sleep(5)
-  #   retry
-  # end
-  # puts "DynamoDB Local is running in PID #{pid}"
+  FileUtils.mkdir_p('target')
+  dir = File.expand_path(File.join(Dir.pwd, 'target/pgsql'))
+  FileUtils.rm_rf(dir)
+  File.write('target/pwfile', 'test')
+  system("initdb --auth=trust -D #{dir} --username=test --pwfile=target/pwfile")
+  raise unless $CHILD_STATUS.exitstatus.zero?
+  port = `python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()'`.to_i
+  pid = Process.spawn('postgres', '-D', dir, "--port=#{port}")
+  at_exit do
+    `kill -TERM #{pid}`
+    puts "PostgreSQL killed in PID #{pid}"
+  end
+  sleep 1
+  begin
+    system("createdb -h localhost -p #{port} --username=test test")
+    raise unless $CHILD_STATUS.exitstatus.zero?
+  rescue StandardError => e
+    puts e.message
+    sleep(5)
+    retry
+  end
+  system("mvn -f liquibase verify -Duser=test -Dpassword=test -Dport=#{port} -Dhost=localhost -Ddbname=test --errors")
+  raise unless $CHILD_STATUS.exitstatus.zero?
+  File.write('target/pgsql.port', port.to_s)
+  puts "PostgreSQL is running in PID #{pid}"
 end
 
 desc 'Sleep endlessly after the start of DynamoDB Local server'
