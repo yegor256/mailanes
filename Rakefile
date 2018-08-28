@@ -23,6 +23,7 @@ require 'rake'
 require 'rdoc'
 require 'rake/clean'
 require 'English'
+require 'yaml'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -30,7 +31,7 @@ task default: %i[check_outdated_gems clean test rubocop xcop copyright]
 
 require 'rake/testtask'
 desc 'Run all unit tests'
-Rake::TestTask.new(test: :pgsql) do |test|
+Rake::TestTask.new(test: %i[pgsql liquibase]) do |test|
   Rake::Cleaner.cleanup_files(['coverage'])
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/test_*.rb'
@@ -76,10 +77,23 @@ task :pgsql do
     sleep(5)
     retry
   end
-  system("mvn -f liquibase verify -Duser=test -Dpassword=test -Dport=#{port} -Dhost=localhost -Ddbname=test --errors")
-  raise unless $CHILD_STATUS.exitstatus.zero?
   File.write('target/pgsql.port', port.to_s)
+  File.write(
+    'target/config.yml',
+    "pgsql:\n  host: localhost\n  port: #{port}\n  dbname: test\n  user: test\n  password: test\n"
+  )
   puts "PostgreSQL is running in PID #{pid}"
+end
+
+desc 'Update the database via Liquibase'
+task :liquibase do
+  yml = YAML.safe_load(File.open(File.exist?('config.yml') ? 'config.yml' : 'target/config.yml'))
+  pg = yml['pgsql']
+  system(
+    "mvn -f liquibase verify -Duser=#{pg['user']} -Dpassword=#{pg['password']} \
+-Dport=#{pg['port']} -Dhost=#{pg['host']} -Ddbname=#{pg['dbname']} --errors"
+  )
+  raise unless $CHILD_STATUS.exitstatus.zero?
 end
 
 desc 'Sleep endlessly after the start of DynamoDB Local server'
