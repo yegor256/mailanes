@@ -87,7 +87,7 @@ class Letter
     @hash = {}
   end
 
-  def deliver(recipient, codec = GLogin::Codec.new)
+  def deliver(recipient, codec = GLogin::Codec.new(''))
     template = Liquid::Template.parse(liquid)
     token = codec.encrypt(recipient.id.to_s)
     markdown = template.render(
