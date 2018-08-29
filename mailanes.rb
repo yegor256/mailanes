@@ -313,7 +313,7 @@ post '/subscribe' do
     title: '/subscribed',
     recipient: recipient,
     list: list,
-    token: settings.codec.encrypt(recipient.id)
+    token: settings.codec.encrypt(recipient.id.to_s)
   )
 end
 
