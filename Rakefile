@@ -63,18 +63,21 @@ task :pgsql do
   system("initdb --auth=trust -D #{dir} --username=test --pwfile=target/pwfile")
   raise unless $CHILD_STATUS.exitstatus.zero?
   port = `python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()'`.to_i
-  pid = Process.spawn('postgres', '-D', dir, "--port=#{port}")
+  pid = Process.spawn('postgres', '-k', dir, '-D', dir, "--port=#{port}")
   at_exit do
     `kill -TERM #{pid}`
     puts "PostgreSQL killed in PID #{pid}"
   end
   sleep 1
+  attempt = 0
   begin
     system("createdb -h localhost -p #{port} --username=test test")
     raise unless $CHILD_STATUS.exitstatus.zero?
   rescue StandardError => e
     puts e.message
     sleep(5)
+    attempt += 1
+    raise if attempt > 10
     retry
   end
   File.write('target/pgsql.port', port.to_s)
