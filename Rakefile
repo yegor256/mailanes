@@ -102,12 +102,16 @@ task :sleep do
   loop do
     system("psql -h localhost -p #{port} --username=test --command='\\x'")
     raise unless $CHILD_STATUS.exitstatus.zero?
-    puts 'PostgreSQL is still alive...'
-    sleep(5)
+    puts 'PostgreSQL is still alive, will ping again in a while...'
+    sleep(30)
   end
 end
 
-task run: :pgsql do
+task run: %i[pgsql front] do
+  # nothing special
+end
+
+task :front do
   `rerun -b "RACK_ENV=test rackup"`
 end
 

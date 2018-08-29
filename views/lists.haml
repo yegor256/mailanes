@@ -1,0 +1,13 @@
+%p
+  All your lists:
+
+%form{method: 'POST', action: '/add-list'}
+  %input{type: 'text', name: 'title', placeholder: 'List title...', size: 45, required: 'true', autocomplete: 'off'}
+  %input{type: 'submit', value: 'Add'}
+
+- lists.all.each do |list|
+  %p
+    %a{href: url("/list?id=#{list.id}")}
+      = "##{list.id}"
+    = list.title
+

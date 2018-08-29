@@ -18,32 +18,35 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'yaml'
 require_relative 'pgsql'
-require_relative 'campaign'
+require_relative 'recipients'
 
-# Campaigns.
+# List.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Campaigns
-  def initialize(owner:, pgsql: Pgsql.new)
-    @owner = owner
+class List
+  attr_reader :id
+
+  def initialize(id:, pgsql: Pgsql.new, hash: {})
+    raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
+    @id = id
     @pgsql = pgsql
+    @hash = hash
   end
 
-  def all
-    @pgsql.exec('SELECT * FROM campaign JOIN list ON campaign.list=list.id WHERE list.owner=$1', [@owner]).map do |r|
-      Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-    end
+  def recipients
+    Recipients.new(list: self, pgsql: @pgsql)
   end
 
-  def add(list, lane)
-    Campaign.new(
-      id: @pgsql.exec(
-        'INSERT INTO campaign (list, lane) VALUES ($1, $2) RETURNING id',
-        [list.id, lane.id]
-      )[0]['id'].to_i,
-      pgsql: @pgsql
+  def title
+    yaml['title'] || 'unknown'
+  end
+
+  def yaml
+    YAML.safe_load(
+      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM list WHERE id=$1', [@id])[0]['yaml']
     )
   end
 end

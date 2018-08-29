@@ -23,24 +23,56 @@ require 'rack/test'
 require 'yaml'
 require_relative 'test__helper'
 require_relative '../objects/lanes'
+require_relative '../objects/letters'
 
-class LanesTest < Minitest::Test
-  def test_creates_lanes
-    owner = random_owner
-    lanes = Lanes.new(owner: owner)
-    title = 'To celebrate, друг!'
-    lane = lanes.add(title)
-    assert(lane.id > 0)
-    assert_equal(1, lanes.all.count)
-    assert_equal(title, lanes.all[0].title)
-  end
-
-  def test_fetches_letter
+class LetterTest < Minitest::Test
+  def test_sets_active_to_false
     owner = random_owner
     lanes = Lanes.new(owner: owner)
     lane = lanes.add
-    id = lane.letters.add.id
-    letter = lanes.letter(id)
-    assert_equal(id, letter.id)
+    letters = Letters.new(lane: lane)
+    letter = letters.add
+    assert_equal(false, letter.active)
+  end
+
+  def test_toggles_active_status
+    owner = random_owner
+    lanes = Lanes.new(owner: owner)
+    lane = lanes.add
+    letters = Letters.new(lane: lane)
+    letter = letters.add
+    letter.toggle
+    assert_equal(true, letter.active)
+    letter.toggle
+    assert_equal(false, letter.active)
+  end
+
+  def test_creates_and_updates_letter
+    owner = random_owner
+    lanes = Lanes.new(owner: owner)
+    lane = lanes.add
+    letters = Letters.new(lane: lane)
+    letter = letters.add('Hi, dude!')
+    %w[first second third].each do |text|
+      letter.save_yaml("test: #{text}")
+      assert_equal(text, letter.yaml['test'])
+      letter.save_liquid(text)
+      assert_equal(text, letter.liquid)
+    end
+  end
+
+  def test_updates_letter_from_fetch
+    owner = random_owner
+    lanes = Lanes.new(owner: owner)
+    lane = lanes.add
+    letters = Letters.new(lane: lane)
+    letters.add
+    letter = letters.all[0]
+    %w[first second third].each do |text|
+      letter.save_yaml("test: #{text}")
+      assert_equal(text, letter.yaml['test'])
+      letter.save_liquid(text)
+      assert_equal(text, letter.liquid)
+    end
   end
 end

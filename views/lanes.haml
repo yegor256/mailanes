@@ -1,0 +1,12 @@
+%p
+  All your lanes:
+
+%form{method: 'POST', action: '/add-lane'}
+  %input{type: 'text', name: 'title', placeholder: 'Lane title...', size: 45, required: 'true', autocomplete: 'off'}
+  %input{type: 'submit', value: 'Add'}
+
+- lanes.all.each do |lane|
+  %p
+    %a{href: url("/lane?id=#{lane.id}")}
+      = lane.title
+

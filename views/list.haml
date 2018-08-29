@@ -1,0 +1,18 @@
+%h2
+  = "##{list.id}"
+  = list.title
+
+%form{method: 'POST', action: '/add-recipient'}
+  %input{type: 'hidden', name: 'id', value: list.id}
+  %input{type: 'text', name: 'email', placeholder: 'Email', size: 30, required: 'true', autocomplete: 'off'}
+  %input{type: 'submit', value: 'Add Recipient'}
+
+%p
+  There are
+  = list.recipients.count
+  recipient(s):
+
+%p
+  - list.recipients.all.each do |r|
+    = r.email
+

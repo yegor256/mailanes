@@ -1,0 +1,33 @@
+%h2
+  Letter
+  = "##{letter.id}:"
+  = letter.title
+
+%p
+  It belongs to the lane
+  - lane = letter.lane
+  = succeed ':' do
+    %a{href: "/lane?id=#{lane.id}"}= "##{lane.id}"
+  = "\"#{lane.title}\""
+
+%p
+  It is
+  %strong
+    - if letter.active
+      %span{style: 'color:darkgreen'} active
+    - else
+      %span{style: 'color:darkred'} not active
+  %a{href: "/toggle-letter?id=#{letter.id}"}
+    - if letter.active
+      deactivate
+    - else
+      activate
+
+
+%form{method: 'POST', action: '/save-letter'}
+  %input{type: 'hidden', name: 'id', value: letter.id}
+  %label YAML config:
+  %textarea{name: 'yaml', style: 'width:100%;height:8em;', required: 'true'}= letter.yaml.to_yaml
+  %label Liquid email template:
+  %textarea{name: 'liquid', style: 'width:100%;height:10em;', required: 'true'}= letter.liquid
+  %input{type: 'submit', value: 'Save'}

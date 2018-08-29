@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 require_relative 'pgsql'
+require_relative 'lane'
 
 # Lanes.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -31,10 +32,43 @@ class Lanes
   end
 
   def all
-    @pgsql.exec('SELECT * FROM lane WHERE owner=$1', [@owner])
+    @pgsql.exec('SELECT id FROM lane WHERE owner=$1', [@owner]).map do |r|
+      Lane.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+    end
   end
 
-  def add
-    @pgsql.exec('INSERT INTO lane (owner) VALUES ($1) RETURNING id', [@owner])[0]['id'].to_i
+  def add(title = 'unknown')
+    yaml = "title: #{title}\n"
+    Lane.new(
+      id: @pgsql.exec(
+        'INSERT INTO lane (owner, yaml) VALUES ($1, $2) RETURNING id',
+        [@owner, yaml]
+      )[0]['id'].to_i,
+      pgsql: @pgsql
+    )
+  end
+
+  def lane(id)
+    hash = @pgsql.exec(
+      'SELECT * FROM lane WHERE owner=$1 AND id=$2',
+      [@owner, id]
+    )[0]
+    Lane.new(
+      id: hash['id'].to_i,
+      pgsql: @pgsql,
+      hash: hash
+    )
+  end
+
+  def letter(id)
+    hash = @pgsql.exec(
+      'SELECT letter.* FROM letter JOIN lane ON letter.lane=lane.id WHERE lane.owner=$1 AND letter.id=$2',
+      [@owner, id]
+    )[0]
+    Letter.new(
+      id: hash['id'].to_i,
+      pgsql: @pgsql,
+      hash: hash
+    )
   end
 end

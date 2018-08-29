@@ -28,9 +28,17 @@ class ListsTest < Minitest::Test
   def test_creates_list
     lists = Lists.new(owner: random_owner)
     title = 'My friends'
-    id = lists.add(title)
-    assert(id > 0)
+    list = lists.add(title)
+    assert(list.id > 0)
     assert_equal(1, lists.all.count)
-    assert_equal(title, YAML.safe_load(lists.all[0]['yaml'])['title'])
+    assert_equal(title, lists.all[0].title)
+  end
+
+  def test_finds_list
+    lists = Lists.new(owner: random_owner)
+    title = 'test me'
+    id = lists.add(title).id
+    list = lists.list(id)
+    assert_equal(title, list.title)
   end
 end

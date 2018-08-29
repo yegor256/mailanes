@@ -38,13 +38,14 @@ SOFTWARE.
         email VARCHAR(255) NOT NULL,
         list INTEGER NOT NULL REFERENCES list(id),
         yaml TEXT DEFAULT '' NOT NULL,
+        source VARCHAR(255) DEFAULT '' NOT NULL,
         created TIMESTAMP DEFAULT now() NOT NULL
       )
     </sql>
     <sql>
       CREATE TABLE lane (
         id SERIAL PRIMARY KEY,
-        owner VARCHAR(255) UNIQUE NOT NULL,
+        owner VARCHAR(255) NOT NULL,
         yaml TEXT DEFAULT '' NOT NULL,
         created TIMESTAMP DEFAULT now() NOT NULL
       )
@@ -53,8 +54,7 @@ SOFTWARE.
       CREATE TABLE letter (
         id SERIAL PRIMARY KEY,
         lane INTEGER NOT NULL REFERENCES lane(id),
-        place INTEGER DEFAULT 0 NOT NULL,
-        active BOOLEAN DEFAULT true NOT NULL,
+        active BOOLEAN DEFAULT false NOT NULL,
         liquid TEXT DEFAULT '' NOT NULL,
         yaml TEXT DEFAULT '' NOT NULL,
         created TIMESTAMP DEFAULT now() NOT NULL

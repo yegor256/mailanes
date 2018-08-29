@@ -1,0 +1,19 @@
+%h2
+  = "##{lane.id}"
+  = lane.title
+
+%form{method: 'POST', action: '/add-letter'}
+  %input{type: 'hidden', name: 'id', value: lane.id}
+  %input{type: 'text', name: 'title', placeholder: 'Letter title', size: 40, required: 'true', autocomplete: 'off'}
+  %input{type: 'submit', value: 'Add Letter'}
+
+%p
+  There are
+  = lane.letters.count
+  letter(s):
+
+- lane.letters.all.each do |r|
+  %p{style: r.active ? '' : 'text-decoration:line-through'}
+    %a{href: "/letter?id=#{r.id}"}= "##{r.id}"
+    = r.title
+

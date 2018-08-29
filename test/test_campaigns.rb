@@ -30,12 +30,12 @@ class CampaignsTest < Minitest::Test
   def test_creates_campaigns
     owner = random_owner
     lists = Lists.new(owner: owner)
-    list = lists.add('hello')
+    list = lists.add
     lanes = Lanes.new(owner: owner)
     lane = lanes.add
     campaigns = Campaigns.new(owner: owner)
-    id = campaigns.add(list, lane)
-    assert(id > 0)
+    campaign = campaigns.add(list, lane)
+    assert(campaign.id > 0)
     assert_equal(1, campaigns.all.count)
   end
 end

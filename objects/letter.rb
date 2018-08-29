@@ -18,32 +18,65 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'yaml'
 require_relative 'pgsql'
-require_relative 'campaign'
 
-# Campaigns.
+# Letter.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Campaigns
-  def initialize(owner:, pgsql: Pgsql.new)
-    @owner = owner
+class Letter
+  attr_reader :id
+
+  def initialize(id:, pgsql: Pgsql.new, hash: {})
+    raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
+    @id = id
     @pgsql = pgsql
+    @hash = hash
   end
 
-  def all
-    @pgsql.exec('SELECT * FROM campaign JOIN list ON campaign.list=list.id WHERE list.owner=$1', [@owner]).map do |r|
-      Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-    end
-  end
-
-  def add(list, lane)
-    Campaign.new(
-      id: @pgsql.exec(
-        'INSERT INTO campaign (list, lane) VALUES ($1, $2) RETURNING id',
-        [list.id, lane.id]
-      )[0]['id'].to_i,
-      pgsql: @pgsql
+  def lane
+    hash = @pgsql.exec(
+      'SELECT lane.* FROM lane JOIN letter ON letter.lane=lane.id WHERE letter.id=$1',
+      [@id]
+    )[0]
+    Lane.new(
+      id: hash['id'].to_i,
+      pgsql: @pgsql,
+      hash: hash
     )
+  end
+
+  def title
+    yaml['title'] || "##{id}"
+  end
+
+  def active
+    (@hash['active'] || @pgsql.exec('SELECT active FROM letter WHERE id=$1', [@id])[0]['active']) == 't'
+  end
+
+  def liquid
+    @hash['liquid'] || @pgsql.exec('SELECT liquid FROM letter WHERE id=$1', [@id])[0]['liquid']
+  end
+
+  def yaml
+    YAML.safe_load(
+      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM letter WHERE id=$1', [@id])[0]['yaml']
+    )
+  end
+
+  def toggle
+    @pgsql.exec('UPDATE letter SET active=not(active) WHERE id=$1', [@id])
+    @hash = {}
+  end
+
+  def save_liquid(liquid)
+    @pgsql.exec('UPDATE letter SET liquid=$1 WHERE id=$2', [liquid, @id])
+    @hash = {}
+  end
+
+  def save_yaml(yaml)
+    @pgsql.exec('UPDATE letter SET yaml=$1 WHERE id=$2', [yaml, @id])
+    @hash = {}
   end
 end

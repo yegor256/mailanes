@@ -19,31 +19,22 @@
 # SOFTWARE.
 
 require_relative 'pgsql'
-require_relative 'campaign'
 
-# Campaigns.
+# Recipient.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Campaigns
-  def initialize(owner:, pgsql: Pgsql.new)
-    @owner = owner
+class Recipient
+  attr_reader :id
+
+  def initialize(id:, pgsql: Pgsql.new, hash: {})
+    raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
+    @id = id
     @pgsql = pgsql
+    @hash = hash
   end
 
-  def all
-    @pgsql.exec('SELECT * FROM campaign JOIN list ON campaign.list=list.id WHERE list.owner=$1', [@owner]).map do |r|
-      Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-    end
-  end
-
-  def add(list, lane)
-    Campaign.new(
-      id: @pgsql.exec(
-        'INSERT INTO campaign (list, lane) VALUES ($1, $2) RETURNING id',
-        [list.id, lane.id]
-      )[0]['id'].to_i,
-      pgsql: @pgsql
-    )
+  def email
+    @hash['email'] || @pgsql.exec('SELECT email FROM recipient WHERE id=$1', [@id])[0]['email']
   end
 end

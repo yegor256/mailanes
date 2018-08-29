@@ -19,29 +19,34 @@
 # SOFTWARE.
 
 require_relative 'pgsql'
-require_relative 'campaign'
+require_relative 'letter'
 
-# Campaigns.
+# Letters.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Campaigns
-  def initialize(owner:, pgsql: Pgsql.new)
-    @owner = owner
+class Letters
+  def initialize(lane:, pgsql: Pgsql.new)
+    @lane = lane
     @pgsql = pgsql
   end
 
+  def count
+    @pgsql.exec('SELECT COUNT(id) FROM letter WHERE lane=$1', [@lane.id])[0]['count']
+  end
+
   def all
-    @pgsql.exec('SELECT * FROM campaign JOIN list ON campaign.list=list.id WHERE list.owner=$1', [@owner]).map do |r|
-      Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+    @pgsql.exec('SELECT * FROM letter WHERE lane=$1 ORDER BY created DESC', [@lane.id]).map do |r|
+      Letter.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end
 
-  def add(list, lane)
-    Campaign.new(
+  def add(title = 'undefined')
+    yaml = "title: #{title}\n"
+    Letter.new(
       id: @pgsql.exec(
-        'INSERT INTO campaign (list, lane) VALUES ($1, $2) RETURNING id',
-        [list.id, lane.id]
+        'INSERT INTO letter (lane, yaml) VALUES ($1, $2) RETURNING id',
+        [@lane.id, yaml]
       )[0]['id'].to_i,
       pgsql: @pgsql
     )

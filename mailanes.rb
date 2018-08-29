@@ -29,6 +29,7 @@ require 'glogin'
 require 'glogin/codec'
 
 require_relative 'version'
+require_relative 'objects/owner'
 
 if ENV['RACK_ENV'] != 'test'
   require 'rack/ssl'
@@ -47,6 +48,13 @@ configure do
       'key' => '?',
       'secret' => '?',
       'bucket' => '?'
+    },
+    'pgsql' => {
+      'host' => 'localhost',
+      'port' => 0,
+      'user' => 'test',
+      'dbname' => 'test',
+      'password' => 'test'
     },
     'pass_encryption_secret' => '?',
     'sentry' => ''
@@ -67,6 +75,13 @@ configure do
     config['github']['client_id'],
     config['github']['client_secret'],
     'https://www.mailanes.com/github-callback'
+  )
+  set :pgsql, Pgsql.new(
+    host: config['pgsql']['host'],
+    port: config['pgsql']['port'].to_i,
+    dbname: config['pgsql']['dbname'],
+    user: config['pgsql']['user'],
+    password: config['pgsql']['password']
   )
 end
 
@@ -117,6 +132,79 @@ get '/' do
   )
 end
 
+get '/lists' do
+  haml :lists, layout: :layout, locals: merged(
+    title: '/lists',
+    lists: owner.lists
+  )
+end
+
+post '/add-list' do
+  owner.lists.add(params[:title])
+  redirect '/lists'
+end
+
+get '/list' do
+  list = owner.lists.list(params[:id].to_i)
+  haml :list, layout: :layout, locals: merged(
+    title: "##{list.id}",
+    list: list
+  )
+end
+
+post '/add-recipient' do
+  list = owner.lists.list(params[:id].to_i)
+  list.recipients.add(params[:email], "@#{current_user}")
+  redirect "/list?id=#{list.id}"
+end
+
+get '/lanes' do
+  haml :lanes, layout: :layout, locals: merged(
+    title: '/lanes',
+    lanes: owner.lanes
+  )
+end
+
+post '/add-lane' do
+  owner.lanes.add(params[:title])
+  redirect '/lanes'
+end
+
+get '/lane' do
+  lane = owner.lanes.lane(params[:id].to_i)
+  haml :lane, layout: :layout, locals: merged(
+    title: "##{lane.id}",
+    lane: lane
+  )
+end
+
+post '/add-letter' do
+  lane = owner.lanes.lane(params[:id].to_i)
+  lane.letters.add(params[:title])
+  redirect "/lane?id=#{lane.id}"
+end
+
+get '/letter' do
+  letter = owner.lanes.letter(params[:id].to_i)
+  haml :letter, layout: :layout, locals: merged(
+    title: "##{letter.id}",
+    letter: letter
+  )
+end
+
+post '/save-letter' do
+  letter = owner.lanes.letter(params[:id].to_i)
+  letter.save_liquid(params[:liquid])
+  letter.save_yaml(params[:yaml])
+  redirect "/letter?id=#{letter.id}"
+end
+
+get '/toggle-letter' do
+  letter = owner.lanes.letter(params[:id].to_i)
+  letter.toggle
+  redirect "/letter?id=#{letter.id}"
+end
+
 get '/robots.txt' do
   content_type 'text/plain'
   "User-agent: *\nDisallow: /"
@@ -164,4 +252,8 @@ end
 def current_user
   redirect '/hello' unless @locals[:user]
   @locals[:user][:login]
+end
+
+def owner
+  Owner.new(login: current_user, pgsql: settings.pgsql)
 end

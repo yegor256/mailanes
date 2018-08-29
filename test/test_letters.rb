@@ -12,38 +12,27 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'pgsql'
-require_relative 'campaign'
+require 'minitest/autorun'
+require 'rack/test'
+require 'yaml'
+require_relative 'test__helper'
+require_relative '../objects/lanes'
+require_relative '../objects/letters'
 
-# Campaigns.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018 Yegor Bugayenko
-# License:: MIT
-class Campaigns
-  def initialize(owner:, pgsql: Pgsql.new)
-    @owner = owner
-    @pgsql = pgsql
-  end
-
-  def all
-    @pgsql.exec('SELECT * FROM campaign JOIN list ON campaign.list=list.id WHERE list.owner=$1', [@owner]).map do |r|
-      Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-    end
-  end
-
-  def add(list, lane)
-    Campaign.new(
-      id: @pgsql.exec(
-        'INSERT INTO campaign (list, lane) VALUES ($1, $2) RETURNING id',
-        [list.id, lane.id]
-      )[0]['id'].to_i,
-      pgsql: @pgsql
-    )
+class LettersTest < Minitest::Test
+  def test_creates_letters
+    owner = random_owner
+    lanes = Lanes.new(owner: owner)
+    lane = lanes.add
+    letters = Letters.new(lane: lane)
+    letter = letters.add('Hi, dude!')
+    assert(letter.id > 0)
+    assert_equal(1, letters.all.count)
   end
 end

@@ -19,31 +19,24 @@
 # SOFTWARE.
 
 require_relative 'pgsql'
-require_relative 'campaign'
+require_relative 'lists'
+require_relative 'lanes'
 
-# Campaigns.
+# Owner.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Campaigns
-  def initialize(owner:, pgsql: Pgsql.new)
-    @owner = owner
+class Owner
+  def initialize(login:, pgsql: Pgsql.new)
+    @login = login
     @pgsql = pgsql
   end
 
-  def all
-    @pgsql.exec('SELECT * FROM campaign JOIN list ON campaign.list=list.id WHERE list.owner=$1', [@owner]).map do |r|
-      Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-    end
+  def lists
+    Lists.new(owner: @login, pgsql: @pgsql)
   end
 
-  def add(list, lane)
-    Campaign.new(
-      id: @pgsql.exec(
-        'INSERT INTO campaign (list, lane) VALUES ($1, $2) RETURNING id',
-        [list.id, lane.id]
-      )[0]['id'].to_i,
-      pgsql: @pgsql
-    )
+  def lanes
+    Lanes.new(owner: @login, pgsql: @pgsql)
   end
 end

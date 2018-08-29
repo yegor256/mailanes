@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 require_relative 'pgsql'
+require_relative 'recipient'
 
 # Recipients.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -31,13 +32,22 @@ class Recipients
   end
 
   def all
-    @pgsql.exec('SELECT * FROM recipient WHERE list=$1', [@list])
+    @pgsql.exec('SELECT * FROM recipient WHERE list=$1', [@list.id]).map do |r|
+      Recipient.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+    end
   end
 
-  def add(email)
-    @pgsql.exec(
-      'INSERT INTO recipient (list, email) VALUES ($1, $2) RETURNING id',
-      [@list, email]
-    )[0]['id'].to_i
+  def count
+    all.count
+  end
+
+  def add(email, source = '')
+    Recipient.new(
+      id: @pgsql.exec(
+        'INSERT INTO recipient (list, email, source) VALUES ($1, $2, $3) RETURNING id',
+        [@list.id, email, source]
+      )[0]['id'].to_i,
+      pgsql: @pgsql
+    )
   end
 end

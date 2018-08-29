@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 require_relative 'pgsql'
+require_relative 'list'
 
 # Lists.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -31,14 +32,32 @@ class Lists
   end
 
   def all
-    @pgsql.exec('SELECT * FROM list WHERE owner=$1', [@owner])
+    @pgsql.exec('SELECT id FROM list WHERE owner=$1', [@owner]).map do |r|
+      List.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+    end
   end
 
-  def add(title)
+  def add(title = 'noname')
     yaml = "title: #{title}\n"
-    @pgsql.exec(
-      'INSERT INTO list (owner, yaml) VALUES ($1, $2) RETURNING id',
-      [@owner, yaml]
-    )[0]['id'].to_i
+    List.new(
+      id: @pgsql.exec(
+        'INSERT INTO list (owner, yaml) VALUES ($1, $2) RETURNING id',
+        [@owner, yaml]
+      )[0]['id'].to_i,
+      pgsql: @pgsql
+    )
+  end
+
+  def list(id)
+    hash = @pgsql.exec(
+      'SELECT id FROM list WHERE owner=$1 AND id=$2',
+      [@owner, id]
+    )[0]
+    raise "List ##{id} not found in @#{@owner} account" if hash.nil?
+    List.new(
+      id: hash['id'].to_i,
+      pgsql: @pgsql,
+      hash: hash
+    )
   end
 end

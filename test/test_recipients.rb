@@ -31,8 +31,8 @@ class RecipientsTest < Minitest::Test
     lists = Lists.new(owner: owner)
     list = lists.add('hello')
     recipients = Recipients.new(list: list)
-    id = recipients.add('test@mailanes.com')
-    assert(id > 0)
+    recipient = recipients.add('test@mailanes.com')
+    assert(recipient.id > 0)
     assert_equal(1, recipients.all.count)
   end
 end
