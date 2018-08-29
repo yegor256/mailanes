@@ -37,4 +37,12 @@ class Recipient
   def email
     @hash['email'] || @pgsql.exec('SELECT email FROM recipient WHERE id=$1', [@id])[0]['email']
   end
+
+  def first
+    @hash['first'] || @pgsql.exec('SELECT first FROM recipient WHERE id=$1', [@id])[0]['first']
+  end
+
+  def last
+    @hash['last'] || @pgsql.exec('SELECT last FROM recipient WHERE id=$1', [@id])[0]['last']
+  end
 end

@@ -19,6 +19,11 @@
 # SOFTWARE.
 
 require 'yaml'
+require 'mail'
+require 'uuidtools'
+require 'liquid'
+require 'redcarpet'
+require 'redcarpet/render_strip'
 require_relative 'pgsql'
 
 # Letter.
@@ -82,6 +87,44 @@ class Letter
   end
 
   def deliver(recipient)
-    # .. email it
+    template = Liquid::Template.parse(liquid)
+    markdown = template.render(
+      'email' => recipient.email,
+      'first' => recipient.first,
+      'last' => recipient.last,
+      'id' => id
+    )
+    html = Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(markdown)
+    text = Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(markdown)
+    ln = lane
+    name = "#{recipient.first.strip} #{recipient.last.strip}".strip
+    address = recipient.email
+    address = "#{name} <#{recipient.email}>" unless name.empty?
+    yml = yaml
+    mail = Mail.new do
+      from yml['from'] || ln.yaml['from']
+      to address
+      subject yml['subject'] || ln.yaml['subject']
+      message_id "<#{UUIDTools::UUID.random_create}@mailanes.com>"
+      text_part do
+        content_type 'text/plain; charset=UTF-8'
+        body text
+      end
+      html_part do
+        content_type 'text/html; charset=UTF-8'
+        body html
+      end
+    end
+    mail.delivery_method(
+      :smtp,
+      address: ln.yaml['smtp']['host'],
+      port: ln.yaml['smtp']['port'].to_i,
+      domain: ln.yaml['smtp']['host'],
+      user_name: ln.yaml['smtp']['user'],
+      password: ln.yaml['smtp']['password'],
+      authentication: 'plain',
+      enable_starttls_auto: true
+    )
+    mail.deliver
   end
 end

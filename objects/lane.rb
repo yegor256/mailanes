@@ -49,4 +49,10 @@ class Lane
       @hash['yaml'] || @pgsql.exec('SELECT yaml FROM lane WHERE id=$1', [@id])[0]['yaml']
     )
   end
+
+  def save_yaml(yaml)
+    YAML.safe_load(yaml)
+    @pgsql.exec('UPDATE lane SET yaml=$1 WHERE id=$2', [yaml, @id])
+    @hash = {}
+  end
 end

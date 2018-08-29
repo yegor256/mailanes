@@ -193,6 +193,12 @@ get '/lane' do
   )
 end
 
+post '/save-lane' do
+  lane = owner.lanes.lane(params[:id].to_i)
+  lane.save_yaml(params[:yaml])
+  redirect "/lane?id=#{lane.id}"
+end
+
 post '/add-letter' do
   lane = owner.lanes.lane(params[:id].to_i)
   lane.letters.add(params[:title])
@@ -218,6 +224,8 @@ end
 post '/test-letter' do
   letter = owner.lanes.letter(params[:id].to_i)
   list = owner.lists.list(params[:list].to_i)
+  recipient = list.recipients.all.sample(1)[0]
+  raise "There are no recipients in the list ##{list.id}" if recipient.nil?
   letter.deliver(list.recipients.all.sample(1)[0])
   redirect "/letter?id=#{letter.id}"
 end
