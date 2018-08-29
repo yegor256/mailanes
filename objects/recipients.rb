@@ -18,35 +18,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'pg'
+require_relative 'pgsql'
 
-# The PostgreSQL connector.
+# Recipients.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Pgsql
-  def initialize(host: 'localhost', port: 0, dbname: 'test', user: 'test', password: 'test')
-    @host = host
-    port = File.read('target/pgsql.port').to_i if port.zero?
-    @port = port
-    @dbname = dbname
-    @user = user
-    @password = password
+class Recipients
+  def initialize(list:, pgsql: Pgsql.new)
+    @list = list
+    @pgsql = pgsql
   end
 
-  def connect
-    PG.connect(dbname: @dbname, host: @host, port: @port, user: @user, password: @password)
+  def all
+    @pgsql.exec('SELECT * FROM recipient WHERE list=$1', [@list])
   end
 
-  def exec(query, args = [])
-    connect.exec_params(query, args) do |res|
-      if block_given?
-        yield res
-      else
-        rows = []
-        res.each { |r| rows << r }
-        rows
-      end
-    end
+  def add(email)
+    @pgsql.exec(
+      'INSERT INTO recipient (list, email) VALUES ($1, $2) RETURNING id',
+      [@list, email]
+    )[0]['id'].to_i
   end
 end

@@ -98,9 +98,12 @@ end
 
 desc 'Sleep endlessly after the start of DynamoDB Local server'
 task :sleep do
+  port = File.read('target/pgsql.port').to_i
   loop do
+    system("psql -h localhost -p #{port} --username=test --command='\\x'")
+    raise unless $CHILD_STATUS.exitstatus.zero?
+    puts 'PostgreSQL is still alive...'
     sleep(5)
-    puts 'Still alive...'
   end
 end
 

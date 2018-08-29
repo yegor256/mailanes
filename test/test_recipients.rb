@@ -12,41 +12,27 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'pg'
+require 'minitest/autorun'
+require 'rack/test'
+require 'yaml'
+require_relative 'test__helper'
+require_relative '../objects/lists'
+require_relative '../objects/recipients'
 
-# The PostgreSQL connector.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018 Yegor Bugayenko
-# License:: MIT
-class Pgsql
-  def initialize(host: 'localhost', port: 0, dbname: 'test', user: 'test', password: 'test')
-    @host = host
-    port = File.read('target/pgsql.port').to_i if port.zero?
-    @port = port
-    @dbname = dbname
-    @user = user
-    @password = password
-  end
-
-  def connect
-    PG.connect(dbname: @dbname, host: @host, port: @port, user: @user, password: @password)
-  end
-
-  def exec(query, args = [])
-    connect.exec_params(query, args) do |res|
-      if block_given?
-        yield res
-      else
-        rows = []
-        res.each { |r| rows << r }
-        rows
-      end
-    end
+class RecipientsTest < Minitest::Test
+  def test_creates_recipients
+    owner = random_owner
+    lists = Lists.new(owner: owner)
+    list = lists.add('hello')
+    recipients = Recipients.new(list: list)
+    id = recipients.add('test@mailanes.com')
+    assert(id > 0)
+    assert_equal(1, recipients.all.count)
   end
 end

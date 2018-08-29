@@ -26,3 +26,13 @@ if ENV['CI'] == 'true'
   require 'codecov'
   SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end
+
+require 'minitest/autorun'
+module Minitest
+  class Test
+    def random_owner
+      require 'securerandom'
+      'u' + SecureRandom.hex[0..8]
+    end
+  end
+end
