@@ -30,4 +30,9 @@ class PgsqlTest < Minitest::Test
       # later
     end
   end
+
+  def test_connects_only_once
+    db = Pgsql.new
+    assert_equal(db.connect, db.connect)
+  end
 end

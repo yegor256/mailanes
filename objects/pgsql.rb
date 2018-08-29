@@ -35,7 +35,7 @@ class Pgsql
   end
 
   def connect
-    PG.connect(dbname: @dbname, host: @host, port: @port, user: @user, password: @password)
+    @connect ||= PG.connect(dbname: @dbname, host: @host, port: @port, user: @user, password: @password)
   end
 
   def exec(query, args = [])
