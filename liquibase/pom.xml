@@ -39,26 +39,13 @@ SOFTWARE.
   <build>
     <plugins>
       <plugin>
-        <groupId>com.jcabi</groupId>
-        <artifactId>jcabi-ssl-maven-plugin</artifactId>
-        <version>0.12</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>keygen</goal>
-            </goals>
-            <phase>verify</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-maven-plugin</artifactId>
         <version>3.2.2</version>
         <configuration>
           <changeLogFile>${basedir}/master.xml</changeLogFile>
           <driver>org.postgresql.Driver</driver>
-          <url>jdbc:postgresql://${host}:${port}/${dbname}?user=${user}&amp;password=${password}&amp;ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory</url>
+          <url>${url}</url>
           <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
         </configuration>
         <executions>

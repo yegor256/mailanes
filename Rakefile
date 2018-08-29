@@ -88,7 +88,15 @@ task :pgsql do
   File.write('target/pgsql.port', port.to_s)
   File.write(
     'target/config.yml',
-    "pgsql:\n  host: localhost\n  port: #{port}\n  dbname: test\n  user: test\n  password: test\n"
+    [
+      'pgsql:',
+      '  host: localhost',
+      "  port: #{port}",
+      '  dbname: test',
+      '  user: test',
+      '  password: test',
+      "  url: jdbc:postgresql://localhost:#{port}/test?user=test&password=test"
+    ].join("\n")
   )
   puts "PostgreSQL is running in PID #{pid}"
 end
@@ -96,11 +104,7 @@ end
 desc 'Update the database via Liquibase'
 task :liquibase do
   yml = YAML.safe_load(File.open(File.exist?('config.yml') ? 'config.yml' : 'target/config.yml'))
-  pg = yml['pgsql']
-  system(
-    "mvn -f liquibase verify -Duser=#{pg['user']} -Dpassword=#{pg['password']} \
--Dport=#{pg['port']} -Dhost=#{pg['host']} -Ddbname=#{pg['dbname']} --errors"
-  )
+  system("mvn -f liquibase verify \"-Durl=#{yml['pgsql']['url']}\" --errors")
   raise unless $CHILD_STATUS.exitstatus.zero?
 end
 
