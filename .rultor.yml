@@ -3,7 +3,7 @@ assets:
   id_rsa: zerocracy/home#assets/heroku-key
   id_rsa.pub: zerocracy/home#assets/heroku-key.pub
 install: |-
-  sudo apt-get install -y postgresql postgresql-contrib
+  export PATH=$PATH:/usr/lib/postgresql/9.3/bin
   sudo gem install pdd
   git config --global user.email "server@mailanes.com"
   git config --global user.name "mailanes.com"
