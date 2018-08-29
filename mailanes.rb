@@ -272,6 +272,27 @@ get '/toggle-campaign' do
   redirect "/campaign?id=#{campaign.id}"
 end
 
+get '/add' do
+  list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
+  raise "You don't have access to the list ##{list.id}" unless list.friend?(current_user)
+  haml :add, layout: :layout, locals: merged(
+    title: '/add',
+    list: list
+  )
+end
+
+post '/do-add' do
+  list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
+  raise "You don't have access to the list ##{list.id}" unless list.friend?(current_user)
+  list.recipients.add(
+    params[:email],
+    first: params[:first],
+    last: params[:last],
+    source: "@#{current_user}"
+  )
+  redirect "/add?list=#{list.id}"
+end
+
 get '/robots.txt' do
   content_type 'text/plain'
   "User-agent: *\nDisallow: /"
@@ -318,7 +339,7 @@ end
 
 def current_user
   redirect '/hello' unless @locals[:user]
-  @locals[:user][:login]
+  @locals[:user][:login].downcase
 end
 
 def owner

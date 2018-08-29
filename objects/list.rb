@@ -49,4 +49,10 @@ class List
       @hash['yaml'] || @pgsql.exec('SELECT yaml FROM list WHERE id=$1', [@id])[0]['yaml']
     )
   end
+
+  def friend?(login)
+    friends = yaml['friends']
+    return false unless friends.is_a?(Array)
+    friends.include?(login)
+  end
 end
