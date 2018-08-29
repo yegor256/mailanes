@@ -34,6 +34,10 @@ class Recipient
     @hash = hash
   end
 
+  def delete
+    @pgsql.exec('DELETE FROM recipient WHERE id=$1', [@id])
+  end
+
   def email
     @hash['email'] || @pgsql.exec('SELECT email FROM recipient WHERE id=$1', [@id])[0]['email']
   end

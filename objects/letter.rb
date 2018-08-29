@@ -24,6 +24,7 @@ require 'uuidtools'
 require 'liquid'
 require 'redcarpet'
 require 'redcarpet/render_strip'
+require 'glogin/codec'
 require_relative 'pgsql'
 
 # Letter.
@@ -86,12 +87,15 @@ class Letter
     @hash = {}
   end
 
-  def deliver(recipient)
+  def deliver(recipient, codec = GLogin::Codec.new)
     template = Liquid::Template.parse(liquid)
+    token = codec.encrypt(recipient.id.to_s)
     markdown = template.render(
       'email' => recipient.email,
       'first' => recipient.first,
       'last' => recipient.last,
+      'token' => token,
+      'unsubscribe' => "https://www.mailanes.com/unsubscribe?token=#{token}",
       'id' => id
     )
     html = Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(markdown)

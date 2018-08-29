@@ -7,7 +7,7 @@
   %fieldset
     %input{type: 'hidden', name: 'id', value: lane.id}
     %label YAML config:
-    %textarea{name: 'yaml', style: 'width:100%;height:8em;', required: 'true'}= lane.yaml.to_yaml
+    %textarea{name: 'yaml', style: 'width:100%;height:12em;', required: 'true'}= lane.yaml.to_yaml
     %input{type: 'submit', value: 'Save'}
 
 %form{method: 'POST', action: '/add-letter'}

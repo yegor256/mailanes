@@ -56,7 +56,7 @@ configure do
       'dbname' => 'test',
       'password' => 'test'
     },
-    'pass_encryption_secret' => '?',
+    'token_secret' => '?',
     'sentry' => ''
   }
   config = YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml'))) unless ENV['RACK_ENV'] == 'test'
@@ -66,8 +66,8 @@ configure do
       c.release = VERSION
     end
   end
-  set :dump_errors, true
-  set :show_exceptions, true
+  set :dump_errors, false
+  set :show_exceptions, false
   set :config, config
   set :logging, true
   set :server_settings, timeout: 25
@@ -76,6 +76,7 @@ configure do
     config['github']['client_secret'],
     'https://www.mailanes.com/github-callback'
   )
+  set :codec, GLogin::Codec.new(config['token_secret'])
   set :pgsql, Pgsql.new(
     host: config['pgsql']['host'],
     port: config['pgsql']['port'].to_i,
@@ -297,6 +298,17 @@ post '/do-add' do
     source: "@#{current_user}"
   )
   redirect "/add?list=#{list.id}"
+end
+
+get '/unsubscribe' do
+  id = settings.codec.decrypt(params[:token]).to_i
+  recipient = Recipient.new(id: id, pgsql: settings.pgsql)
+  email = recipient.email
+  recipient.delete
+  haml :unsubscribed, layout: :layout, locals: merged(
+    title: '/unsubscribed',
+    email: email
+  )
 end
 
 get '/robots.txt' do
