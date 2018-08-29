@@ -50,6 +50,12 @@ class List
     )
   end
 
+  def save_yaml(yaml)
+    YAML.safe_load(yaml)
+    @pgsql.exec('UPDATE list SET yaml=$1 WHERE id=$2', [yaml, @id])
+    @hash = {}
+  end
+
   def friend?(login)
     friends = yaml['friends']
     return false unless friends.is_a?(Array)

@@ -3,6 +3,19 @@
     = "##{list.id}"
   = list.title
 
+%p
+  Each list is a collection of recipients, which are supposed
+  to receive emails. First, you add recipients to your lists,
+  then you put letters into lanes, and then you connect
+  lanes with lists via campaigns.
+
+%form{method: 'POST', action: '/save-list'}
+  %fieldset
+    %input{type: 'hidden', name: 'id', value: list.id}
+    %label YAML config:
+    %textarea{name: 'yaml', style: 'width:100%;height:8em;', required: 'true'}= list.yaml.to_yaml
+    %input{type: 'submit', value: 'Save'}
+
 %form{method: 'POST', action: '/add-recipient'}
   %input{type: 'hidden', name: 'id', value: list.id}
   %input{type: 'text', name: 'email', placeholder: 'Email', size: 20, required: 'true', autocomplete: 'off'}

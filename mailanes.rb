@@ -152,6 +152,12 @@ get '/list' do
   )
 end
 
+post '/save-list' do
+  list = owner.lists.list(params[:id].to_i)
+  list.save_yaml(params[:yaml])
+  redirect "/list?id=#{list.id}"
+end
+
 post '/add-recipient' do
   list = owner.lists.list(params[:id].to_i)
   list.recipients.add(
