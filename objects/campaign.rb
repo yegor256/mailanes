@@ -20,6 +20,8 @@
 
 require 'yaml'
 require_relative 'pgsql'
+require_relative 'lane'
+require_relative 'list'
 
 # Campaign.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -35,6 +37,30 @@ class Campaign
     @hash = hash
   end
 
+  def list
+    hash = @pgsql.exec(
+      'SELECT list.* FROM list JOIN campaign ON campaign.list=list.id WHERE campaign.id=$1',
+      [@id]
+    )[0]
+    List.new(
+      id: hash['id'].to_i,
+      pgsql: @pgsql,
+      hash: hash
+    )
+  end
+
+  def lane
+    hash = @pgsql.exec(
+      'SELECT lane.* FROM lane JOIN campaign ON campaign.lane=lane.id WHERE campaign.id=$1',
+      [@id]
+    )[0]
+    Lane.new(
+      id: hash['id'].to_i,
+      pgsql: @pgsql,
+      hash: hash
+    )
+  end
+
   def title
     yaml['title'] || 'unknown'
   end
@@ -43,5 +69,20 @@ class Campaign
     YAML.safe_load(
       @hash['yaml'] || @pgsql.exec('SELECT yaml FROM campaign WHERE id=$1', [@id])[0]['yaml']
     )
+  end
+
+  def save_yaml(yaml)
+    YAML.safe_load(yaml)
+    @pgsql.exec('UPDATE campaign SET yaml=$1 WHERE id=$2', [yaml, @id])
+    @hash = {}
+  end
+
+  def active?
+    (@hash['active'] || @pgsql.exec('SELECT active FROM campaign WHERE id=$1', [@id])[0]['active']) == 't'
+  end
+
+  def toggle
+    @pgsql.exec('UPDATE campaign SET active=not(active) WHERE id=$1', [@id])
+    @hash = {}
   end
 end

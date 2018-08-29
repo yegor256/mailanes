@@ -1,5 +1,6 @@
 %h2
-  = "##{lane.id}"
+  = succeed ':' do
+    = "##{lane.id}"
   = lane.title
 
 %form{method: 'POST', action: '/add-letter'}
@@ -13,7 +14,7 @@
   letter(s):
 
 - lane.letters.all.each do |r|
-  %p{style: r.active ? '' : 'text-decoration:line-through'}
+  %p{style: r.active? ? '' : 'text-decoration:line-through'}
     %a{href: "/letter?id=#{r.id}"}= "##{r.id}"
     = r.title
 

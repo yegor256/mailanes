@@ -32,7 +32,7 @@ class LetterTest < Minitest::Test
     lane = lanes.add
     letters = Letters.new(lane: lane)
     letter = letters.add
-    assert_equal(false, letter.active)
+    assert_equal(false, letter.active?)
   end
 
   def test_toggles_active_status
@@ -42,9 +42,9 @@ class LetterTest < Minitest::Test
     letters = Letters.new(lane: lane)
     letter = letters.add
     letter.toggle
-    assert_equal(true, letter.active)
+    assert_equal(true, letter.active?)
     letter.toggle
-    assert_equal(false, letter.active)
+    assert_equal(false, letter.active?)
   end
 
   def test_creates_and_updates_letter

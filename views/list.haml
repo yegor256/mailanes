@@ -1,5 +1,6 @@
 %h2
-  = "##{list.id}"
+  = succeed ':' do
+    = "##{list.id}"
   = list.title
 
 %form{method: 'POST', action: '/add-recipient'}

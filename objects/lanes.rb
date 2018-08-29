@@ -31,8 +31,12 @@ class Lanes
     @pgsql = pgsql
   end
 
+  def count
+    @pgsql.exec('SELECT COUNT(id) FROM lane WHERE owner=$1', [@owner])[0]['count'].to_i
+  end
+
   def all
-    @pgsql.exec('SELECT id FROM lane WHERE owner=$1', [@owner]).map do |r|
+    @pgsql.exec('SELECT id FROM lane WHERE owner=$1 ORDER BY created DESC', [@owner]).map do |r|
       Lane.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end

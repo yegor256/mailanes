@@ -13,12 +13,12 @@
 %p
   It is
   %strong
-    - if letter.active
+    - if letter.active?
       %span{style: 'color:darkgreen'} active
     - else
       %span{style: 'color:darkred'} not active
   %a{href: "/toggle-letter?id=#{letter.id}"}
-    - if letter.active
+    - if letter.active?
       deactivate
     - else
       activate

@@ -205,6 +205,42 @@ get '/toggle-letter' do
   redirect "/letter?id=#{letter.id}"
 end
 
+get '/campaigns' do
+  haml :campaigns, layout: :layout, locals: merged(
+    title: '/campaigns',
+    campaigns: owner.campaigns,
+    lists: owner.lists,
+    lanes: owner.lanes
+  )
+end
+
+post '/add-campaign' do
+  list = owner.lists.list(params[:list].to_i)
+  lane = owner.lanes.lane(params[:lane].to_i)
+  owner.campaigns.add(list, lane, params[:title])
+  redirect '/campaigns'
+end
+
+get '/campaign' do
+  campaign = owner.campaigns.campaign(params[:id].to_i)
+  haml :campaign, layout: :layout, locals: merged(
+    title: "##{campaign.id}",
+    campaign: campaign
+  )
+end
+
+post '/save-campaign' do
+  campaign = owner.campaigns.campaign(params[:id].to_i)
+  campaign.save_yaml(params[:yaml])
+  redirect "/campaign?id=#{campaign.id}"
+end
+
+get '/toggle-campaign' do
+  campaign = owner.campaigns.campaign(params[:id].to_i)
+  campaign.toggle
+  redirect "/campaign?id=#{campaign.id}"
+end
+
 get '/robots.txt' do
   content_type 'text/plain'
   "User-agent: *\nDisallow: /"

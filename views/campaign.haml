@@ -1,0 +1,38 @@
+%h2
+  = succeed ':' do
+    = "##{campaign.id}"
+  = campaign.title
+
+%p
+  List:
+  - list = campaign.list
+  = succeed ':' do
+    %a{href: "/list?id=#{list.id}"}= "##{list.id}"
+  = "\"#{list.title}\""
+
+%p
+  Lane:
+  - lane = campaign.lane
+  = succeed ':' do
+    %a{href: "/lane?id=#{lane.id}"}= "##{lane.id}"
+  = "\"#{lane.title}\""
+
+%p
+  It is
+  %strong
+    - if campaign.active?
+      %span{style: 'color:darkgreen'} active
+    - else
+      %span{style: 'color:darkred'} not active
+  %a{href: "/toggle-campaign?id=#{campaign.id}"}
+    - if campaign.active?
+      deactivate
+    - else
+      activate
+
+
+%form{method: 'POST', action: '/save-campaign'}
+  %input{type: 'hidden', name: 'id', value: campaign.id}
+  %label YAML config:
+  %textarea{name: 'yaml', style: 'width:100%;height:8em;', required: 'true'}= campaign.yaml.to_yaml
+  %input{type: 'submit', value: 'Save'}

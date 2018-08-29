@@ -33,13 +33,16 @@
               - else
                 %a{href: login_link}
                   Login
-            %li
-              %a{href: url('/lists')}
-                Lists
-            %li
-              %a{href: url('/lanes')}
-                Lanes
             - if defined? user
+              %li
+                %a{href: url('/lists')}
+                  Lists
+              %li
+                %a{href: url('/lanes')}
+                  Lanes
+              %li
+                %a{href: url('/campaigns')}
+                  Campaigns
               %li
                 %a{href: '/logout'}
                   Logout

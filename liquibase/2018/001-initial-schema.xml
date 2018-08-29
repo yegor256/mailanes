@@ -65,7 +65,8 @@ SOFTWARE.
         id SERIAL PRIMARY KEY,
         list INTEGER NOT NULL REFERENCES list(id),
         lane INTEGER NOT NULL REFERENCES lane(id),
-        active BOOLEAN DEFAULT true NOT NULL,
+        active BOOLEAN DEFAULT false NOT NULL,
+        yaml TEXT DEFAULT '' NOT NULL,
         created TIMESTAMP DEFAULT now() NOT NULL
       )
     </sql>

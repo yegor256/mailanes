@@ -1,0 +1,30 @@
+%h2
+  Campaigns
+
+- if lists.count.zero?
+  %p{style: 'color:darkred'}
+    You have no lists, can't have any campaigns.
+- elsif lanes.count.zero?
+  %p{style: 'color:darkred'}
+    You have no lanes, can't have any campaigns.
+- else
+  %form{method: 'POST', action: '/add-campaign'}
+    %fieldset
+      %input{type: 'text', name: 'title', placeholder: 'List title...', size: 45, required: 'true', autocomplete: 'off'}
+      %select{name: 'list'}
+        - lists.all.each do |list|
+          %option{value: list.id}= "##{list.id}: #{list.title}"
+      %select{name: 'lane'}
+        - lanes.all.each do |lane|
+          %option{value: lane.id}= "##{lane.id}: #{lane.title}"
+      %input{type: 'submit', value: 'Add'}
+
+%p
+  All your campaigns:
+
+- campaigns.all.each do |c|
+  %p{style: c.active? ? '' : 'text-decoration:line-through'}
+    = succeed ':' do
+      %a{href: url("/campaign?id=#{c.id}")}= "##{c.id}"
+    = c.title
+

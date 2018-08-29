@@ -51,7 +51,7 @@ class Letter
     yaml['title'] || "##{id}"
   end
 
-  def active
+  def active?
     (@hash['active'] || @pgsql.exec('SELECT active FROM letter WHERE id=$1', [@id])[0]['active']) == 't'
   end
 
@@ -76,6 +76,7 @@ class Letter
   end
 
   def save_yaml(yaml)
+    YAML.safe_load(yaml)
     @pgsql.exec('UPDATE letter SET yaml=$1 WHERE id=$2', [yaml, @id])
     @hash = {}
   end

@@ -21,6 +21,7 @@
 require_relative 'pgsql'
 require_relative 'lists'
 require_relative 'lanes'
+require_relative 'campaigns'
 
 # Owner.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -38,5 +39,9 @@ class Owner
 
   def lanes
     Lanes.new(owner: @login, pgsql: @pgsql)
+  end
+
+  def campaigns
+    Campaigns.new(owner: @login, pgsql: @pgsql)
   end
 end
