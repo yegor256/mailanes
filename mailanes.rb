@@ -154,7 +154,22 @@ end
 
 post '/add-recipient' do
   list = owner.lists.list(params[:id].to_i)
-  list.recipients.add(params[:email], "@#{current_user}")
+  list.recipients.add(
+    params[:email],
+    first: params[:first],
+    last: params[:last],
+    source: "@#{current_user}"
+  )
+  redirect "/list?id=#{list.id}"
+end
+
+post '/upload-recipients' do
+  list = owner.lists.list(params[:id].to_i)
+  Tempfile.open do |f|
+    FileUtils.copy(params[:file][:tempfile], f.path)
+    File.delete(params[:file][:tempfile])
+    list.recipients.upload(f.path)
+  end
   redirect "/list?id=#{list.id}"
 end
 
@@ -188,7 +203,8 @@ get '/letter' do
   letter = owner.lanes.letter(params[:id].to_i)
   haml :letter, layout: :layout, locals: merged(
     title: "##{letter.id}",
-    letter: letter
+    letter: letter,
+    lists: owner.lists
   )
 end
 
@@ -196,6 +212,13 @@ post '/save-letter' do
   letter = owner.lanes.letter(params[:id].to_i)
   letter.save_liquid(params[:liquid])
   letter.save_yaml(params[:yaml])
+  redirect "/letter?id=#{letter.id}"
+end
+
+post '/test-letter' do
+  letter = owner.lanes.letter(params[:id].to_i)
+  list = owner.lists.list(params[:list].to_i)
+  letter.deliver(list.recipients.all.sample(1)[0])
   redirect "/letter?id=#{letter.id}"
 end
 

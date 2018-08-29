@@ -80,4 +80,8 @@ class Letter
     @pgsql.exec('UPDATE letter SET yaml=$1 WHERE id=$2', [yaml, @id])
     @hash = {}
   end
+
+  def deliver(recipient)
+    # .. email it
+  end
 end

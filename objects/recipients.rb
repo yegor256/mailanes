@@ -18,6 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'csv'
 require_relative 'pgsql'
 require_relative 'recipient'
 
@@ -41,13 +42,19 @@ class Recipients
     all.count
   end
 
-  def add(email, source = '')
+  def add(email, first: '', last: '', source: '')
     Recipient.new(
       id: @pgsql.exec(
-        'INSERT INTO recipient (list, email, source) VALUES ($1, $2, $3) RETURNING id',
-        [@list.id, email, source]
+        'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+        [@list.id, email, first, last, source]
       )[0]['id'].to_i,
       pgsql: @pgsql
     )
+  end
+
+  def upload(file, source: '')
+    CSV.foreach(file) do |row|
+      add(row[0], first: row[1], last: row[2], source: source)
+    end
   end
 end

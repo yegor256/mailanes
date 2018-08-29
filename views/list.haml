@@ -5,8 +5,20 @@
 
 %form{method: 'POST', action: '/add-recipient'}
   %input{type: 'hidden', name: 'id', value: list.id}
-  %input{type: 'text', name: 'email', placeholder: 'Email', size: 30, required: 'true', autocomplete: 'off'}
+  %input{type: 'text', name: 'email', placeholder: 'Email', size: 20, required: 'true', autocomplete: 'off'}
+  %input{type: 'text', name: 'first', placeholder: 'First name', size: 14, autocomplete: 'off'}
+  %input{type: 'text', name: 'last', placeholder: 'Last name', size: 16, autocomplete: 'off'}
   %input{type: 'submit', value: 'Add Recipient'}
+
+%form{method: 'POST', action: '/upload-recipient'}
+  %input{name: 'file', type: 'file', accept: 'text/plain'}
+  %input{type: 'submit', value: 'Upload'}
+  %br
+  %label.small.gray
+    Make sure it's a headerless CSV file,
+    with an email in the first column,
+    first name in the second,
+    and the last name in the third one.
 
 %p
   There are

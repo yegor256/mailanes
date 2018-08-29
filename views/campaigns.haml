@@ -2,10 +2,10 @@
   Campaigns
 
 - if lists.count.zero?
-  %p{style: 'color:darkred'}
+  %p.red
     You have no lists, can't have any campaigns.
 - elsif lanes.count.zero?
-  %p{style: 'color:darkred'}
+  %p.red
     You have no lanes, can't have any campaigns.
 - else
   %form{method: 'POST', action: '/add-campaign'}

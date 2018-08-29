@@ -21,9 +21,9 @@
   It is
   %strong
     - if campaign.active?
-      %span{style: 'color:darkgreen'} active
+      %span.green active
     - else
-      %span{style: 'color:darkred'} not active
+      %span.red not active
   %a{href: "/toggle-campaign?id=#{campaign.id}"}
     - if campaign.active?
       deactivate

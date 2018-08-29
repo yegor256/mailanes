@@ -21,6 +21,7 @@
 require 'minitest/autorun'
 require 'rack/test'
 require 'yaml'
+require 'tempfile'
 require_relative 'test__helper'
 require_relative '../objects/lists'
 require_relative '../objects/recipients'
@@ -29,10 +30,28 @@ class RecipientsTest < Minitest::Test
   def test_creates_recipients
     owner = random_owner
     lists = Lists.new(owner: owner)
-    list = lists.add('hello')
+    list = lists.add
     recipients = Recipients.new(list: list)
     recipient = recipients.add('test@mailanes.com')
     assert(recipient.id > 0)
     assert_equal(1, recipients.all.count)
+  end
+
+  def test_upload_recipients
+    owner = random_owner
+    lists = Lists.new(owner: owner)
+    list = lists.add
+    recipients = Recipients.new(list: list)
+    Tempfile.open do |f|
+      File.write(
+        f.path,
+        [
+          'test@example.com,Jeff,Lebowski',
+          'test2@example.com,Walter,Sobchak'
+        ].join("\n")
+      )
+      recipients.upload(f.path)
+    end
+    assert_equal(2, recipients.all.count)
   end
 end

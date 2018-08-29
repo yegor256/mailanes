@@ -36,6 +36,8 @@ SOFTWARE.
       CREATE TABLE recipient (
         id SERIAL PRIMARY KEY,
         email VARCHAR(255) NOT NULL,
+        first VARCHAR(255) DEFAULT '' NOT NULL,
+        last VARCHAR(255) DEFAULT '' NOT NULL,
         list INTEGER NOT NULL REFERENCES list(id),
         yaml TEXT DEFAULT '' NOT NULL,
         source VARCHAR(255) DEFAULT '' NOT NULL,

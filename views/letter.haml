@@ -14,9 +14,9 @@
   It is
   %strong
     - if letter.active?
-      %span{style: 'color:darkgreen'} active
+      %span.green active
     - else
-      %span{style: 'color:darkred'} not active
+      %span.red not active
   %a{href: "/toggle-letter?id=#{letter.id}"}
     - if letter.active?
       deactivate
@@ -25,9 +25,19 @@
 
 
 %form{method: 'POST', action: '/save-letter'}
+  %fieldset
+    %input{type: 'hidden', name: 'id', value: letter.id}
+    %label YAML config:
+    %textarea{name: 'yaml', style: 'width:100%;height:8em;', required: 'true'}= letter.yaml.to_yaml
+    %label Liquid email template:
+    %textarea{name: 'liquid', style: 'width:100%;height:10em;', required: 'true'}= letter.liquid
+    %input{type: 'submit', value: 'Save'}
+
+%form{method: 'POST', action: '/test-letter'}
   %input{type: 'hidden', name: 'id', value: letter.id}
-  %label YAML config:
-  %textarea{name: 'yaml', style: 'width:100%;height:8em;', required: 'true'}= letter.yaml.to_yaml
-  %label Liquid email template:
-  %textarea{name: 'liquid', style: 'width:100%;height:10em;', required: 'true'}= letter.liquid
-  %input{type: 'submit', value: 'Save'}
+  %select{name: 'list'}
+    - lists.all.each do |list|
+      %option{value: list.id}= "##{list.id}: #{list.title}"
+  %input{type: 'submit', value: 'Test'}
+  %label.small.gray
+    The email will be sent to a random recipient from the given list.
