@@ -1,0 +1,19 @@
+%h2
+  Subscribed!
+
+%p
+  Your email
+  %code
+    = recipient.email
+  has been added to the list
+  = succeed ':' do
+    = "##{list.id}"
+  = succeed '!' do
+    = "\"#{list.title}\""
+
+%p
+  If you want to unsubscribe,
+  = succeed '.' do
+    %a{href: '/unsubscribe?token=' + CGI.escape(token)}
+      click here
+

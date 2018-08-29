@@ -300,6 +300,23 @@ post '/do-add' do
   redirect "/add?list=#{list.id}"
 end
 
+post '/subscribe' do
+  list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
+  recipient = list.recipients.add(
+    params[:email],
+    first: params[:first] || '',
+    last: params[:last] || '',
+    source: params[:source] || ''
+  )
+  redirect params[:redirect] if params[:redirect]
+  haml :subscribed, layout: :layout, locals: merged(
+    title: '/subscribed',
+    recipient: recipient,
+    list: list,
+    token: settings.codec.encrypt(recipient.id)
+  )
+end
+
 get '/unsubscribe' do
   id = settings.codec.decrypt(params[:token]).to_i
   recipient = Recipient.new(id: id, pgsql: settings.pgsql)
