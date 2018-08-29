@@ -29,6 +29,7 @@ release:
     git add ./version.rb
     git commit -m 'build number set'
     cp ../config.yml config.yml
+    rake config
     git add config.yml
     git commit -m 'config.yml'
     git push -f heroku $(git symbolic-ref --short HEAD):master

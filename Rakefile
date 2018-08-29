@@ -54,6 +54,11 @@ Xcop::RakeTask.new :xcop do |task|
   task.excludes = ['target/**/*', 'coverage/**/*']
 end
 
+desc 'Check the quality of config file'
+task :config do
+  puts YAML.safe_load(File.open('config.yml')).to_yaml
+end
+
 desc 'Start PostgreSQL Local server'
 task :pgsql do
   FileUtils.mkdir_p('target')
