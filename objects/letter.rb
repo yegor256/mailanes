@@ -95,7 +95,7 @@ class Letter
       'first' => recipient.first,
       'last' => recipient.last,
       'token' => token,
-      'unsubscribe' => "https://www.mailanes.com/unsubscribe?token=#{token}",
+      'unsubscribe' => "https://www.mailanes.com/unsubscribe?token=#{CGI.escape(token)}",
       'id' => id
     )
     html = Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(markdown)
