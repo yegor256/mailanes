@@ -10,10 +10,13 @@
 - else
   %form{method: 'POST', action: '/add-campaign'}
     %fieldset
-      %input{type: 'text', name: 'title', placeholder: 'List title...', size: 45, required: 'true', autocomplete: 'off'}
+      %label Campaign name:
+      %input{type: 'text', name: 'title', placeholder: 'Campaign title...', size: 45, required: 'true', autocomplete: 'off'}
+      %label List:
       %select{name: 'list'}
         - lists.all.each do |list|
           %option{value: list.id}= "##{list.id}: #{list.title}"
+      %label Lane:
       %select{name: 'lane'}
         - lanes.all.each do |lane|
           %option{value: lane.id}= "##{lane.id}: #{lane.title}"
@@ -26,5 +29,12 @@
   %p{style: c.active? ? '' : 'text-decoration:line-through'}
     = succeed ':' do
       %a{href: url("/campaign?id=#{c.id}")}= "##{c.id}"
-    = c.title
-
+    = succeed ';' do
+      = c.title
+    = succeed ':' do
+      %a{href: url("/list?id=#{c.list.id}")}= "List ##{c.list.id}"
+    = succeed ';' do
+      = c.list.title
+    = succeed ':' do
+      %a{href: url("/lane?id=#{c.lane.id}")}= "Lane ##{c.lane.id}"
+    = c.lane.title
