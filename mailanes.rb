@@ -91,7 +91,7 @@ configure do
   if ENV['RACK_ENV'] != 'test'
     Thread.new do
       loop do
-        sleep 1
+        sleep 60
         begin
           settings.pipeline.fetch(settings.postman)
         rescue StandardError => e
