@@ -48,6 +48,7 @@ class Pipeline
       'LEFT JOIN delivery AS d ON d.recipient=recipient.id AND d.campaign=c.id AND d.letter=letter.id',
       'LEFT JOIN delivery AS r ON r.recipient=recipient.id AND r.campaign=c.id AND r.relax > NOW()',
       'WHERE d.id IS NULL AND r.id IS NULL AND recipient.active=true',
+      'AND (recipient.created < NOW() - INTERVAL \'10 MINUTES\' OR recipient.email LIKE \'%@mailanes.com\')',
       'AND (SELECT COUNT(id) FROM delivery',
       '  WHERE delivery.campaign=c.id AND delivery.created > NOW() - INTERVAL \'1 DAY\') < c.speed',
       'GROUP BY rid'

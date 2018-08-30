@@ -62,10 +62,21 @@ class Recipients
   end
 
   def upload(file, source: '')
+    deliveries = Deliveries.new(pgsql: @pgsql)
     CSV.foreach(file) do |row|
       next if row[0].nil?
       next if exists?(row[0])
       add(row[0], first: row[1] || '', last: row[2] || '', source: source)
+      if row[3]
+        row[3].split(';').each do |dlv|
+          r, c, l = dlv.split('/')
+          deliveries.add(
+            Campaign.new(id: c, pgsql: @pgsql),
+            Letter.new(id: l, pgsql: @pgsql),
+            Recipient.new(id: r, pgsql: @pgsql)
+          ).close('upload')
+        end
+      end
     end
   end
 end
