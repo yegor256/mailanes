@@ -36,7 +36,7 @@ class Lists
   end
 
   def all
-    @pgsql.exec('SELECT id FROM list WHERE owner=$1 ORDER BY created DESC', [@owner]).map do |r|
+    @pgsql.exec('SELECT * FROM list WHERE owner=$1 ORDER BY created DESC', [@owner]).map do |r|
       List.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end

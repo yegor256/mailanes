@@ -92,11 +92,13 @@ configure do
     Thread.new do
       loop do
         sleep 60
+        start = Time.now
         begin
           settings.pipeline.fetch(settings.postman)
         rescue StandardError => e
           puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
         end
+        puts "Pipeline done in #{(Time.now - start).round(2)}s"
       end
     end
   end

@@ -36,7 +36,7 @@ class Lanes
   end
 
   def all
-    @pgsql.exec('SELECT id FROM lane WHERE owner=$1 ORDER BY created DESC', [@owner]).map do |r|
+    @pgsql.exec('SELECT * FROM lane WHERE owner=$1 ORDER BY created DESC', [@owner]).map do |r|
       Lane.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end
