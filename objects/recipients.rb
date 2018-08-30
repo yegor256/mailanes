@@ -71,8 +71,8 @@ class Recipients
         row[3].split(';').each do |dlv|
           c, l = dlv.split('/')
           deliveries.add(
-            Campaign.new(id: c, pgsql: @pgsql),
-            Letter.new(id: l, pgsql: @pgsql),
+            Campaign.new(id: c.to_i, pgsql: @pgsql),
+            Letter.new(id: l.to_i, pgsql: @pgsql),
             recipient
           ).close('upload')
         end
