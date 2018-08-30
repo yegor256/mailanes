@@ -203,8 +203,8 @@ get '/download-recipients' do
   list = owner.lists.list(params[:id].to_i)
   content_type 'text/csv'
   CSV.generate do |csv|
-    list.recipients.all.each do |r|
-      csv << [r.email, r.first, r.last]
+    list.recipients.all(limit: 256 * 1024).each do |r|
+      csv << [r.email, r.first, r.last, r.source, r.created]
     end
   end
 end
