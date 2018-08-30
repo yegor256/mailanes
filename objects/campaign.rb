@@ -72,8 +72,9 @@ class Campaign
   end
 
   def save_yaml(yaml)
-    YAML.safe_load(yaml)
+    yml = YAML.safe_load(yaml)
     @pgsql.exec('UPDATE campaign SET yaml=$1 WHERE id=$2', [yaml, @id])
+    @pgsql.exec('UPDATE campaign SET speed=$1 WHERE id=$2', [yml['speed'].to_i, @id]) if yml['speed']
     @hash = {}
   end
 

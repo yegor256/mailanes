@@ -40,14 +40,16 @@ class Pipeline
     )
     deliveries = Deliveries.new(pgsql: @pgsql)
     q = [
-      'SELECT recipient.id AS rid, MAX(campaign.id) AS cid, MAX(letter.place), MAX(letter.id) AS lid FROM recipient',
+      'SELECT recipient.id AS rid, MAX(c.id) AS cid, MAX(letter.place), MAX(letter.id) AS lid FROM recipient',
       'JOIN list ON list.id=recipient.list',
-      'JOIN campaign ON list.id=campaign.list AND campaign.active=true',
-      'JOIN lane ON lane.id=campaign.lane',
+      'JOIN campaign AS c ON list.id=c.list AND c.active=true',
+      'JOIN lane ON lane.id=c.lane',
       'JOIN letter ON lane.id=letter.lane AND letter.active=true',
-      'LEFT JOIN delivery AS d ON d.recipient=recipient.id AND d.campaign=campaign.id AND d.letter=letter.id',
-      'LEFT JOIN delivery AS r ON r.recipient=recipient.id AND r.campaign=campaign.id AND r.relax > NOW()',
+      'LEFT JOIN delivery AS d ON d.recipient=recipient.id AND d.campaign=c.id AND d.letter=letter.id',
+      'LEFT JOIN delivery AS r ON r.recipient=recipient.id AND r.campaign=c.id AND r.relax > NOW()',
       'WHERE d.id IS NULL AND r.id IS NULL AND recipient.active=true',
+      'AND (SELECT COUNT(id) FROM delivery',
+      '  WHERE delivery.campaign=c.id AND delivery.created > NOW() - INTERVAL \'1 DAY\') < c.speed',
       'GROUP BY rid'
     ].join(' ')
     @pgsql.exec(q).each do |r|
