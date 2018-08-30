@@ -27,6 +27,7 @@
   %input{type: 'submit', value: 'Add Recipient'}
 
 %form.hidden{method: 'POST', action: '/upload-recipients', id: 'upload'}
+  %input{type: 'hidden', name: 'id', value: list.id}
   %input{name: 'file', type: 'file', accept: 'text/plain'}
   %input{type: 'submit', value: 'Upload'}
   %br
