@@ -46,5 +46,5 @@
 
 %p
   - list.recipients.all.each do |r|
-    %span{class: ('cross' unless r.active?)}= r.email
-    = ' '
+    %a{href: "/recipient?list=#{list.id}&id=#{r.id}"}
+      %span{class: ('cross' unless r.active?)}= r.email
