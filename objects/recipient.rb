@@ -34,8 +34,8 @@ class Recipient
     @hash = hash
   end
 
-  def delete
-    @pgsql.exec('DELETE FROM recipient WHERE id=$1', [@id])
+  def toggle
+    @pgsql.exec('UPDATE recipient SET active=NOT(active) WHERE id=$1', [@id])
   end
 
   def email

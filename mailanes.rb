@@ -336,8 +336,9 @@ end
 get '/unsubscribe' do
   id = settings.codec.decrypt(params[:token]).to_i
   recipient = Recipient.new(id: id, pgsql: settings.pgsql)
+  raise "You have already been unsubscribed: #{recipient.email}" unless recipient.active?
   email = recipient.email
-  recipient.delete
+  recipient.toggle
   haml :unsubscribed, layout: :layout, locals: merged(
     title: '/unsubscribed',
     email: email

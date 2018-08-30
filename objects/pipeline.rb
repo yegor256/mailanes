@@ -43,7 +43,7 @@ class Pipeline
       'JOIN letter ON lane.id=letter.lane AND letter.active=true',
       'LEFT JOIN delivery ON delivery.recipient=recipient.id',
       '  AND delivery.campaign=campaign.id AND delivery.letter=letter.id',
-      'WHERE delivery.id IS NULL'
+      'WHERE delivery.id IS NULL AND recipient.active=true'
     ].join(' ')
     @pgsql.exec(q).each do |r|
       campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
