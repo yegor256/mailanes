@@ -64,6 +64,23 @@ class PipelineTest < Minitest::Test
     assert(!post.deliveries.find { |d| d.letter.id == second.id })
   end
 
+  def test_sends_one_recipient_at_a_time
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    list.recipients.add('test22@mailanes.com')
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    campaign.toggle
+    first = lane.letters.add
+    first.toggle
+    second = lane.letters.add
+    second.toggle
+    post = FakePostman.new
+    Pipeline.new.fetch(post)
+    assert(post.deliveries.find { |d| d.letter.id == second.id })
+    assert(!post.deliveries.find { |d| d.letter.id == first.id })
+  end
+
   def test_deactivates_letter
     owner = random_owner
     lane = Lanes.new(owner: owner).add

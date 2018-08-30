@@ -40,14 +40,15 @@ class Pipeline
     )
     deliveries = Deliveries.new(pgsql: @pgsql)
     q = [
-      'SELECT DISTINCT recipient.id AS rid, campaign.id AS cid, letter.id AS lid FROM recipient',
+      'SELECT recipient.id AS rid, MAX(campaign.id) AS cid, MAX(letter.id) AS lid FROM recipient',
       'JOIN list ON list.id=recipient.list',
       'JOIN campaign ON list.id=campaign.list AND campaign.active=true',
       'JOIN lane ON lane.id=campaign.lane',
       'JOIN letter ON lane.id=letter.lane AND letter.active=true',
       'LEFT JOIN delivery AS d ON d.recipient=recipient.id AND d.campaign=campaign.id AND d.letter=letter.id',
       'LEFT JOIN delivery AS r ON r.recipient=recipient.id AND r.campaign=campaign.id AND r.relax > NOW()',
-      'WHERE d.id IS NULL AND r.id IS NULL AND recipient.active=true'
+      'WHERE d.id IS NULL AND r.id IS NULL AND recipient.active=true',
+      'GROUP BY rid'
     ].join(' ')
     @pgsql.exec(q).each do |r|
       campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
