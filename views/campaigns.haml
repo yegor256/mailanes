@@ -26,7 +26,7 @@
   All your campaigns:
 
 - campaigns.all.each do |c|
-  %p{style: c.active? ? '' : 'text-decoration:line-through'}
+  %p{class: ('cross' unless c.active?)}
     = succeed ':' do
       %a{href: url("/campaign?id=#{c.id}")}= "##{c.id}"
     = succeed ';' do

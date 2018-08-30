@@ -22,7 +22,7 @@
   letter(s):
 
 - lane.letters.all.each do |r|
-  %p{style: r.active? ? '' : 'text-decoration:line-through'}
+  %p{class: ('cross' unless r.active?)}
     %a{href: "/letter?id=#{r.id}"}= "##{r.id}"
     = r.title
 

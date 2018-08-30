@@ -54,7 +54,7 @@ class Lists
 
   def list(id)
     hash = @pgsql.exec(
-      'SELECT id FROM list WHERE owner=$1 AND id=$2',
+      'SELECT * FROM list WHERE owner=$1 AND id=$2',
       [@owner, id]
     )[0]
     raise "List ##{id} not found in @#{@owner} account" if hash.nil?

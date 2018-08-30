@@ -41,5 +41,6 @@
 
 %p
   - list.recipients.all.each do |r|
-    = r.email
+    %span{class: ('cross' unless r.active?)}
+      = r.email
 

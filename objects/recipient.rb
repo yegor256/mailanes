@@ -38,6 +38,10 @@ class Recipient
     @pgsql.exec('UPDATE recipient SET active=NOT(active) WHERE id=$1', [@id])
   end
 
+  def active?
+    (@hash['active'] || @pgsql.exec('SELECT active FROM recipient WHERE id=$1', [@id])[0]['active']) == 't'
+  end
+
   def email
     @hash['email'] || @pgsql.exec('SELECT email FROM recipient WHERE id=$1', [@id])[0]['email']
   end
