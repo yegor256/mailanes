@@ -46,7 +46,7 @@ class Recipients
     Recipient.new(
       id: @pgsql.exec(
         'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-        [@list.id, email, first, last, source]
+        [@list.id, email.downcase, first, last, source.downcase]
       )[0]['id'].to_i,
       pgsql: @pgsql
     )
