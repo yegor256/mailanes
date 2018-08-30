@@ -57,6 +57,10 @@ class Letter
     yaml['title'] || "##{id}"
   end
 
+  def delivered_count
+    @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE delivery.letter=$1', [@id])[0]['count']
+  end
+
   def active?
     (@hash['active'] || @pgsql.exec('SELECT active FROM letter WHERE id=$1', [@id])[0]['active']) == 't'
   end

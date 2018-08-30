@@ -30,6 +30,10 @@
     - else
       activate
 
+%p
+  Delivered
+  = letter.delivered_count
+  times.
 
 %form.hidden{method: 'POST', action: '/save-letter', id: 'save'}
   %fieldset

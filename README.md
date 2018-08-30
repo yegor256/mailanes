@@ -22,6 +22,8 @@ settings, including lists, lanes, campaigns, letters, and recipients.
 ```yaml
 title: My subscribers
 notify:
+  # Notify this email every time a new subscriber
+  # is added to the list through the /subscribe URL
   email: yegor256@gmail.com
 ```
 
@@ -29,7 +31,10 @@ notify:
 
 ```yaml
 title: Monthly newsletters
+# The FROM field of all letters to be sent from this
+# Lane. This can be overwritten by each individual Letter.
 from: Yegor Bugayenko <yegor256@gmail.com>
+# SMTP parameters of the email sending server
 smtp:
   host: email-smtp.us-east-1.amazonaws.com
   port: 587
@@ -40,17 +45,26 @@ smtp:
 ## Campaign:
 
 ```yaml
+# The title of the campaign
 title: Monthlty
+# Stop the campaign at this date (it will be deactivated automatically)
 until: 03-09-2018
+# Maximum amount of emails to be sent per day
+speed: 100
 ```
 
 ### Letter
 
 ```
 title: Aug 2018
+# The subject of all emails to be sent
 subject: There are some great news, guys!
+# The FROM field of all emails to be sent
 from: Yegor Bugayenko <yegor256@gmail.com>
+# When this Letter has to be deactivated
 until: 03-09-2018
+# For how many days/hours/minutes the campaign should
+# not send out any letters after it sends this one.
 relax: "20:0:0"
 ```
 
