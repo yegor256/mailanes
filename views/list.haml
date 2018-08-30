@@ -11,6 +11,8 @@
     Add Recipient
   %a.item{onclick: '$("#upload").show();'}
     Upload CSV
+  %a.item{href: "/download-recipients?id=#{list.id}"}
+    Download CSV
 
 %form.hidden{method: 'POST', action: '/save-list', id: 'save'}
   %fieldset
@@ -26,7 +28,7 @@
   %input{type: 'text', name: 'last', placeholder: 'Last name', size: 16, autocomplete: 'off'}
   %input{type: 'submit', value: 'Add Recipient'}
 
-%form.hidden{method: 'POST', action: '/upload-recipients', id: 'upload'}
+%form.hidden{method: 'POST', action: '/upload-recipients', id: 'upload', enctype: 'multipart/form-data'}
   %input{type: 'hidden', name: 'id', value: list.id}
   %input{name: 'file', type: 'file', accept: 'text/plain'}
   %input{type: 'submit', value: 'Upload'}

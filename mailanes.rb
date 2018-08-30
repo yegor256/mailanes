@@ -199,6 +199,16 @@ post '/upload-recipients' do
   redirect "/list?id=#{list.id}"
 end
 
+get '/download-recipients' do
+  list = owner.lists.list(params[:id].to_i)
+  content_type 'text/csv'
+  CSV.generate do |csv|
+    list.recipients.all.each do |r|
+      csv << [r.email, r.first, r.last]
+    end
+  end
+end
+
 get '/lanes' do
   haml :lanes, layout: :layout, locals: merged(
     title: '/lanes',
