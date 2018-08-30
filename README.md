@@ -12,3 +12,63 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/7489c1d2bacde40ffc09/maintainability)](https://codeclimate.com/github/yegor256/mailanes/maintainability)
 
 It's an e-mail sending web app.
+
+## How to Configure?
+
+There are few entities you can configure via simple [YAML](http://yaml.org/)
+settings, including lists, lanes, campaigns, letters, and recipients.
+
+### List
+
+```yaml
+title: My subscribers
+notify:
+  email: yegor256@gmail.com
+```
+
+### Lane
+
+```yaml
+title: Monthly newsletters
+from: Yegor Bugayenko <yegor256@gmail.com>
+smtp:
+  host: email-smtp.us-east-1.amazonaws.com
+  port: 587
+  user: AKIAI1TIS4FF6UGJT3CQ
+  password: ArPxO8gf56y02G8cKM80IpvMQve8Pss+L4+inJZ3UG3t
+```
+
+## Campaign:
+
+```yaml
+title: Monthlty
+```
+
+### Letter
+
+```
+title: Aug 2018
+subject: There are some great news, guys!
+from: Yegor Bugayenko <yegor256@gmail.com>
+deactivate: 03-09-2018
+```
+
+Here is how your Liquid template may look like:
+
+```liquid
+{% if first %}
+{{first}},
+{% else %}
+Hi,
+{% endif %}
+
+How are you?
+
+—<br/>
+Yegor Bugayenko<br/>
+To remove your email ({{email}}) from the list, [click here]({{unsubscribe}}).
+```
+
+### Recipient
+
+Not implemented yet...
