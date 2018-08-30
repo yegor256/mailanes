@@ -5,6 +5,8 @@ cache: bundler
 branches:
   only:
     - master
+services:
+  - postgresql
 install:
   - travis_retry bundle update
 script:
