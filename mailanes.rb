@@ -30,6 +30,8 @@ require 'glogin/codec'
 
 require_relative 'version'
 require_relative 'objects/owner'
+require_relative 'objects/pipeline'
+require_relative 'objects/postman'
 
 if ENV['RACK_ENV'] != 'test'
   require 'rack/ssl'
