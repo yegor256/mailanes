@@ -37,6 +37,7 @@ class DeliveriesTest < Minitest::Test
     letter = lane.letters.add
     deliveries = Deliveries.new
     delivery = deliveries.add(campaign, letter, recipient)
+    delivery.relax(Time.now)
     assert(delivery.id > 0)
     assert_equal(letter.id, delivery.letter.id)
     assert_equal(recipient.id, delivery.recipient.id)

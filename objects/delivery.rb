@@ -81,4 +81,9 @@ class Delivery
     @pgsql.exec('UPDATE delivery SET details=$1 WHERE id=$2', [details, @id])
     @hash = {}
   end
+
+  def relax(time)
+    @pgsql.exec('UPDATE delivery SET relax=$1 WHERE id=$2', [time.strftime('%Y-%m-%d %H:%M:%S'), @id])
+    @hash = {}
+  end
 end

@@ -45,6 +45,25 @@ class PipelineTest < Minitest::Test
     assert(!post2.deliveries.find { |d| d.letter.id == letter.id })
   end
 
+  def test_ignores_relaxed_letters
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    list.recipients.add('test@mailanes.com')
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    campaign.toggle
+    first = lane.letters.add
+    first.toggle
+    first.save_yaml('relax: "1:0:0"')
+    post = FakePostman.new
+    Pipeline.new.fetch(post)
+    assert(post.deliveries.find { |d| d.letter.id == first.id })
+    second = lane.letters.add
+    second.toggle
+    Pipeline.new.fetch(post)
+    assert(!post.deliveries.find { |d| d.letter.id == second.id })
+  end
+
   def test_deactivates_letter
     owner = random_owner
     lane = Lanes.new(owner: owner).add

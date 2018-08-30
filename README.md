@@ -51,6 +51,7 @@ title: Aug 2018
 subject: There are some great news, guys!
 from: Yegor Bugayenko <yegor256@gmail.com>
 until: 03-09-2018
+relax: "20:0:0"
 ```
 
 Here is how your Liquid template may look like:

@@ -45,15 +45,19 @@ class Pipeline
       'JOIN campaign ON list.id=campaign.list AND campaign.active=true',
       'JOIN lane ON lane.id=campaign.lane',
       'JOIN letter ON lane.id=letter.lane AND letter.active=true',
-      'LEFT JOIN delivery ON delivery.recipient=recipient.id',
-      '  AND delivery.campaign=campaign.id AND delivery.letter=letter.id',
-      'WHERE delivery.id IS NULL AND recipient.active=true'
+      'LEFT JOIN delivery AS d ON d.recipient=recipient.id AND d.campaign=campaign.id AND d.letter=letter.id',
+      'LEFT JOIN delivery AS r ON r.recipient=recipient.id AND r.campaign=campaign.id AND r.relax > NOW()',
+      'WHERE d.id IS NULL AND r.id IS NULL AND recipient.active=true'
     ].join(' ')
     @pgsql.exec(q).each do |r|
       campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
       letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql)
       recipient = Recipient.new(id: r['rid'].to_i, pgsql: @pgsql)
       delivery = deliveries.add(campaign, letter, recipient)
+      if letter.yaml['relax']
+        days, hours, minutes = letter.yaml['relax'].split(':')
+        delivery.relax(Time.now + (days.to_i * 24 * 60 + hours.to_i * 60 + minutes.to_i) * 60)
+      end
       postman.deliver(delivery)
     end
   end
