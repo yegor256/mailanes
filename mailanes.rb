@@ -199,6 +199,13 @@ get '/recipient' do
   )
 end
 
+get '/toggle-recipient' do
+  list = owner.lists.list(params[:list].to_i)
+  recipient = list.recipients.recipient(params[:id].to_i)
+  recipient.toggle
+  redirect "/recipient?list=#{list.id}&recipient=#{recipient.id}"
+end
+
 post '/upload-recipients' do
   list = owner.lists.list(params[:id].to_i)
   Tempfile.open do |f|

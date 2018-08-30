@@ -4,6 +4,20 @@
     = "##{recipient.id}"
 
 %p
+  It is
+  %strong
+    - if recipient.active?
+      %span.green active
+    - else
+      %span.red not active
+  = '/'
+  %a{href: "/toggle-recipient?list=#{list.id}&id=#{recipient.id}"}
+    - if recipient.active?
+      deactivate
+    - else
+      activate
+
+%p
   = succeed ':' do
     %a{href: "/list?id=#{list.id}"}= "List ##{list.id}"
   = "\"#{list.title}\""

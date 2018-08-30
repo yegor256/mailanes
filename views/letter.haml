@@ -23,6 +23,7 @@
       %span.green active
     - else
       %span.red not active
+  = '/'
   %a{href: "/toggle-letter?id=#{letter.id}"}
     - if letter.active?
       deactivate
