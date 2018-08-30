@@ -53,6 +53,12 @@ class Recipient
     )
   end
 
+  def save_yaml(yaml)
+    YAML.safe_load(yaml)
+    @pgsql.exec('UPDATE recipient SET yaml=$1 WHERE id=$2', [yaml, @id])
+    @hash = {}
+  end
+
   def toggle
     @pgsql.exec('UPDATE recipient SET active=NOT(active) WHERE id=$1', [@id])
   end
