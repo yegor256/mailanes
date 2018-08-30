@@ -2,12 +2,15 @@
   Recipient
   = succeed ':' do
     = "##{recipient.id}"
-  = recipient.email
 
 %p
   = succeed ':' do
     %a{href: "/list?id=#{list.id}"}= "List ##{list.id}"
   = "\"#{list.title}\""
+
+%p
+  Email:
+  = recipient.email
 
 %p
   First:
@@ -21,4 +24,4 @@
   Source:
   = recipient.source
 
-%pre= recipient.yaml
+%pre= recipient.yaml.to_yaml
