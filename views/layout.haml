@@ -9,12 +9,15 @@
     %link{href: 'https://cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-css.min.css', rel: 'stylesheet'}
     %link{href: 'https://www.yegor256.com/css/icons.css', rel: 'stylesheet'}
     %link{rel: 'shortcut icon', href: url('/logo-64.png')}
+    %script{src: 'https://code.jquery.com/jquery-3.3.1.min.js'}
     :css
+      .item { margin-right: 1em; }
       .logo { width: 64px; height: 64px; }
       .small { font-size: .8em; line-height: 1.2em; }
       .gray { color: gray; }
       .red { color: #A22522; }
       .cross { text-decoration: line-through; }
+      .hidden { display: none; }
   %body
     %section
       %header

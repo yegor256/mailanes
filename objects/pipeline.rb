@@ -40,7 +40,7 @@ class Pipeline
     )
     deliveries = Deliveries.new(pgsql: @pgsql)
     q = [
-      'SELECT recipient.id AS rid, campaign.id AS cid, letter.id AS lid FROM recipient',
+      'SELECT DISTINCT recipient.id AS rid, campaign.id AS cid, letter.id AS lid FROM recipient',
       'JOIN list ON list.id=recipient.list',
       'JOIN campaign ON list.id=campaign.list AND campaign.active=true',
       'JOIN lane ON lane.id=campaign.lane',

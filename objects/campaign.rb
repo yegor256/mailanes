@@ -99,7 +99,8 @@ class Campaign
       [
         "##{r['id']}/#{r['created']} to #{r['email']}",
         "in lane ##{r['lane_id']}",
-        "with letter ##{r['letter_id']}: #{r['details'].empty? ? 'WAITING' : r['details']}"
+        "with letter ##{r['letter_id']} (relax is #{r['relax']}):",
+        r['details'].empty? ? 'WAITING' : r['details']
       ].join(' ')
     end
   end

@@ -4,14 +4,20 @@
     = "##{lane.id}"
   = lane.title
 
-%form{method: 'POST', action: '/save-lane'}
+%p
+  %a.item{onclick: '$("#save").show();'}
+    Edit YAML
+  %a.item{onclick: '$("#add").show();'}
+    Add letter
+
+%form.hidden{method: 'POST', action: '/save-lane', id: 'save'}
   %fieldset
     %input{type: 'hidden', name: 'id', value: lane.id}
     %label YAML config:
     %textarea{name: 'yaml', style: 'width:100%;height:12em;', required: 'true'}= lane.yaml.to_yaml
     %input{type: 'submit', value: 'Save'}
 
-%form{method: 'POST', action: '/add-letter'}
+%form.hidden{method: 'POST', action: '/add-letter', id: 'add'}
   %input{type: 'hidden', name: 'id', value: lane.id}
   %input{type: 'text', name: 'title', placeholder: 'Letter title', size: 40, required: 'true', autocomplete: 'off'}
   %input{type: 'submit', value: 'Add Letter'}
