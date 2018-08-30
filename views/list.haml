@@ -5,26 +5,28 @@
   = list.title
 
 %p
-  Each list is a collection of recipients, which are supposed
-  to receive emails. First, you add recipients to your lists,
-  then you put letters into lanes, and then you connect
-  lanes with lists via campaigns.
+  %a.item{onclick: '$("#save").show();'}
+    Edit YAML
+  %a.item{onclick: '$("#add").show();'}
+    Add Recipient
+  %a.item{onclick: '$("#upload").show();'}
+    Upload CSV
 
-%form{method: 'POST', action: '/save-list'}
+%form.hidden{method: 'POST', action: '/save-list', id: 'save'}
   %fieldset
     %input{type: 'hidden', name: 'id', value: list.id}
     %label YAML config:
     %textarea{name: 'yaml', style: 'width:100%;height:12em;', required: 'true'}= list.yaml.to_yaml
     %input{type: 'submit', value: 'Save'}
 
-%form{method: 'POST', action: '/add-recipient'}
+%form.hidden{method: 'POST', action: '/add-recipient', id: 'add'}
   %input{type: 'hidden', name: 'id', value: list.id}
   %input{type: 'text', name: 'email', placeholder: 'Email', size: 20, required: 'true', autocomplete: 'off'}
   %input{type: 'text', name: 'first', placeholder: 'First name', size: 14, autocomplete: 'off'}
   %input{type: 'text', name: 'last', placeholder: 'Last name', size: 16, autocomplete: 'off'}
   %input{type: 'submit', value: 'Add Recipient'}
 
-%form{method: 'POST', action: '/upload-recipient'}
+%form.hidden{method: 'POST', action: '/upload-recipient', id: 'upload'}
   %input{name: 'file', type: 'file', accept: 'text/plain'}
   %input{type: 'submit', value: 'Upload'}
   %br

@@ -5,6 +5,10 @@
   = campaign.title
 
 %p
+  %a.item{onclick: '$("#save").show();'}
+    Edit YAML
+
+%p
   List:
   - list = campaign.list
   = succeed ':' do
@@ -31,7 +35,7 @@
     - else
       activate
 
-%form{method: 'POST', action: '/save-campaign'}
+%form.hidden{method: 'POST', action: '/save-campaign', id: 'save'}
   %input{type: 'hidden', name: 'id', value: campaign.id}
   %label YAML config:
   %textarea{name: 'yaml', style: 'width:100%;height:8em;', required: 'true'}= campaign.yaml.to_yaml

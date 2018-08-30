@@ -4,6 +4,12 @@
   = letter.title
 
 %p
+  %a.item{onclick: '$("#save").show();'}
+    Edit YAML and Liquid
+  %a.item{onclick: '$("#test").show();'}
+    Test Email
+
+%p
   It belongs to the lane
   - lane = letter.lane
   = succeed ':' do
@@ -24,7 +30,7 @@
       activate
 
 
-%form{method: 'POST', action: '/save-letter'}
+%form.hidden{method: 'POST', action: '/save-letter', id: 'save'}
   %fieldset
     %input{type: 'hidden', name: 'id', value: letter.id}
     %label YAML config:
@@ -33,7 +39,7 @@
     %textarea{name: 'liquid', style: 'width:100%;height:16em;', required: 'true'}= letter.liquid
     %input{type: 'submit', value: 'Save'}
 
-%form{method: 'POST', action: '/test-letter'}
+%form.hidden{method: 'POST', action: '/test-letter', id: 'test'}
   %input{type: 'hidden', name: 'id', value: letter.id}
   %select{name: 'list'}
     - lists.all.each do |list|
