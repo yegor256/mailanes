@@ -203,7 +203,7 @@ get '/toggle-recipient' do
   list = owner.lists.list(params[:list].to_i)
   recipient = list.recipients.recipient(params[:id].to_i)
   recipient.toggle
-  redirect "/recipient?list=#{list.id}&recipient=#{recipient.id}"
+  redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
 end
 
 post '/upload-recipients' do
