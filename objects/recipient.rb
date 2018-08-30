@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 require_relative 'pgsql'
+require_relative 'list'
 
 # Recipient.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -32,6 +33,18 @@ class Recipient
     @id = id
     @pgsql = pgsql
     @hash = hash
+  end
+
+  def list
+    hash = @pgsql.exec(
+      'SELECT list.* FROM list JOIN recipient ON recipient.list=list.id WHERE recipient.id=$1',
+      [@id]
+    )[0]
+    List.new(
+      id: hash['id'].to_i,
+      pgsql: @pgsql,
+      hash: hash
+    )
   end
 
   def toggle

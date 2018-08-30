@@ -57,6 +57,10 @@ class Recipients
     )
   end
 
+  def recipient(id)
+    Recipient.new(id: id, pgsql: @pgsql)
+  end
+
   def upload(file, source: '')
     CSV.foreach(file) do |row|
       next if row[0].nil?

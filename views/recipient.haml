@@ -1,0 +1,24 @@
+%h2
+  Recipient
+  = succeed ':' do
+    = "##{recipient.id}"
+  = recipient.email
+
+%p
+  = succeed ':' do
+    %a{href: "/list?id=#{list.id}"}= "List ##{list.id}"
+  = "\"#{list.title}\""
+
+%p
+  First:
+  = recipient.first
+
+%p
+  Last:
+  = recipient.last
+
+%p
+  Source:
+  = recipient.source
+
+%pre= recipient.yaml

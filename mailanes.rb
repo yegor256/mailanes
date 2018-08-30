@@ -189,6 +189,15 @@ post '/add-recipient' do
   redirect "/list?id=#{list.id}"
 end
 
+get '/recipient' do
+  recipient = owner.lists.list(params[:list].to_i).recipients.recipient(params[:id].to_i)
+  haml :recipient, layout: :layout, locals: merged(
+    title: "##{recipient.id}",
+    list: list,
+    recipient: recipient
+  )
+end
+
 post '/upload-recipients' do
   list = owner.lists.list(params[:id].to_i)
   Tempfile.open do |f|
