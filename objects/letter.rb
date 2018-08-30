@@ -76,6 +76,11 @@ class Letter
     @hash = {}
   end
 
+  def up
+    @pgsql.exec('UPDATE letter SET place=place+1 WHERE id=$1', [@id])
+    @hash = {}
+  end
+
   def save_liquid(liquid)
     @pgsql.exec('UPDATE letter SET liquid=$1 WHERE id=$2', [liquid, @id])
     @hash = {}

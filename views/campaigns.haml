@@ -1,6 +1,10 @@
 %h2
   Campaigns
 
+%p
+  %a.item{onclick: '$("#add").show();'}
+    Start
+
 - if lists.count.zero?
   %p.red
     You have no lists, can't have any campaigns.
@@ -8,9 +12,9 @@
   %p.red
     You have no lanes, can't have any campaigns.
 - else
-  %form{method: 'POST', action: '/add-campaign'}
+  %form.hidden{method: 'POST', action: '/add-campaign', id: 'add'}
     %fieldset
-      %label Campaign name:
+      %label Start a new campaign
       %input{type: 'text', name: 'title', placeholder: 'Campaign title...', size: 45, required: 'true', autocomplete: 'off'}
       %label List:
       %select{name: 'list'}

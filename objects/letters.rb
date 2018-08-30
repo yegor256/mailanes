@@ -36,7 +36,7 @@ class Letters
   end
 
   def all
-    @pgsql.exec('SELECT * FROM letter WHERE lane=$1 ORDER BY created DESC', [@lane.id]).map do |r|
+    @pgsql.exec('SELECT * FROM letter WHERE lane=$1 ORDER BY place DESC, created DESC', [@lane.id]).map do |r|
       Letter.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end

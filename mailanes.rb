@@ -240,6 +240,12 @@ get '/letter' do
   )
 end
 
+get '/letter-up' do
+  letter = owner.lanes.letter(params[:id].to_i)
+  letter.up
+  redirect "/lane?id=#{letter.lane.id}"
+end
+
 post '/save-letter' do
   letter = owner.lanes.letter(params[:id].to_i)
   letter.save_liquid(params[:liquid])

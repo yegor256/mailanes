@@ -29,6 +29,8 @@
 
 - lane.letters.all.each do |r|
   %p{class: ('cross' unless r.active?)}
-    %a{href: "/letter?id=#{r.id}"}= "##{r.id}"
+    = succeed ':' do
+      %a{href: "/letter?id=#{r.id}"}= "##{r.id}"
     = r.title
+    %a{href: "/letter-up?id=#{r.id}"}= Move up
 
