@@ -40,6 +40,7 @@ class Pgsql
 
   def exec(query, args = [])
     connect.exec_params(query, args) do |res|
+      puts query
       if block_given?
         yield res
       else
