@@ -57,4 +57,10 @@ class Recipient
   def source
     @hash['source'] || @pgsql.exec('SELECT source FROM recipient WHERE id=$1', [@id])[0]['source']
   end
+
+  def created
+    Time.parse(
+      @hash['created'] || @pgsql.exec('SELECT created FROM recipient WHERE id=$1', [@id])[0]['created']
+    )
+  end
 end

@@ -204,7 +204,7 @@ get '/download-recipients' do
   content_type 'text/csv'
   CSV.generate do |csv|
     list.recipients.all(limit: 256 * 1024).each do |r|
-      csv << [r.email, r.first, r.last, r.source, r.created]
+      csv << [r.email, r.first, r.last, r.source, r.created.utc.iso8601]
     end
   end
 end
