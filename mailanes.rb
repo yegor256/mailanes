@@ -354,7 +354,13 @@ post '/subscribe' do
     last: params[:last] || '',
     source: params[:source] || ''
   )
-  recipient.save_yaml(params.map { |k, v| "#{k}: #{v}" }.join("\n"))
+  recipient.save_yaml(
+    params.merge(
+      request_ip: request.ip,
+      referrer: request.referer,
+      user_agent: request.user_agent
+    ).map { |k, v| "#{k}: #{v}" }.join("\n")
+  )
   redirect params[:redirect] if params[:redirect]
   haml :subscribed, layout: :layout, locals: merged(
     title: '/subscribed',
