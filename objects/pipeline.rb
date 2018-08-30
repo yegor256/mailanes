@@ -34,6 +34,10 @@ class Pipeline
   end
 
   def fetch(postman)
+    @pgsql.exec(
+      'DELETE FROM delivery WHERE created < $1 AND details = $2',
+      [(Time.now - 60 * 60).strftime('%Y-%m-%d %H:%M:%S'), '']
+    )
     deliveries = Deliveries.new(pgsql: @pgsql)
     q = [
       'SELECT recipient.id AS rid, campaign.id AS cid, letter.id AS lid FROM recipient',
@@ -56,11 +60,11 @@ class Pipeline
 
   def deactivate
     @pgsql.exec('SELECT * FROM letter WHERE active=true').each do |r|
-      letter = Letter.new(id: r['id'].to_i, pgsql: @pgsql)
+      letter = Letter.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
       letter.toggle if letter.yaml['until'] && Time.parse(letter.yaml['until']) < Time.now
     end
     @pgsql.exec('SELECT * FROM campaign WHERE active=true').each do |r|
-      campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql)
+      campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
       campaign.toggle if campaign.yaml['until'] && Time.parse(campaign.yaml['until']) < Time.now
     end
   end
