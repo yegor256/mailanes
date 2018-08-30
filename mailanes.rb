@@ -190,7 +190,8 @@ post '/add-recipient' do
 end
 
 get '/recipient' do
-  recipient = owner.lists.list(params[:list].to_i).recipients.recipient(params[:id].to_i)
+  list = owner.lists.list(params[:list].to_i)
+  recipient = list.recipients.recipient(params[:id].to_i)
   haml :recipient, layout: :layout, locals: merged(
     title: "##{recipient.id}",
     list: list,
