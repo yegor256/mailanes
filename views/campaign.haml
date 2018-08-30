@@ -9,17 +9,14 @@
     Edit YAML
 
 %p
-  List:
   - list = campaign.list
   = succeed ':' do
-    %a{href: "/list?id=#{list.id}"}= "##{list.id}"
-  = "\"#{list.title}\""
-
-%p
-  Lane:
+    %a{href: "/list?id=#{list.id}"}= "List ##{list.id}"
+  = succeed ';' do
+    = "\"#{list.title}\""
   - lane = campaign.lane
   = succeed ':' do
-    %a{href: "/lane?id=#{lane.id}"}= "##{lane.id}"
+    %a{href: "/lane?id=#{lane.id}"}= "Lane ##{lane.id}"
   = "\"#{lane.title}\""
 
 %p
@@ -29,6 +26,7 @@
       %span.green active
     - else
       %span.red not active
+  = '/'
   %a{href: "/toggle-campaign?id=#{campaign.id}"}
     - if campaign.active?
       deactivate
