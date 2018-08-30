@@ -337,6 +337,7 @@ end
 
 post '/subscribe' do
   list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
+  raise 'You have already been subscribed' if list.recipients.exists?(params[:email])
   recipient = list.recipients.add(
     params[:email],
     first: params[:first] || '',

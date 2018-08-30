@@ -42,6 +42,10 @@ class Recipients
     all.count
   end
 
+  def exists?(email)
+    !@pgsql.exec('SELECT id FROM recipient WHERE list=$1 AND email=$2', [@list.id, email.downcase]).empty?
+  end
+
   def add(email, first: '', last: '', source: '')
     Recipient.new(
       id: @pgsql.exec(
@@ -54,6 +58,7 @@ class Recipients
 
   def upload(file, source: '')
     CSV.foreach(file) do |row|
+      next if exists?(row[0])
       add(row[0], first: row[1], last: row[2], source: source)
     end
   end
