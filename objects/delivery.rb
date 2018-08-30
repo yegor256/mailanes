@@ -18,43 +18,67 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'csv'
 require_relative 'pgsql'
+require_relative 'campaign'
+require_relative 'letter'
 require_relative 'recipient'
 
-# Recipients.
+# Delivery.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Recipients
-  def initialize(list:, pgsql: Pgsql.new)
-    @list = list
+class Delivery
+  attr_reader :id
+
+  def initialize(id:, pgsql: Pgsql.new, hash: {})
+    raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
+    @id = id
     @pgsql = pgsql
+    @hash = hash
   end
 
-  def all
-    @pgsql.exec('SELECT * FROM recipient WHERE list=$1 ORDER BY created DESC', [@list.id]).map do |r|
-      Recipient.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-    end
-  end
-
-  def count
-    all.count
-  end
-
-  def add(email, first: '', last: '', source: '')
+  def recipient
+    hash = @pgsql.exec(
+      'SELECT recipient.* FROM recipient JOIN delivery ON delivery.recipient=recipient.id WHERE delivery.id=$1',
+      [@id]
+    )[0]
     Recipient.new(
-      id: @pgsql.exec(
-        'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-        [@list.id, email, first, last, source]
-      )[0]['id'].to_i,
-      pgsql: @pgsql
+      id: hash['id'].to_i,
+      pgsql: @pgsql,
+      hash: hash
     )
   end
 
-  def upload(file, source: '')
-    CSV.foreach(file) do |row|
-      add(row[0], first: row[1], last: row[2], source: source)
-    end
+  def letter
+    hash = @pgsql.exec(
+      'SELECT letter.* FROM letter JOIN delivery ON delivery.letter=letter.id WHERE delivery.id=$1',
+      [@id]
+    )[0]
+    Letter.new(
+      id: hash['id'].to_i,
+      pgsql: @pgsql,
+      hash: hash
+    )
+  end
+
+  def campaign
+    hash = @pgsql.exec(
+      'SELECT campaign.* FROM campaign JOIN delivery ON delivery.campaign=campaign.id WHERE delivery.id=$1',
+      [@id]
+    )[0]
+    Campaign.new(
+      id: hash['id'].to_i,
+      pgsql: @pgsql,
+      hash: hash
+    )
+  end
+
+  def details
+    @hash['details'] || @pgsql.exec('SELECT details FROM delivery WHERE id=$1', [@id])[0]['details']
+  end
+
+  def close(details)
+    @pgsql.exec('UPDATE delivery SET details=$1 WHERE id=$2', [details, @id])
+    @hash = {}
   end
 end

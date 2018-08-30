@@ -18,43 +18,39 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'csv'
 require_relative 'pgsql'
+require_relative 'campaign'
+require_relative 'letter'
 require_relative 'recipient'
+require_relative 'deliveries'
 
-# Recipients.
+# Pipeline.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Recipients
-  def initialize(list:, pgsql: Pgsql.new)
-    @list = list
+class Pipeline
+  def initialize(pgsql: Pgsql.new)
     @pgsql = pgsql
   end
 
-  def all
-    @pgsql.exec('SELECT * FROM recipient WHERE list=$1 ORDER BY created DESC', [@list.id]).map do |r|
-      Recipient.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-    end
-  end
-
-  def count
-    all.count
-  end
-
-  def add(email, first: '', last: '', source: '')
-    Recipient.new(
-      id: @pgsql.exec(
-        'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-        [@list.id, email, first, last, source]
-      )[0]['id'].to_i,
-      pgsql: @pgsql
-    )
-  end
-
-  def upload(file, source: '')
-    CSV.foreach(file) do |row|
-      add(row[0], first: row[1], last: row[2], source: source)
+  def fetch(postman)
+    deliveries = Deliveries.new(pgsql: @pgsql)
+    q = [
+      'SELECT recipient.id AS rid, campaign.id AS cid, letter.id AS lid FROM recipient',
+      'JOIN list ON list.id=recipient.list',
+      'JOIN campaign ON list.id=campaign.list AND campaign.active=true',
+      'JOIN lane ON lane.id=campaign.lane',
+      'JOIN letter ON lane.id=letter.lane AND letter.active=true',
+      'LEFT JOIN delivery ON delivery.recipient=recipient.id',
+      '  AND delivery.campaign=campaign.id AND delivery.letter=letter.id',
+      'WHERE delivery.id IS NULL'
+    ].join(' ')
+    @pgsql.exec(q).each do |r|
+      campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
+      letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql)
+      recipient = Recipient.new(id: r['rid'].to_i, pgsql: @pgsql)
+      delivery = deliveries.add(campaign, letter, recipient)
+      postman.deliver(delivery)
     end
   end
 end

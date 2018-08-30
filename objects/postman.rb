@@ -18,43 +18,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'csv'
-require_relative 'pgsql'
-require_relative 'recipient'
+require 'glogin/codec'
 
-# Recipients.
+# Postman.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Recipients
-  def initialize(list:, pgsql: Pgsql.new)
-    @list = list
-    @pgsql = pgsql
-  end
-
-  def all
-    @pgsql.exec('SELECT * FROM recipient WHERE list=$1 ORDER BY created DESC', [@list.id]).map do |r|
-      Recipient.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+class Postman
+  # Doing nothing, just closing
+  class Fake
+    def deliver(delivery)
+      delivery.close('fake delivery')
     end
   end
 
-  def count
-    all.count
+  def initialize(codec = GLogin::Codec.new(''))
+    @codec = codec
   end
 
-  def add(email, first: '', last: '', source: '')
-    Recipient.new(
-      id: @pgsql.exec(
-        'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-        [@list.id, email, first, last, source]
-      )[0]['id'].to_i,
-      pgsql: @pgsql
-    )
-  end
-
-  def upload(file, source: '')
-    CSV.foreach(file) do |row|
-      add(row[0], first: row[1], last: row[2], source: source)
+  def deliver(delivery)
+    letter = delivery.letter
+    recipient = delivery.recipient
+    log = ''
+    begin
+      log = letter.deliver(recipient, @codec)
+    rescue StandardError => e
+      log = "#{e.class.name} #{e.message}; #{e.backtrace.join('; ')}"
     end
+    delivery.close(log)
   end
 end

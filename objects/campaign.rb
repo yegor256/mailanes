@@ -85,4 +85,22 @@ class Campaign
     @pgsql.exec('UPDATE campaign SET active=not(active) WHERE id=$1', [@id])
     @hash = {}
   end
+
+  def report
+    q = [
+      'SELECT delivery.*, recipient.email, lane.id AS lane_id, letter.id AS letter_id FROM delivery',
+      'JOIN campaign ON delivery.campaign=campaign.id',
+      'JOIN letter ON delivery.letter=letter.id',
+      'JOIN lane ON letter.lane=lane.id',
+      'JOIN recipient ON delivery.recipient=recipient.id',
+      'WHERE campaign.id=$1'
+    ].join(' ')
+    @pgsql.exec(q, [@id]).map do |r|
+      [
+        "##{r['id']}/#{r['created']} to #{r['email']}",
+        "in lane ##{r['lane_id']}",
+        "with letter ##{r['letter_id']}: #{r['details'].empty? ? 'WAITING' : r['details']}"
+      ].join(' ')
+    end
+  end
 end

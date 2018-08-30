@@ -18,43 +18,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'csv'
 require_relative 'pgsql'
-require_relative 'recipient'
+require_relative 'delivery'
 
-# Recipients.
+# Deliveries.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Recipients
-  def initialize(list:, pgsql: Pgsql.new)
-    @list = list
+class Deliveries
+  def initialize(pgsql: Pgsql.new)
     @pgsql = pgsql
   end
 
-  def all
-    @pgsql.exec('SELECT * FROM recipient WHERE list=$1 ORDER BY created DESC', [@list.id]).map do |r|
-      Recipient.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-    end
-  end
-
-  def count
-    all.count
-  end
-
-  def add(email, first: '', last: '', source: '')
-    Recipient.new(
+  def add(campaign, letter, recipient)
+    Delivery.new(
       id: @pgsql.exec(
-        'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-        [@list.id, email, first, last, source]
+        'INSERT INTO delivery (campaign, letter, recipient) VALUES ($1, $2, $3) RETURNING id',
+        [campaign.id, letter.id, recipient.id]
       )[0]['id'].to_i,
       pgsql: @pgsql
     )
-  end
-
-  def upload(file, source: '')
-    CSV.foreach(file) do |row|
-      add(row[0], first: row[1], last: row[2], source: source)
-    end
   end
 end

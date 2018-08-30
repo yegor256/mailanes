@@ -36,3 +36,6 @@
   %label YAML config:
   %textarea{name: 'yaml', style: 'width:100%;height:8em;', required: 'true'}= campaign.yaml.to_yaml
   %input{type: 'submit', value: 'Save'}
+
+- campaign.report.each do |r|
+  %p= r

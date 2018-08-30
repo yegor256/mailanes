@@ -102,13 +102,14 @@ class Letter
     text = Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(markdown)
     ln = lane
     name = "#{recipient.first.strip} #{recipient.last.strip}".strip
-    address = recipient.email
-    address = "#{name} <#{recipient.email}>" unless name.empty?
-    yml = yaml
+    to = recipient.email
+    to = "#{name} <#{recipient.email}>" unless name.empty?
+    from = yaml['from'] || ln.yaml['from']
+    subject = yaml['subject'] || ln.yaml['subject']
     mail = Mail.new do
-      from yml['from'] || ln.yaml['from']
-      to address
-      subject yml['subject'] || ln.yaml['subject']
+      from from
+      to to
+      subject subject
       message_id "<#{UUIDTools::UUID.random_create}@mailanes.com>"
       text_part do
         content_type 'text/plain; charset=UTF-8'
@@ -129,6 +130,8 @@ class Letter
       authentication: 'plain',
       enable_starttls_auto: true
     )
+    start = Time.now
     mail.deliver
+    "Sent to #{to} from #{from} via SMTP at #{ln.yaml['smtp']['host']} in #{(Time.now - start).round(2)}s"
   end
 end

@@ -84,6 +84,19 @@ configure do
     user: config['pgsql']['user'],
     password: config['pgsql']['password']
   )
+  set :pipeline, Pipeline.new(pgsql: settings.pgsql)
+  set :postman, Postman.new(settings.codec)
+  if ENV['RACK_ENV'] != 'test'
+    Thread.new do
+      loop do
+        begin
+          settings.pipeline.fetch(settings.postman)
+        rescue StandardError => e
+          puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
+        end
+      end
+    end
+  end
 end
 
 before '/*' do
