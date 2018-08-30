@@ -41,6 +41,7 @@ smtp:
 
 ```yaml
 title: Monthlty
+until: 03-09-2018
 ```
 
 ### Letter
@@ -49,7 +50,7 @@ title: Monthlty
 title: Aug 2018
 subject: There are some great news, guys!
 from: Yegor Bugayenko <yegor256@gmail.com>
-deactivate: 03-09-2018
+until: 03-09-2018
 ```
 
 Here is how your Liquid template may look like:

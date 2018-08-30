@@ -95,6 +95,7 @@ configure do
         start = Time.now
         begin
           settings.pipeline.fetch(settings.postman)
+          settings.pipeline.deactivate
         rescue StandardError => e
           puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
         end

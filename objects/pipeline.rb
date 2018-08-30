@@ -53,4 +53,15 @@ class Pipeline
       postman.deliver(delivery)
     end
   end
+
+  def deactivate
+    @pgsql.exec('SELECT * FROM letter WHERE active=true').each do |r|
+      letter = Letter.new(id: r['id'].to_i, pgsql: @pgsql)
+      letter.toggle if letter.yaml['until'] && Time.parse(letter.yaml['until']) < Time.now
+    end
+    @pgsql.exec('SELECT * FROM campaign WHERE active=true').each do |r|
+      campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql)
+      campaign.toggle if campaign.yaml['until'] && Time.parse(campaign.yaml['until']) < Time.now
+    end
+  end
 end

@@ -45,6 +45,16 @@ class PipelineTest < Minitest::Test
     assert(!post2.deliveries.find { |d| d.letter.id == letter.id })
   end
 
+  def test_deactivates_letter
+    owner = random_owner
+    lane = Lanes.new(owner: owner).add
+    letter = lane.letters.add
+    letter.toggle
+    letter.save_yaml('until: 01-01-1970')
+    Pipeline.new.deactivate
+    assert(!letter.active?)
+  end
+
   class FakePostman
     attr_reader :deliveries
 
