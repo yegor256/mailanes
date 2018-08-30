@@ -53,4 +53,8 @@ class Recipient
   def last
     @hash['last'] || @pgsql.exec('SELECT last FROM recipient WHERE id=$1', [@id])[0]['last']
   end
+
+  def source
+    @hash['source'] || @pgsql.exec('SELECT source FROM recipient WHERE id=$1', [@id])[0]['source']
+  end
 end
