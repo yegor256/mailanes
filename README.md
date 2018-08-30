@@ -8,8 +8,7 @@
 [![Build Status](https://travis-ci.org/yegor256/mailanes.svg)](https://travis-ci.org/yegor256/mailanes)
 [![PDD status](http://www.0pdd.com/svg?name=yegor256/mailanes)](http://www.0pdd.com/p?name=yegor256/mailanes)
 [![Test Coverage](https://img.shields.io/codecov/c/github/yegor256/mailanes.svg)](https://codecov.io/github/yegor256/mailanes?branch=master)
-
-[![Maintainability](https://api.codeclimate.com/v1/badges/7489c1d2bacde40ffc09/maintainability)](https://codeclimate.com/github/yegor256/mailanes/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/451556110dacf73cc6f6/maintainability)](https://codeclimate.com/github/yegor256/mailanes/maintainability)
 
 It's an e-mail sending web app.
 
