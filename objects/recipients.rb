@@ -47,6 +47,7 @@ class Recipients
   end
 
   def add(email, first: '', last: '', source: '')
+    raise "Invalid email #{email}" unless email =~ /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
     Recipient.new(
       id: @pgsql.exec(
         'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
