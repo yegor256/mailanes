@@ -388,7 +388,10 @@ post '/subscribe' do
   )
   settings.tbot.notify(
     list.yaml,
-    "New subscriber #{params[:email]} in your list ##{list.id}: #{list.title}"
+    [
+      "A new subscriber #{params[:email]} just got into your list ##{list.id}: \"#{list.title}\".",
+      "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
+    ].join(' ')
   )
   redirect params[:redirect] if params[:redirect]
   haml :subscribed, layout: :layout, locals: merged(
