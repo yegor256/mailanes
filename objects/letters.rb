@@ -32,7 +32,7 @@ class Letters
   end
 
   def count
-    @pgsql.exec('SELECT COUNT(id) FROM letter WHERE lane=$1', [@lane.id])[0]['count']
+    @pgsql.exec('SELECT COUNT(id) FROM letter WHERE lane=$1', [@lane.id])[0]['count'].to_i
   end
 
   def all

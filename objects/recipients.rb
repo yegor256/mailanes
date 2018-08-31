@@ -44,7 +44,7 @@ class Recipients
   end
 
   def count
-    @pgsql.exec('SELECT COUNT(id) FROM recipient WHERE list=$1', [@list.id])[0]['count']
+    @pgsql.exec('SELECT COUNT(id) FROM recipient WHERE list=$1', [@list.id])[0]['count'].to_i
   end
 
   def exists?(email)

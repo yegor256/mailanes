@@ -42,4 +42,10 @@ class LaneTest < Minitest::Test
     lane = Lane.new(id: id)
     assert_equal(title, lane.title)
   end
+
+  def test_reads_deliveries_count
+    owner = random_owner
+    lane = Lanes.new(owner: owner).add
+    assert_equal(0, lane.deliveries_count)
+  end
 end

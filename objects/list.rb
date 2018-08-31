@@ -84,6 +84,6 @@ class List
         'WHERE list.id=$1'
       ].join(' '),
       [@id]
-    )[0]['count']
+    )[0]['count'].to_i
   end
 end

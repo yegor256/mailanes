@@ -44,4 +44,10 @@ class ListTest < Minitest::Test
     list.save_yaml('stop: false')
     assert(!list.stop?)
   end
+
+  def test_counts_deliveries
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    assert_equal(0, list.deliveries_count)
+  end
 end

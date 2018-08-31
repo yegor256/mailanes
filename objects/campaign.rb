@@ -114,6 +114,6 @@ class Campaign
   end
 
   def deliveries_count
-    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE campaign=$1', [@id])[0]['count']
+    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE campaign=$1', [@id])[0]['count'].to_i
   end
 end

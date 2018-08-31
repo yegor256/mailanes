@@ -58,7 +58,7 @@ class Letter
   end
 
   def deliveries_count
-    @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE delivery.letter=$1', [@id])[0]['count']
+    @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE delivery.letter=$1', [@id])[0]['count'].to_i
   end
 
   def active?
