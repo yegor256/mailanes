@@ -32,6 +32,7 @@ require_relative 'version'
 require_relative 'objects/owner'
 require_relative 'objects/pipeline'
 require_relative 'objects/postman'
+require_relative 'objects/tbot'
 
 if ENV['RACK_ENV'] != 'test'
   require 'rack/ssl'
@@ -58,6 +59,7 @@ configure do
       'dbname' => 'test',
       'password' => 'test'
     },
+    'telegram_token' => '',
     'token_secret' => '?',
     'sentry' => ''
   }
@@ -88,7 +90,11 @@ configure do
   )
   set :pipeline, Pipeline.new(pgsql: settings.pgsql)
   set :postman, Postman.new(settings.codec)
+  set :tbot, Tbot.new(config['telegram_token'])
   if ENV['RACK_ENV'] != 'test'
+    Thread.new do
+      settings.tbot.start
+    end
     Thread.new do
       loop do
         sleep 60
@@ -357,6 +363,10 @@ post '/do-add' do
     last: params[:last],
     source: "@#{current_user}"
   )
+  settings.tbot.notify(
+    list.yaml,
+    "New recipient #{params[:email]} has been added by #{current_user} to your list ##{list.id}: #{list.title}"
+  )
   redirect "/add?list=#{list.id}"
 end
 
@@ -376,6 +386,10 @@ post '/subscribe' do
       user_agent: request.user_agent
     ).map { |k, v| "#{k}: #{v}" }.join("\n")
   )
+  settings.tbot.notify(
+    list.yaml,
+    "New subscriber #{params[:email]} in your list ##{list.id}: #{list.title}"
+  )
   redirect params[:redirect] if params[:redirect]
   haml :subscribed, layout: :layout, locals: merged(
     title: '/subscribed',
@@ -391,6 +405,11 @@ get '/unsubscribe' do
   raise "You have already been unsubscribed: #{recipient.email}" unless recipient.active?
   email = recipient.email
   recipient.toggle
+  list = recipient.list
+  settings.tbot.notify(
+    list.yaml,
+    "Email #{params[:email]} has been unsubscribed from your list ##{list.id}: #{list.title}"
+  )
   haml :unsubscribed, layout: :layout, locals: merged(
     title: '/unsubscribed',
     email: email
