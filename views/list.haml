@@ -41,6 +41,15 @@
     for example "3/88" (campaign ID, letter ID).
 
 %p
+  Participates in:
+  - list.campaigns.each do |c|
+    = succeed ':' do
+      %a{href: "/campaign?id=#{c.id}"}= "C##{c.id}"
+      = '/'
+      %a{href: "/lane?id=#{c.lane.id}"}= "L##{c.lane.id}"
+    = "\"#{c.lane.title}\""
+
+%p
   There are
   = list.recipients.count
   recipient(s):

@@ -21,6 +21,7 @@
 require 'yaml'
 require_relative 'pgsql'
 require_relative 'recipients'
+require_relative 'campaign'
 
 # List.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -60,5 +61,11 @@ class List
     friends = yaml['friends']
     return false unless friends.is_a?(Array)
     friends.include?(login)
+  end
+
+  def campaigns
+    @pgsql.exec('SELECT * FROM campaign WHERE campaign.list=$1 ORDER BY created DESC', [@lid]).map do |r|
+      Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+    end
   end
 end
