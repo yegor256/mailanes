@@ -81,6 +81,60 @@ class PipelineTest < Minitest::Test
     assert(!post.deliveries.find { |d| d.letter.id == first.id })
   end
 
+  def test_doesnt_send_if_stop_list
+    owner = random_owner
+    email = 'test90@mailanes.com'
+    list = Lists.new(owner: owner).add
+    assert(!list.stop?)
+    list.recipients.add(email)
+    stop = Lists.new(owner: owner).add
+    stop.save_yaml('stop: true')
+    assert(stop.stop?)
+    stop.recipients.add(email)
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    campaign.toggle
+    letter = lane.letters.add
+    letter.toggle
+    post = FakePostman.new
+    Pipeline.new.fetch(post)
+    assert(!post.deliveries.find { |d| d.letter.id == letter.id })
+  end
+
+  def test_send_if_only_a_friend_stopped
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    list.recipients.add('jeff@mailanes.com')
+    stop = Lists.new(owner: owner).add
+    stop.save_yaml('stop: true')
+    stop.recipients.add('walter@mailanes.com')
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    campaign.toggle
+    letter = lane.letters.add
+    letter.toggle
+    post = FakePostman.new
+    Pipeline.new.fetch(post)
+    assert(post.deliveries.find { |d| d.letter.id == letter.id })
+  end
+
+  def test_doesnt_send_from_stopped_list
+    owner = random_owner
+    email = 'test932@mailanes.com'
+    list = Lists.new(owner: owner).add
+    list.save_yaml('stop: true')
+    assert(list.stop?)
+    list.recipients.add(email)
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    campaign.toggle
+    letter = lane.letters.add
+    letter.toggle
+    post = FakePostman.new
+    Pipeline.new.fetch(post)
+    assert(!post.deliveries.find { |d| d.letter.id == letter.id })
+  end
+
   def test_deactivates_letter
     owner = random_owner
     lane = Lanes.new(owner: owner).add

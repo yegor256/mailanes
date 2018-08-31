@@ -14,4 +14,6 @@
       %a{href: url("/list?id=#{list.id}")}= "##{list.id}"
     = list.title
     = "(#{list.recipients.count} recipients)"
+    - if list.stop?
+      %strong.red STOP
 

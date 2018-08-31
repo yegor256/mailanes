@@ -52,9 +52,15 @@ class List
   end
 
   def save_yaml(yaml)
-    YAML.safe_load(yaml)
+    yml = YAML.safe_load(yaml)
     @pgsql.exec('UPDATE list SET yaml=$1 WHERE id=$2', [yaml, @id])
+    stop = yml['stop']
+    @pgsql.exec('UPDATE list SET stop=$1 WHERE id=$2', [stop, @id])
     @hash = {}
+  end
+
+  def stop?
+    (@hash['stop'] || @pgsql.exec('SELECT stop FROM list WHERE id=$1', [@id])[0]['stop']) == 't'
   end
 
   def friend?(login)

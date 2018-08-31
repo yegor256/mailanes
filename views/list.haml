@@ -4,6 +4,12 @@
     = "##{list.id}"
   = list.title
 
+- if list.stop?
+  %p.red
+    This is the
+    %strong STOP
+    list! Its recipients will never receive any letters from you.
+
 %p
   %a.item{onclick: '$("#save").show();'} Edit YAML
   %a.item{onclick: '$("#add").show();$("#email").focus();'} Add Recipient
