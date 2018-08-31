@@ -390,6 +390,7 @@ post '/subscribe' do
     list.yaml,
     [
       "A new subscriber #{params[:email]} just got into your list ##{list.id}: \"#{list.title}\".",
+      "There are #{list.recipients.count} emails in the list now.",
       "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
     ].join(' ')
   )
@@ -411,7 +412,7 @@ get '/unsubscribe' do
   list = recipient.list
   settings.tbot.notify(
     list.yaml,
-    "Email #{params[:email]} has been unsubscribed from your list ##{list.id}: #{list.title}"
+    "Email #{email} has been unsubscribed from your list ##{list.id}: #{list.title}"
   )
   haml :unsubscribed, layout: :layout, locals: merged(
     title: '/unsubscribed',
