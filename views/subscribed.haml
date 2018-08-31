@@ -8,10 +8,12 @@
   has been added to the list
   = succeed '.' do
     = "##{list.id}"
+  Your position in the list is
+  = succeed '.' do
+    = "##{list.recipients.count}"
 
 %p
   If you want to unsubscribe,
   = succeed '.' do
-    %a{href: '/unsubscribe?token=' + CGI.escape(token)}
-      click here
+    %a{href: '/unsubscribe?token=' + CGI.escape(token)} click here
 

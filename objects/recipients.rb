@@ -74,7 +74,7 @@ class Recipients
             Campaign.new(id: c.to_i, pgsql: @pgsql),
             Letter.new(id: l.to_i, pgsql: @pgsql),
             recipient
-          ).close('upload')
+          ).close('CSV upload')
         end
       end
     end
