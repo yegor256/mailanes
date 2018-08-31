@@ -129,6 +129,7 @@ class Letter
         body html
       end
     end
+    raise "SMTP is not configured in the Lane ##{ln.id}" unless ln.yaml['smtp']
     mail.delivery_method(
       :smtp,
       address: ln.yaml['smtp']['host'],

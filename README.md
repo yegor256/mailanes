@@ -42,7 +42,7 @@ smtp:
   password: ArPxO8gf56y02G8cKM80IpvMQve8Pss+L4+inJZ3UG3t
 ```
 
-## Campaign:
+### Campaign
 
 ```yaml
 # The title of the campaign
