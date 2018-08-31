@@ -3,6 +3,10 @@
   = "##{letter.id}:"
   = letter.title
 
+- if !letter.liquid.include?('{{unsubscribe}}')
+  %p.red
+    The Liquid template doesn't have the {{unsubsribe}} link!
+
 %p
   %a.item{onclick: '$("#save").show();'}
     Edit YAML and Liquid
