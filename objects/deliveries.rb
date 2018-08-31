@@ -39,4 +39,14 @@ class Deliveries
       pgsql: @pgsql
     )
   end
+
+  def delivery(id)
+    hash = @pgsql.exec('SELECT * FROM delivery WHERE id=$1', [id])[0]
+    raise "Delivery ##{id} not found" if hash.nil?
+    Delivery.new(
+      id: id,
+      pgsql: @pgsql,
+      hash: hash
+    )
+  end
 end

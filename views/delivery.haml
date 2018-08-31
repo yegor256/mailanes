@@ -1,0 +1,25 @@
+%h2
+  Delivery
+  = succeed ':' do
+    = "##{delivery.id}"
+
+%p
+  = succeed ':' do
+    %a{href: "/list?id=#{recipient.id}"}= "Recipient ##{delivery.recipient.id}"
+  = "\"#{recipient.email}\""
+
+%p
+  = succeed ':' do
+    %a{href: "/list?id=#{letter.id}"}= "Letter ##{delivery.letter.id}"
+  = "\"#{letter.title}\""
+
+%p
+  = succeed ':' do
+    %a{href: "/list?id=#{delivery.campaign.id}"}= "Letter ##{delivery.campaign.id}"
+  = "\"#{delivery.campaign.title}\""
+
+%p
+  Details:
+
+%pre= delivery.details
+

@@ -226,6 +226,14 @@ get '/download-recipients' do
   end
 end
 
+get '/delivery' do
+  delivery = owner.deliveries.delivery(params[:id].to_i)
+  haml :delivery, layout: :layout, locals: merged(
+    title: "##{delivery.id}",
+    delivery: delivery
+  )
+end
+
 get '/lanes' do
   haml :lanes, layout: :layout, locals: merged(
     title: '/lanes',

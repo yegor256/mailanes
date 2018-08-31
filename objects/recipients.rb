@@ -43,7 +43,7 @@ class Recipients
   end
 
   def exists?(email)
-    !@pgsql.exec('SELECT id FROM recipient WHERE list=$1 AND email=$2', [@list.id, email.downcase]).empty?
+    !@pgsql.exec('SELECT id FROM recipient WHERE list=$1 AND email=$2', [@list.id, email.downcase.strip]).empty?
   end
 
   def add(email, first: '', last: '', source: '')
@@ -51,7 +51,7 @@ class Recipients
     Recipient.new(
       id: @pgsql.exec(
         'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-        [@list.id, email.downcase, first, last, source.downcase]
+        [@list.id, email.downcase.strip, first.strip, last.strip, source.downcase.strip]
       )[0]['id'].to_i,
       pgsql: @pgsql
     )
@@ -68,8 +68,8 @@ class Recipients
       next if exists?(row[0])
       recipient = add(row[0], first: row[1] || '', last: row[2] || '', source: source)
       if row[3]
-        row[3].split(';').each do |dlv|
-          c, l = dlv.split('/')
+        row[3].strip.split(';').each do |dlv|
+          c, l = dlv.strip.split('/')
           deliveries.add(
             Campaign.new(id: c.to_i, pgsql: @pgsql),
             Letter.new(id: l.to_i, pgsql: @pgsql),

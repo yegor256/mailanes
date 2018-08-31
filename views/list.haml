@@ -5,14 +5,10 @@
   = list.title
 
 %p
-  %a.item{onclick: '$("#save").show();'}
-    Edit YAML
-  %a.item{onclick: '$("#add").show();'}
-    Add Recipient
-  %a.item{onclick: '$("#upload").show();'}
-    Upload CSV
-  %a.item{href: "/download-recipients?id=#{list.id}"}
-    Download CSV
+  %a.item{onclick: '$("#save").show();'} Edit YAML
+  %a.item{onclick: '$("#add").show();'} Add Recipient
+  %a.item{onclick: '$("#upload").show();'} Upload CSV
+  %a.item{href: "/download-recipients?id=#{list.id}"} Download CSV
 
 %form.hidden{method: 'POST', action: '/save-list', id: 'save'}
   %fieldset

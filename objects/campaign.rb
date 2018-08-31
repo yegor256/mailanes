@@ -98,12 +98,15 @@ class Campaign
       'WHERE campaign.id=$1'
     ].join(' ')
     @pgsql.exec(q, [@id]).map do |r|
-      [
-        "##{r['id']}/#{r['created']} to #{r['email']}",
-        "in lane ##{r['lane_id']}",
-        "with letter ##{r['letter_id']} (relax is #{r['relax']}):",
-        r['details'].empty? ? 'WAITING' : r['details']
-      ].join(' ')
+      {
+        delivery: Delivery.new(id: r['id'].to_i, pgsql: @pgsql, hash: r),
+        text: [
+          "##{r['id']}/#{r['created']} to #{r['email']}",
+          "in lane ##{r['lane_id']}",
+          "with letter ##{r['letter_id']} (relax is #{r['relax']}):",
+          r['details'].empty? ? 'WAITING' : r['details']
+        ].join(' ')
+      }
     end
   end
 end

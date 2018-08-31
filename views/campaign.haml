@@ -45,4 +45,7 @@
     No delivery reports as of yet.
 - else
   - report.each do |r|
-    %p= r
+    %p
+      = succeed ':' do
+        %a{href: "/delivery?id=#{r[:delivery].id}"}= "##{r[:delivery].id}"
+      = r[:text]
