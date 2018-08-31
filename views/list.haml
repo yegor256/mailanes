@@ -27,7 +27,8 @@
   %input{type: 'text', name: 'last', placeholder: 'Last name', size: 16, autocomplete: 'off'}
   %input{type: 'submit', value: 'Add Recipient'}
 
-%form.hidden{method: 'GET', action: "/list?id=#{list.id}", id: 'find'}
+%form.hidden{method: 'GET', action: '/list', id: 'find'}
+  %input{type: 'hidden', name: 'id', value: list.id}
   %input{type: 'text', name: 'query', id: 'query', placeholder: 'Email or name to find...', size: 32, required: 'true', autocomplete: 'off'}
   %input{type: 'submit', value: 'Find'}
 
