@@ -7,6 +7,7 @@
 %p
   %a.item{onclick: '$("#save").show();'} Edit YAML
   %a.item{onclick: '$("#add").show();$("#email").focus();'} Add Recipient
+  %a.item{onclick: '$("#find").show();$("#query").focus();'} Find Recipient
   %a.item{onclick: '$("#upload").show();'} Upload CSV
   %a.item{href: "/download-recipients?id=#{list.id}"} Download CSV
 
@@ -25,6 +26,10 @@
   %input{type: 'text', name: 'first', placeholder: 'First name', size: 14, autocomplete: 'off'}
   %input{type: 'text', name: 'last', placeholder: 'Last name', size: 16, autocomplete: 'off'}
   %input{type: 'submit', value: 'Add Recipient'}
+
+%form.hidden{method: 'GET', action: "/list?id=#{list.id}", id: 'find'}
+  %input{type: 'text', name: 'query', id: 'query', placeholder: 'Email or name to find...', size: 32, required: 'true', autocomplete: 'off'}
+  %input{type: 'submit', value: 'Find'}
 
 %form.hidden{method: 'POST', action: '/upload-recipients', id: 'upload', enctype: 'multipart/form-data'}
   %input{type: 'hidden', name: 'id', value: list.id}
@@ -55,6 +60,6 @@
   recipient(s):
 
 %p
-  - list.recipients.all.each do |r|
+  - list.recipients.all(query: params[:query] || '').each do |r|
     %span{class: ('cross' unless r.active?)}
       %a{href: "/recipient?list=#{list.id}&id=#{r.id}"}= r.email

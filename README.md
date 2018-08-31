@@ -25,6 +25,10 @@ notify:
   # Notify this email every time a new subscriber
   # is added to the list through the /subscribe URL
   email: yegor256@gmail.com
+# List of GitHub account who also have access to this list
+# and can add recipients to it, via /add?list=ID URL.
+friends:
+  - yegor256
 ```
 
 ### Lane

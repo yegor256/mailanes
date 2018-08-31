@@ -32,8 +32,13 @@ class Recipients
     @pgsql = pgsql
   end
 
-  def all(limit: 100)
-    @pgsql.exec('SELECT * FROM recipient WHERE list=$1 ORDER BY created DESC LIMIT $2', [@list.id, limit]).map do |r|
+  def all(query: '', limit: 100)
+    q = [
+      'SELECT * FROM recipient',
+      'WHERE list=$1 AND email LIKE $2',
+      'ORDER BY created DESC LIMIT $3'
+    ].join(' ')
+    @pgsql.exec(q, [@list.id, "%#{query}%", limit]).map do |r|
       Recipient.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end
