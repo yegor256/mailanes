@@ -95,7 +95,9 @@ class Campaign
       'JOIN letter ON delivery.letter=letter.id',
       'JOIN lane ON letter.lane=lane.id',
       'JOIN recipient ON delivery.recipient=recipient.id',
-      'WHERE campaign.id=$1'
+      'WHERE campaign.id=$1',
+      'ORDER BY delivery.created DESC',
+      'LIMIT 50'
     ].join(' ')
     @pgsql.exec(q, [@id]).map do |r|
       {

@@ -141,6 +141,13 @@ class Letter
     )
     start = Time.now
     mail.deliver
-    "Sent to #{to} from #{from} via SMTP at #{ln.yaml['smtp']['host']} in #{(Time.now - start).round(2)}s"
+    [
+      "Sent #{html.length} chars in HTML (#{text.length} in plain text)",
+      "to #{to} (recipient ##{recipient.id} in list ##{recipient.list.id})",
+      "from #{from}, with the subject line \"#{subject}\",",
+      "via SMTP at #{ln.yaml['smtp']['host']}:#{ln.yaml['smtp']['port']}",
+      "(authenticated as #{ln.yaml['smtp']['user']}),",
+      "in #{(Time.now - start).round(2)}s"
+    ].join(' ')
   end
 end

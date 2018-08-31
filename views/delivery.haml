@@ -5,13 +5,13 @@
 
 %p
   = succeed ':' do
-    %a{href: "/list?id=#{recipient.id}"}= "Recipient ##{delivery.recipient.id}"
-  = "\"#{recipient.email}\""
+    %a{href: "/list?id=#{delivery.recipient.id}"}= "Recipient ##{delivery.recipient.id}"
+  = "\"#{delivery.recipient.email}\""
 
 %p
   = succeed ':' do
-    %a{href: "/list?id=#{letter.id}"}= "Letter ##{delivery.letter.id}"
-  = "\"#{letter.title}\""
+    %a{href: "/list?id=#{delivery.letter.id}"}= "Letter ##{delivery.letter.id}"
+  = "\"#{delivery.letter.title}\""
 
 %p
   = succeed ':' do
