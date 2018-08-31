@@ -28,7 +28,7 @@
     - else
       %span.red not active
   = '/'
-  %a{href: "/toggle-letter?id=#{letter.id}"}
+  %a{href: "/toggle-letter?id=#{letter.id}", onclick: (letter.liquid.include?('{{unsubscribe}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')")}
     - if letter.active?
       deactivate
     - else
