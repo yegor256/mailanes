@@ -55,4 +55,8 @@ class Lane
     @pgsql.exec('UPDATE lane SET yaml=$1 WHERE id=$2', [yaml, @id])
     @hash = {}
   end
+
+  def deliveries_count
+    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE lane=$1', [@id])[0]['count']
+  end
 end

@@ -68,4 +68,16 @@ class List
       Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end
+
+  def deliveries_count
+    @pgsql.exec(
+      [
+        'SELECT COUNT(*) FROM delivery',
+        'JOIN recipient ON recipient.id=delivery.recipient',
+        'JOIN list ON recipient.list=list.id',
+        'WHERE list.id=$1'
+      ].join(' '),
+      [@id]
+    )[0]['count']
+  end
 end

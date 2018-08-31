@@ -57,7 +57,7 @@ class Letter
     yaml['title'] || "##{id}"
   end
 
-  def delivered_count
+  def deliveries_count
     @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE delivery.letter=$1', [@id])[0]['count']
   end
 
