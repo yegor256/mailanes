@@ -18,7 +18,7 @@
 %p
   - campaign = delivery.campaign
   = succeed ':' do
-    %a{href: "/list?id=#{campaign.id}"}= "Campaign ##{campaign.id}"
+    %a{href: "/campaign?id=#{campaign.id}"}= "Campaign ##{campaign.id}"
   = "\"#{campaign.title}\""
 
 %p= delivery.details
