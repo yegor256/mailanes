@@ -4,22 +4,22 @@
     = "##{delivery.id}"
 
 %p
+  - recipient = delivery.recipient
   = succeed ':' do
-    %a{href: "/list?id=#{delivery.recipient.id}"}= "Recipient ##{delivery.recipient.id}"
-  = "\"#{delivery.recipient.email}\""
+    %a{href: "/recipient?id=#{recipient.id}&list=#{recipient.list.id}"}= "Recipient ##{recipient.id}"
+  = "#{recipient.email}"
 
 %p
+  - letter = delivery.letter
   = succeed ':' do
-    %a{href: "/list?id=#{delivery.letter.id}"}= "Letter ##{delivery.letter.id}"
-  = "\"#{delivery.letter.title}\""
+    %a{href: "/list?id=#{letter.id}"}= "Letter ##{letter.id}"
+  = "\"#{letter.title}\""
 
 %p
+  - campaign = delivery.campaign
   = succeed ':' do
-    %a{href: "/list?id=#{delivery.campaign.id}"}= "Letter ##{delivery.campaign.id}"
-  = "\"#{delivery.campaign.title}\""
+    %a{href: "/list?id=#{campaign.id}"}= "Campaign ##{campaign.id}"
+  = "\"#{campaign.title}\""
 
-%p
-  Details:
-
-%pre= delivery.details
+%p= delivery.details
 
