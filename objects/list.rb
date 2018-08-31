@@ -54,7 +54,7 @@ class List
   def save_yaml(yaml)
     yml = YAML.safe_load(yaml)
     @pgsql.exec('UPDATE list SET yaml=$1 WHERE id=$2', [yaml, @id])
-    stop = yml['stop']
+    stop = yml['stop'] || false
     @pgsql.exec('UPDATE list SET stop=$1 WHERE id=$2', [stop, @id])
     @hash = {}
   end
