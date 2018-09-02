@@ -61,6 +61,7 @@ class Recipient
 
   def toggle
     @pgsql.exec('UPDATE recipient SET active=NOT(active) WHERE id=$1', [@id])
+    @hash = {}
   end
 
   def active?

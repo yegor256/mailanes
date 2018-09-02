@@ -12,45 +12,39 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'pg'
+require 'minitest/autorun'
+require 'rack/test'
+require_relative 'test__helper'
+require_relative '../objects/lists'
+require_relative '../objects/recipients'
 
-# The PostgreSQL connector.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018 Yegor Bugayenko
-# License:: MIT
-class Pgsql
-  def initialize(host: 'localhost', port: 0, dbname: 'test', user: 'test', password: 'test')
-    @host = host
-    port = File.read('target/pgsql.port').to_i if port.zero?
-    @port = port
-    @dbname = dbname
-    @user = user
-    @password = password
-    @mutex = Mutex.new
+class RecipientTest < Minitest::Test
+  def test_toggles_recipient
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    recipient = Recipients.new(list: list).add('test@mailanes.com')
+    assert(recipient.active?)
+    recipient.toggle
+    assert(!recipient.active?)
+    recipient.toggle
+    assert(recipient.active?)
   end
 
-  def exec(query, args = [])
-    @mutex.synchronize do
-      connect.exec_params(query, args) do |res|
-        puts "#{query} #{args}"
-        if block_given?
-          yield res
-        else
-          rows = []
-          res.each { |r| rows << r }
-          rows
-        end
-      end
-    end
-  end
-
-  def connect
-    @connect ||= PG.connect(dbname: @dbname, host: @host, port: @port, user: @user, password: @password)
+  def test_toggles_fetched_recipient
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    id = Recipients.new(list: list).add('test98@mailanes.com').id
+    recipient = Recipients.new(list: list).recipient(id)
+    assert(recipient.active?)
+    recipient.toggle
+    assert(!recipient.active?)
+    recipient.toggle
+    assert(recipient.active?)
   end
 end

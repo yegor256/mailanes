@@ -372,28 +372,41 @@ end
 
 post '/subscribe' do
   list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
-  raise 'You have already been subscribed' if list.recipients.exists?(params[:email])
-  recipient = list.recipients.add(
-    params[:email],
-    first: params[:first] || '',
-    last: params[:last] || '',
-    source: params[:source] || ''
-  )
-  recipient.save_yaml(
-    params.merge(
-      request_ip: request.ip,
-      referrer: request.referer,
-      user_agent: request.user_agent
-    ).map { |k, v| "#{k}: #{v}" }.join("\n")
-  )
-  settings.tbot.notify(
-    list.yaml,
-    [
-      "A new subscriber #{params[:email]} just got into your list ##{list.id}: \"#{list.title}\".",
-      "There are #{list.recipients.count} emails in the list now.",
-      "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
-    ].join(' ')
-  )
+  if list.recipients.exists?(params[:email])
+    recipient = list.recipients.all(query: '=' + params[:email])[0]
+    raise "The email #{recipient.email} has already been subscribed to the list ##{list.id}" if recipient.active?
+    recipient.toggle
+    settings.tbot.notify(
+      list.yaml,
+      [
+        "A subscriber #{params[:email]} re-entered the list ##{list.id}: \"#{list.title}\".",
+        "There are #{list.recipients.count} emails in the list now.",
+        "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
+      ].join(' ')
+    )
+  else
+    recipient = list.recipients.add(
+      params[:email],
+      first: params[:first] || '',
+      last: params[:last] || '',
+      source: params[:source] || ''
+    )
+    recipient.save_yaml(
+      params.merge(
+        request_ip: request.ip,
+        referrer: request.referer,
+        user_agent: request.user_agent
+      ).map { |k, v| "#{k}: #{v}" }.join("\n")
+    )
+    settings.tbot.notify(
+      list.yaml,
+      [
+        "A new subscriber #{params[:email]} just got into your list ##{list.id}: \"#{list.title}\".",
+        "There are #{list.recipients.count} emails in the list now.",
+        "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
+      ].join(' ')
+    )
+  end
   redirect params[:redirect] if params[:redirect]
   haml :subscribed, layout: :layout, locals: merged(
     title: '/subscribed',
@@ -412,11 +425,15 @@ get '/unsubscribe' do
   list = recipient.list
   settings.tbot.notify(
     list.yaml,
-    "Email #{email} has been unsubscribed from your list ##{list.id}: #{list.title}"
+    [
+      "Email #{email} has been unsubscribed from your list ##{list.id}: \"#{list.title}\".",
+      "There are #{list.recipients.count} emails in the list now."
+    ].join(' ')
   )
   haml :unsubscribed, layout: :layout, locals: merged(
     title: '/unsubscribed',
-    email: email
+    email: email,
+    list: list
   )
 end
 

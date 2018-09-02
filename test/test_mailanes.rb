@@ -20,6 +20,7 @@
 
 require 'minitest/autorun'
 require 'rack/test'
+require 'glogin/codec'
 require_relative 'test__helper'
 require_relative '../mailanes'
 
@@ -59,6 +60,24 @@ class AppTest < Minitest::Test
     login
     get('/')
     assert_equal(200, last_response.status, last_response.body)
+  end
+
+  def test_subscribes_and_unsubscribes
+    list = Lists.new(owner: random_owner).add
+    post("/subscribe?list=#{list.id}&email=me@mailanes.com&reason=Just+love+you")
+    assert_equal(200, last_response.status, last_response.body)
+    assert_equal(1, list.recipients.count)
+    recipient = list.recipients.all[0]
+    assert(recipient.active?)
+    token = GLogin::Codec.new('?').encrypt(recipient.id.to_s)
+    get("/unsubscribe?token=#{CGI.escape(token)}")
+    recipient = list.recipients.all[0]
+    assert_equal(200, last_response.status, last_response.body)
+    assert(!recipient.active?)
+    post("/subscribe?list=#{list.id}&email=me@mailanes.com")
+    recipient = list.recipients.all[0]
+    assert_equal(200, last_response.status, last_response.body)
+    assert(recipient.active?)
   end
 
   private

@@ -37,6 +37,7 @@
   %input{type: 'hidden', name: 'id', value: list.id}
   %input{type: 'text', name: 'query', id: 'query', placeholder: 'Email or name to find...', size: 32, required: 'true', autocomplete: 'off', value: (params[:query] || nil)}
   %input{type: 'submit', value: 'Find'}
+  %label Start with '=' if you are looking for an exact match.
 
 %form.hidden{method: 'POST', action: '/upload-recipients', id: 'upload', enctype: 'multipart/form-data'}
   %input{type: 'hidden', name: 'id', value: list.id}

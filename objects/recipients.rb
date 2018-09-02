@@ -35,10 +35,12 @@ class Recipients
   def all(query: '', limit: 100)
     q = [
       'SELECT * FROM recipient',
-      'WHERE list=$1 AND email LIKE $2',
+      'WHERE list=$1 AND (email LIKE $2 OR first LIKE $2 OR last LIKE $2 OR yaml LIKE $2)',
       'ORDER BY created DESC LIMIT $3'
     ].join(' ')
-    @pgsql.exec(q, [@list.id, "%#{query}%", limit]).map do |r|
+    like = "%#{query}%"
+    like = query[1..-1] if query.start_with?('=')
+    @pgsql.exec(q, [@list.id, like, limit]).map do |r|
       Recipient.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end
@@ -63,7 +65,12 @@ class Recipients
   end
 
   def recipient(id)
-    Recipient.new(id: id, pgsql: @pgsql)
+    hash = @pgsql.exec(
+      'SELECT * FROM recipient WHERE list=$1 AND id=$2',
+      [@list.id, id]
+    )[0]
+    raise "Recipient ##{id} not found in the list ##{@list.id}" if hash.nil?
+    Recipient.new(id: id, pgsql: @pgsql, hash: hash)
   end
 
   def upload(file, source: '')
