@@ -381,7 +381,7 @@ post '/subscribe' do
       list.yaml,
       [
         "A subscriber #{params[:email]} re-entered the list ##{list.id}: \"#{list.title}\".",
-        "There are #{list.recipients.count} emails in the list now.",
+        "There are #{list.recipients.active_count} active subscribers in the list now.",
         "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
       ].join(' ')
     )
@@ -404,7 +404,7 @@ post '/subscribe' do
       list.yaml,
       [
         "A new subscriber #{params[:email]} just got into your list ##{list.id}: \"#{list.title}\".",
-        "There are #{list.recipients.count} emails in the list now.",
+        "There are #{list.recipients.active_count} active subscribers in the list still.",
         "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
       ].join(' ')
     )

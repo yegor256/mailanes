@@ -49,6 +49,10 @@ class Recipients
     @pgsql.exec('SELECT COUNT(id) FROM recipient WHERE list=$1', [@list.id])[0]['count'].to_i
   end
 
+  def active_count
+    @pgsql.exec('SELECT COUNT(id) FROM recipient WHERE list=$1 AND active=true', [@list.id])[0]['count'].to_i
+  end
+
   def exists?(email)
     !@pgsql.exec('SELECT id FROM recipient WHERE list=$1 AND email=$2', [@list.id, email.downcase.strip]).empty?
   end
