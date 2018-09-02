@@ -22,6 +22,7 @@ STDOUT.sync = true
 
 require 'time'
 require 'haml'
+require 'geocoder'
 require 'sinatra'
 require 'sinatra/cookies'
 require 'raven'
@@ -394,6 +395,7 @@ post '/subscribe' do
     recipient.save_yaml(
       params.merge(
         request_ip: request.ip,
+        country: Geocoder.search(request.ip).first.country,
         referrer: request.referer,
         user_agent: request.user_agent
       ).map { |k, v| "#{k}: #{v}" }.join("\n")

@@ -27,13 +27,15 @@
   %code
     = recipient.email
 
-%p
-  First:
-  = recipient.first
+- if !recipient.first.empty?
+  %p
+    First:
+    = recipient.first
 
-%p
-  Last:
-  = recipient.last
+- if !recipient.last.empty?
+  %p
+    Last:
+    = recipient.last
 
 %p
   Created:

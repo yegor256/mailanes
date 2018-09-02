@@ -21,6 +21,7 @@ source 'https://rubygems.org'
 ruby '2.3.3'
 
 gem 'codecov', '~>0.1'
+gem 'geocoder', '~>1.5'
 gem 'glogin', '~>0.4'
 gem 'haml', '~>5.0'
 gem 'liquid', '~>4.0'
