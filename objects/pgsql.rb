@@ -32,22 +32,25 @@ class Pgsql
     @dbname = dbname
     @user = user
     @password = password
+    @mutex = Mutex.new
+  end
+
+  def exec(query, args = [])
+    @mutex.synchronize do
+      connect.exec_params(query, args) do |res|
+        puts query
+        if block_given?
+          yield res
+        else
+          rows = []
+          res.each { |r| rows << r }
+          rows
+        end
+      end
+    end
   end
 
   def connect
     @connect ||= PG.connect(dbname: @dbname, host: @host, port: @port, user: @user, password: @password)
-  end
-
-  def exec(query, args = [])
-    connect.exec_params(query, args) do |res|
-      puts query
-      if block_given?
-        yield res
-      else
-        rows = []
-        res.each { |r| rows << r }
-        rows
-      end
-    end
   end
 end
