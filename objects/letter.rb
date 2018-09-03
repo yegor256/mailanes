@@ -113,7 +113,7 @@ class Letter
       appendix = markdown(quote.liquid, codec, recipient, delivery)
       html += [
         "On #{(Time.now - 60 * 60 * 24 * 7).strftime('%c')} #{from} wrote:<br/>",
-        '<blockquote style=margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">',
+        '<blockquote style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">',
         with_utm(
           Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(appendix),
           delivery
