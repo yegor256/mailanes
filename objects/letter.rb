@@ -107,7 +107,7 @@ class Letter
     to = recipient.email
     to = "#{name} <#{recipient.email}>" unless name.empty?
     from = (yaml['from'] || ln.yaml['from']).strip
-    subject = (yaml['subject'] || ln.yaml['subject']).strip
+    subject = (yaml['subject'] || ln.yaml['subject'] || '').strip
     if yaml['quote']
       quote = lane.letters.letter(yaml['quote'].to_i)
       appendix = markdown(quote.liquid, codec, recipient, delivery)
