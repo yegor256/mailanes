@@ -51,6 +51,10 @@ class List
     )
   end
 
+  def owner
+    @hash['owner'] || @pgsql.exec('SELECT owner FROM list WHERE id=$1', [@id])[0]['owner']
+  end
+
   def save_yaml(yaml)
     yml = YAML.safe_load(yaml)
     @pgsql.exec('UPDATE list SET yaml=$1 WHERE id=$2', [yaml, @id])
