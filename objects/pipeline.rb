@@ -33,11 +33,31 @@ class Pipeline
     @pgsql = pgsql
   end
 
-  def fetch(postman)
+  def fetch(postman, cycles: 100)
     @pgsql.exec(
       'DELETE FROM delivery WHERE created < $1 AND details = $2',
       [(Time.now - 60 * 60).strftime('%Y-%m-%d %H:%M:%S'), '']
     )
+    total = 0
+    loop do
+      break unless fetch_one(postman)
+      total += 1
+      break if total >= cycles
+    end
+  end
+
+  def deactivate
+    @pgsql.exec('SELECT * FROM letter WHERE active=true').each do |r|
+      letter = Letter.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+      letter.toggle if letter.yaml['until'] && Time.parse(letter.yaml['until']) < Time.now
+    end
+    @pgsql.exec('SELECT * FROM campaign WHERE active=true').each do |r|
+      campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+      campaign.toggle if campaign.yaml['until'] && Time.parse(campaign.yaml['until']) < Time.now
+    end
+  end
+
+  def fetch_one(postman)
     deliveries = Deliveries.new(pgsql: @pgsql)
     q = [
       'SELECT recipient.id AS rid, MAX(c.id) AS cid, MAX(letter.place), MAX(letter.id) AS lid FROM recipient',
@@ -65,8 +85,10 @@ class Pipeline
       '  AND (recipient.created < NOW() - INTERVAL \'10 MINUTES\' OR recipient.email LIKE \'%@mailanes.com\')',
       '  AND (SELECT COUNT(id) FROM delivery',
       '    WHERE delivery.campaign=c.id AND delivery.created > NOW() - INTERVAL \'1 DAY\') < c.speed',
-      'GROUP BY rid'
+      'GROUP BY rid',
+      'LIMIT 1'
     ].join(' ')
+    done = false
     @pgsql.exec(q).each do |r|
       campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
       letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql)
@@ -83,17 +105,8 @@ class Pipeline
         delivery.relax(time)
       end
       postman.deliver(delivery)
+      done = true
     end
-  end
-
-  def deactivate
-    @pgsql.exec('SELECT * FROM letter WHERE active=true').each do |r|
-      letter = Letter.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-      letter.toggle if letter.yaml['until'] && Time.parse(letter.yaml['until']) < Time.now
-    end
-    @pgsql.exec('SELECT * FROM campaign WHERE active=true').each do |r|
-      campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-      campaign.toggle if campaign.yaml['until'] && Time.parse(campaign.yaml['until']) < Time.now
-    end
+    done
   end
 end

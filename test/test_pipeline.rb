@@ -76,7 +76,7 @@ class PipelineTest < Minitest::Test
     second = lane.letters.add
     second.toggle
     post = FakePostman.new
-    Pipeline.new.fetch(post)
+    Pipeline.new.fetch(post, cycles: 1)
     assert(post.deliveries.find { |d| d.letter.id == second.id })
     assert(!post.deliveries.find { |d| d.letter.id == first.id })
   end
