@@ -32,7 +32,7 @@
           %ul
             %li
               - if defined? user
-                %a{href: '/home'}
+                %a{href: '/'}
                   = "@#{user[:login]}"
               - else
                 %a{href: login_link}

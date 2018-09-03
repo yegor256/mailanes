@@ -227,7 +227,7 @@ get '/download-recipients' do
   list = owner.lists.list(params[:id].to_i)
   content_type 'text/csv'
   CSV.generate do |csv|
-    list.recipients.all(limit: 256 * 1024).each do |r|
+    list.recipients.all(limit: -1).each do |r|
       csv << [r.email, r.first, r.last, r.source, r.created.utc.iso8601]
     end
   end
@@ -371,6 +371,17 @@ post '/do-add' do
   redirect "/add?list=#{list.id}"
 end
 
+get '/download-list' do
+  list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
+  raise "You don't have access to the list ##{list.id}" unless list.friend?(current_user)
+  content_type 'text/csv'
+  CSV.generate do |csv|
+    list.recipients.all(query: "=@#{current_user}", limit: -1).each do |r|
+      csv << [r.email, r.first, r.last, r.source, r.created.utc.iso8601]
+    end
+  end
+end
+
 post '/subscribe' do
   list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
   if list.recipients.exists?(params[:email])
@@ -381,7 +392,8 @@ post '/subscribe' do
       list.yaml,
       [
         "A subscriber #{params[:email]} re-entered the list ##{list.id}: \"#{list.title}\".",
-        "There are #{list.recipients.active_count} active subscribers in the list now.",
+        "There are #{list.recipients.active_count} active subscribers in the list now,",
+        "out of #{list.recipients.count} total.",
         "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
       ].join(' ')
     )
@@ -404,7 +416,8 @@ post '/subscribe' do
       list.yaml,
       [
         "A new subscriber #{params[:email]} just got into your list ##{list.id}: \"#{list.title}\".",
-        "There are #{list.recipients.active_count} active subscribers in the list still.",
+        "There are #{list.recipients.active_count} active subscribers in the list now,",
+        "out of #{list.recipients.count} total.",
         "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
       ].join(' ')
     )
@@ -429,7 +442,8 @@ get '/unsubscribe' do
     list.yaml,
     [
       "Email #{email} has been unsubscribed from your list ##{list.id}: \"#{list.title}\".",
-      "There are #{list.recipients.count} emails in the list now."
+      "There are #{list.recipients.active_count} active subscribers in the list still,",
+      "out of #{list.recipients.count} total."
     ].join(' ')
   )
   haml :unsubscribed, layout: :layout, locals: merged(

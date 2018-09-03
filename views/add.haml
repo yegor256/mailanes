@@ -16,4 +16,11 @@
   There are
   = list.recipients.count
   recipient(s) in the list already.
+  You submitted
+  = list.recipients.count_by_source("@#{current_user}")
+  of them.
 
+%p
+  You can
+  %a{href: "/download-list?list=#{list.id}"} download
+  the entire list in CSV format.

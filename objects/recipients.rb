@@ -35,8 +35,9 @@ class Recipients
   def all(query: '', limit: 100)
     q = [
       'SELECT * FROM recipient',
-      'WHERE list=$1 AND (email LIKE $2 OR first LIKE $2 OR last LIKE $2 OR yaml LIKE $2)',
-      'ORDER BY created DESC LIMIT $3'
+      'WHERE list=$1 AND (email LIKE $2 OR first LIKE $2 OR last LIKE $2 OR yaml LIKE $2 OR source LIKE $2)',
+      'ORDER BY created DESC',
+      limit > 0 ? 'LIMIT $3' : ''
     ].join(' ')
     like = "%#{query}%"
     like = query[1..-1] if query.start_with?('=')
@@ -51,6 +52,10 @@ class Recipients
 
   def active_count
     @pgsql.exec('SELECT COUNT(id) FROM recipient WHERE list=$1 AND active=true', [@list.id])[0]['count'].to_i
+  end
+
+  def count_by_source(source)
+    @pgsql.exec('SELECT COUNT(id) FROM recipient WHERE list=$1 AND source=$2', [@list.id, source])[0]['count'].to_i
   end
 
   def exists?(email)
