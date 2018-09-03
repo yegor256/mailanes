@@ -70,6 +70,12 @@ class Delivery
     @hash = {}
   end
 
+  def created
+    Time.parse(
+      @hash['created'] || @pgsql.exec('SELECT created FROM delivery WHERE id=$1', [@id])[0]['created']
+    )
+  end
+
   def save_relax(time)
     @pgsql.exec('UPDATE delivery SET relax=$1 WHERE id=$2', [time.strftime('%Y-%m-%d %H:%M:%S'), @id])
     @hash = {}
