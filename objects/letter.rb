@@ -42,14 +42,10 @@ class Letter
   end
 
   def lane
-    hash = @pgsql.exec(
-      'SELECT lane.* FROM lane JOIN letter ON letter.lane=lane.id WHERE letter.id=$1',
-      [@id]
-    )[0]
+    id = @hash['lane'] || @pgsql.exec('SELECT lane FROM letter WHERE id=$1', [@id])[0]['lane']
     Lane.new(
-      id: hash['id'].to_i,
-      pgsql: @pgsql,
-      hash: hash
+      id: id.to_i,
+      pgsql: @pgsql
     )
   end
 
@@ -125,11 +121,11 @@ class Letter
       message_id "<#{UUIDTools::UUID.random_create}@mailanes.com>"
       text_part do
         content_type 'text/plain; charset=UTF-8'
-        body text
+        body with_utm(text, delivery)
       end
       html_part do
         content_type 'text/html; charset=UTF-8'
-        body html
+        body with_utm(html, delivery)
       end
     end
     raise "SMTP is not configured in the Lane ##{ln.id}" unless ln.yaml['smtp']
@@ -153,5 +149,16 @@ class Letter
       "(authenticated as #{ln.yaml['smtp']['user']}),",
       "in #{(Time.now - start).round(2)}s"
     ].join(' ')
+  end
+
+  private
+
+  def with_utm(text, delivery)
+    text.gsub(%r{(http://[^ ])+}) do |u|
+      r = u + (u.include?('?') ? '&' : '?')
+      r += 'utm_source=mailanes.com&utm_medium=email'
+      r += "&utm_campaign=#{delivery.campaign.id}" unless delivery.nil?
+      r
+    end
   end
 end
