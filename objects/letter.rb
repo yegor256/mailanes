@@ -102,6 +102,12 @@ class Letter
       Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(content),
       delivery
     )
+    ln = lane
+    name = "#{recipient.first.strip} #{recipient.last.strip}".strip
+    to = recipient.email
+    to = "#{name} <#{recipient.email}>" unless name.empty?
+    from = (yaml['from'] || ln.yaml['from']).strip
+    subject = (yaml['subject'] || ln.yaml['subject']).strip
     if yaml['quote']
       quote = lane.letters.letter(yaml['quote'].to_i)
       appendix = markdown(quote.liquid, codec, recipient, delivery)
@@ -113,13 +119,8 @@ class Letter
         Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(appendix),
         delivery
       ).split("\n").map { |t| '> ' + t }.join("\n")
+      subject = 'Re: ' + quote.yaml['subject'].strip
     end
-    ln = lane
-    name = "#{recipient.first.strip} #{recipient.last.strip}".strip
-    to = recipient.email
-    to = "#{name} <#{recipient.email}>" unless name.empty?
-    from = (yaml['from'] || ln.yaml['from']).strip
-    subject = (yaml['subject'] || ln.yaml['subject']).strip
     mail = Mail.new do
       from from
       to to
