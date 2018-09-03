@@ -51,4 +51,14 @@ class Letters
       pgsql: @pgsql
     )
   end
+
+  def letter(id)
+    hash = @pgsql.exec('SELECT * FROM letter WHERE lane=$1 AND id=$2', [@lane.id, id])[0]
+    raise "Letter ##{id} not found in the lane ##{@lane.id}" if hash.nil?
+    Letter.new(
+      id: hash['id'].to_i,
+      pgsql: @pgsql,
+      hash: hash
+    )
+  end
 end

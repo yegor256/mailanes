@@ -93,27 +93,27 @@ class Letter
   end
 
   def deliver(recipient, codec = GLogin::Codec.new(''), delivery: nil)
-    template = Liquid::Template.parse(liquid)
-    token = codec.encrypt(recipient.id.to_s)
-    markdown = template.render(
-      'email' => recipient.email,
-      'first' => recipient.first,
-      'last' => recipient.last,
-      'token' => token,
-      'unsubscribe' => [
-        "https://www.mailanes.com/unsubscribe?token=#{CGI.escape(token)}",
-        delivery.nil? ? '' : "&d=#{delivery.id}"
-      ].join,
-      'id' => id
-    )
+    content = markdown(liquid, codec, recipient)
     html = with_utm(
-      Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(markdown),
+      Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(content),
       delivery
     )
     text = with_utm(
-      Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(markdown),
+      Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(content),
       delivery
     )
+    if yaml['quote']
+      quote = lane.letters.letter(yaml['quote'].to_i)
+      appendix = markdown(quote.liquid, codec, recipient)
+      html += '<blockquote>' + with_utm(
+        Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(appendix),
+        delivery
+      ) + '</blockquote>'
+      text += with_utm(
+        Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(appendix),
+        delivery
+      ).split("\n").map { |t| '> ' + t }.join("\n")
+    end
     ln = lane
     name = "#{recipient.first.strip} #{recipient.last.strip}".strip
     to = recipient.email
@@ -158,6 +158,22 @@ class Letter
   end
 
   private
+
+  def markdown(lqd, codec, recipient)
+    template = Liquid::Template.parse(lqd)
+    token = codec.encrypt(recipient.id.to_s)
+    template.render(
+      'email' => recipient.email,
+      'first' => recipient.first,
+      'last' => recipient.last,
+      'token' => token,
+      'unsubscribe' => [
+        "https://www.mailanes.com/unsubscribe?token=#{CGI.escape(token)}",
+        delivery.nil? ? '' : "&d=#{delivery.id}"
+      ].join,
+      'id' => id
+    )
+  end
 
   def with_utm(text, delivery)
     text.gsub(%r{(https?://[a-zA-Z0-9%-_./&?]+)}) do |u|
