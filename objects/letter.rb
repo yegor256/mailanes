@@ -93,7 +93,7 @@ class Letter
   end
 
   def deliver(recipient, codec = GLogin::Codec.new(''), delivery: nil)
-    content = markdown(liquid, codec, recipient)
+    content = markdown(liquid, codec, recipient, delivery)
     html = with_utm(
       Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(content),
       delivery
@@ -104,7 +104,7 @@ class Letter
     )
     if yaml['quote']
       quote = lane.letters.letter(yaml['quote'].to_i)
-      appendix = markdown(quote.liquid, codec, recipient)
+      appendix = markdown(quote.liquid, codec, recipient, delivery)
       html += '<blockquote>' + with_utm(
         Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(appendix),
         delivery
@@ -159,7 +159,7 @@ class Letter
 
   private
 
-  def markdown(lqd, codec, recipient)
+  def markdown(lqd, codec, recipient, delivery)
     template = Liquid::Template.parse(lqd)
     token = codec.encrypt(recipient.id.to_s)
     template.render(
