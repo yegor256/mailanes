@@ -404,10 +404,11 @@ post '/subscribe' do
       last: params[:last] || '',
       source: params[:source] || ''
     )
+    country = Geocoder.search(request.ip).first.country
     recipient.save_yaml(
       params.merge(
         request_ip: request.ip,
-        country: Geocoder.search(request.ip).first.country,
+        country: country,
         referrer: request.referer,
         user_agent: request.user_agent
       ).map { |k, v| "#{k}: #{v}" }.join("\n")
@@ -415,7 +416,8 @@ post '/subscribe' do
     settings.tbot.notify(
       list.yaml,
       [
-        "A new subscriber #{params[:email]} just got into your list ##{list.id}: \"#{list.title}\".",
+        "A new subscriber #{params[:email]} (from #{country})",
+        "just got into your list ##{list.id}: \"#{list.title}\".",
         "There are #{list.recipients.active_count} active subscribers in the list now,",
         "out of #{list.recipients.count} total.",
         "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
