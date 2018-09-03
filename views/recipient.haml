@@ -54,8 +54,7 @@
 - else
   - deliveries.each do |d|
     %p
-      = succeed ':' do
-        %a{href: "/delivery?id=#{d.id}"}= "##{d.id}"
+      %a{href: "/delivery?id=#{d.id}"}= "##{d.id}"
       = '/'
       = d.created.utc.iso8601
       with letter
