@@ -7,10 +7,10 @@
 %form{method: 'POST', action: '/do-add'}
   %fieldset
     %input{type: 'hidden', name: 'id', value: list.id}
-    %input{type: 'text', name: 'email', placeholder: 'Email', size: 34, required: 'true', autocomplete: 'off'}
-    %input{type: 'text', name: 'first', placeholder: 'First name', size: 24, autocomplete: 'off'}
-    %input{type: 'text', name: 'last', placeholder: 'Last name', size: 28, autocomplete: 'off'}
-    %input{type: 'submit', value: 'Add'}
+    %input{type: 'text', name: 'email', placeholder: 'Email', size: 34, required: 'true', autocomplete: 'off', autofocus: 'true', tabindex: 1}
+    %input{type: 'text', name: 'first', placeholder: 'First name', size: 24, autocomplete: 'off', tabindex: 2}
+    %input{type: 'text', name: 'last', placeholder: 'Last name', size: 28, autocomplete: 'off', tabindex: 3}
+    %input{type: 'submit', value: 'Add', tabindex: 4}
 
 %p
   There are
