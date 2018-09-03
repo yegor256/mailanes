@@ -110,7 +110,6 @@ class Letter
     subject = (yaml['subject'] || ln.yaml['subject'] || '').strip
     if yaml['quote']
       quote = lane.letters.letter(yaml['quote'].to_i)
-      quote.deliveries[0]
       appendix = markdown(quote.liquid, codec, recipient, delivery)
       html += [
         "On #{(Time.now - 60 * 60 * 24 * 7).strftime('%c')} #{from} wrote:<br/>",
