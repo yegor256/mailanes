@@ -73,6 +73,8 @@ until: 03-09-2018
 # For how many days/hours/minutes the campaign should
 # not send out any letters after it sends this one.
 relax: "20:0:0"
+# The ID of the letter to quote while sending this one
+quote: 12
 ```
 
 Here is how your Liquid template may look like:

@@ -348,7 +348,9 @@ end
 
 get '/add' do
   list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
-  raise "You don't have access to the list ##{list.id}" if list.owner != current_user && !list.friend?(current_user)
+  if list.owner != current_user && !list.friend?(current_user)
+    raise "@#{current_user} doesn't have access to the list ##{list.id}"
+  end
   haml :add, layout: :layout, locals: merged(
     title: '/add',
     list: list
@@ -357,7 +359,9 @@ end
 
 post '/do-add' do
   list = List.new(id: params[:id].to_i, pgsql: settings.pgsql)
-  raise "You don't have access to the list ##{list.id}" if list.owner != current_user && !list.friend?(current_user)
+  if list.owner != current_user && !list.friend?(current_user)
+    raise "@#{current_user} doesn't have access to the list ##{list.id}"
+  end
   list.recipients.add(
     params[:email],
     first: params[:first],
