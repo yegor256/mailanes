@@ -160,7 +160,7 @@ class Letter
   private
 
   def with_utm(text, delivery)
-    text.gsub(%r{(http://[^ ]+)}) do |u|
+    text.gsub(%r{(http://[^a-zA-Z0-9%-_./&?]+)}) do |u|
       r = u + (u.include?('?') ? '&' : '?')
       r += 'utm_source=mailanes.com&utm_medium=email&utm_campaign='
       r += delivery.nil? ? '0' : delivery.campaign.id.to_s
