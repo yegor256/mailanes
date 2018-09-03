@@ -39,6 +39,6 @@ class CampaignTest < Minitest::Test
     letter = lane.letters.add
     letter.toggle
     Pipeline.new.fetch(Postman::Fake.new)
-    assert_equal(1, campaign.report.count)
+    assert_equal(1, campaign.deliveries.count)
   end
 end

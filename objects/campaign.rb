@@ -88,28 +88,15 @@ class Campaign
     @hash = {}
   end
 
-  def report(limit: 50)
+  def deliveries(limit: 50)
     q = [
-      'SELECT delivery.*, recipient.email, lane.id AS lane_id, letter.id AS letter_id FROM delivery',
-      'JOIN campaign ON delivery.campaign=campaign.id',
-      'JOIN letter ON delivery.letter=letter.id',
-      'JOIN lane ON letter.lane=lane.id',
-      'JOIN recipient ON delivery.recipient=recipient.id',
-      'WHERE campaign.id=$1',
+      'SELECT * FROM delivery',
+      'WHERE campaign=$1',
       'ORDER BY delivery.created DESC',
       'LIMIT $2'
     ].join(' ')
     @pgsql.exec(q, [@id, limit]).map do |r|
-      {
-        delivery: Delivery.new(id: r['id'].to_i, pgsql: @pgsql, hash: r),
-        text: [
-          "##{r['id']}/#{Time.parse(r['created']).utc.iso8601} to #{r['email']}",
-          "in lane ##{r['lane_id']}",
-          "with letter ##{r['letter_id']}",
-          r['relax'] ? "(relax is #{r['relax']}):" : '',
-          r['details'].empty? ? 'WAITING' : r['details']
-        ].join(' ')
-      }
+      Delivery.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end
 
