@@ -171,8 +171,8 @@ class Letter
     token = codec.encrypt(recipient.id.to_s)
     template.render(
       'email' => recipient.email,
-      'first' => recipient.first,
-      'last' => recipient.last,
+      'first' => recipient.first.empty? ? nil : recipient.first,
+      'last' => recipient.last.empty? ? nil : recipient.last,
       'token' => token,
       'unsubscribe' => [
         "https://www.mailanes.com/unsubscribe?token=#{CGI.escape(token)}",

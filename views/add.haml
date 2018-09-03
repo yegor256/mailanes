@@ -23,4 +23,9 @@
 %p
   You can
   %a{href: "/download-list?list=#{list.id}"} download
-  the entire list in CSV format.
+  your part of the list in CSV format.
+
+%p
+  The list is owned by
+  = succeed '.' do
+    = "@#{list.owner}"
