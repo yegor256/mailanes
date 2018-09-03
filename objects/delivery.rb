@@ -38,38 +38,26 @@ class Delivery
   end
 
   def recipient
-    hash = @pgsql.exec(
-      'SELECT recipient.* FROM recipient JOIN delivery ON delivery.recipient=recipient.id WHERE delivery.id=$1',
-      [@id]
-    )[0]
+    id = @hash['recipient'] || @pgsql.exec('SELECT recipient FROM delivery WHERE id=$1', [@id])[0]['recipient']
     Recipient.new(
-      id: hash['id'].to_i,
-      pgsql: @pgsql,
-      hash: hash
+      id: id.to_i,
+      pgsql: @pgsql
     )
   end
 
   def letter
-    hash = @pgsql.exec(
-      'SELECT letter.* FROM letter JOIN delivery ON delivery.letter=letter.id WHERE delivery.id=$1',
-      [@id]
-    )[0]
+    id = @hash['letter'] || @pgsql.exec('SELECT letter FROM delivery WHERE id=$1', [@id])[0]['letter']
     Letter.new(
-      id: hash['id'].to_i,
-      pgsql: @pgsql,
-      hash: hash
+      id: id.to_i,
+      pgsql: @pgsql
     )
   end
 
   def campaign
-    hash = @pgsql.exec(
-      'SELECT campaign.* FROM campaign JOIN delivery ON delivery.campaign=campaign.id WHERE delivery.id=$1',
-      [@id]
-    )[0]
+    id = @hash['campaign'] || @pgsql.exec('SELECT campaign FROM delivery WHERE id=$1', [@id])[0]['campaign']
     Campaign.new(
-      id: hash['id'].to_i,
-      pgsql: @pgsql,
-      hash: hash
+      id: id.to_i,
+      pgsql: @pgsql
     )
   end
 
@@ -82,8 +70,12 @@ class Delivery
     @hash = {}
   end
 
-  def relax(time)
+  def save_relax(time)
     @pgsql.exec('UPDATE delivery SET relax=$1 WHERE id=$2', [time.strftime('%Y-%m-%d %H:%M:%S'), @id])
     @hash = {}
+  end
+
+  def relax
+    @hash['relax'] || @pgsql.exec('SELECT relax FROM delivery WHERE id=$1', [@id])[0]['relax']
   end
 end

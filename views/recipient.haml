@@ -46,3 +46,22 @@
   = recipient.source
 
 %pre= recipient.yaml.to_yaml
+
+- deliveries = recipient.deliveries
+- if deliveries.empty?
+  %p
+    No delivery reports as of yet.
+- else
+  - deliveries.each do |d|
+    %p
+      = succeed ':' do
+        %a{href: "/delivery?id=#{d.id}"}= "##{d.id}"
+      = '/'
+      = d.created.utc.iso8601
+      with letter
+      %a{href: "/letter?id=#{d.letter.id}"}= "##{d.letter.id}"
+      in campaign
+      %a{href: "/campaign?id=#{d.campaign.id}"}= "##{d.campaign.id}"
+      = d.relax ? "(relax is #{d.relax})" : ''
+      = ':'
+      = d.details.empty? ? 'WAITING' : d.details

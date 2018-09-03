@@ -96,7 +96,7 @@ class Letter
     @hash = {}
   end
 
-  def deliver(recipient, codec = GLogin::Codec.new(''))
+  def deliver(recipient, codec = GLogin::Codec.new(''), delivery: nil)
     template = Liquid::Template.parse(liquid)
     token = codec.encrypt(recipient.id.to_s)
     markdown = template.render(
@@ -104,7 +104,10 @@ class Letter
       'first' => recipient.first,
       'last' => recipient.last,
       'token' => token,
-      'unsubscribe' => "https://www.mailanes.com/unsubscribe?token=#{CGI.escape(token)}",
+      'unsubscribe' => [
+        "https://www.mailanes.com/unsubscribe?token=#{CGI.escape(token)}",
+        delivery.nil? ? '' : "&d=#{delivery.id}"
+      ].join,
       'id' => id
     )
     html = Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(markdown)

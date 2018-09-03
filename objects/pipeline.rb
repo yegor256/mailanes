@@ -102,7 +102,7 @@ class Pipeline
         elsif letter.yaml['relax'] =~ /[0-9]{2}-[0-9]{2}-[0-9]{4}/
           time = Time.parse(letter.yaml['relax'])
         end
-        delivery.relax(time)
+        delivery.save_relax(time)
       end
       postman.deliver(delivery)
       done = true

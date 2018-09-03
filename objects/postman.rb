@@ -41,7 +41,7 @@ class Postman
     recipient = delivery.recipient
     log = ''
     begin
-      log = letter.deliver(recipient, @codec)
+      log = letter.deliver(recipient, @codec, delivery: delivery)
     rescue StandardError => e
       log = "#{e.class.name} #{e.message}; #{e.backtrace.join('; ')}"
     end

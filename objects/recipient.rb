@@ -89,4 +89,16 @@ class Recipient
       @hash['created'] || @pgsql.exec('SELECT created FROM recipient WHERE id=$1', [@id])[0]['created']
     )
   end
+
+  def deliveries(limit: 50)
+    q = [
+      'SELECT * FROM delivery',
+      'WHERE delivery.recipient=$1',
+      'ORDER BY delivery.created DESC',
+      'LIMIT $2'
+    ].join(' ')
+    @pgsql.exec(q, [@id, limit]).map do |r|
+      Delivery.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+    end
+  end
 end
