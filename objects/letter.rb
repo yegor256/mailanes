@@ -110,11 +110,17 @@ class Letter
     subject = (yaml['subject'] || ln.yaml['subject'] || '').strip
     if yaml['quote']
       quote = lane.letters.letter(yaml['quote'].to_i)
+      quote.deliveries[0]
       appendix = markdown(quote.liquid, codec, recipient, delivery)
-      html += '<blockquote>' + with_utm(
-        Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(appendix),
-        delivery
-      ) + '</blockquote>'
+      html += [
+        "On #{(Time.now - 60 * 60 * 24 * 7).strftime('%c')} #{from} wrote:<br/>",
+        '<blockquote style=margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">',
+        with_utm(
+          Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(appendix),
+          delivery
+        ),
+        '</blockquote>'
+      ].join
       text += with_utm(
         Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(appendix),
         delivery
