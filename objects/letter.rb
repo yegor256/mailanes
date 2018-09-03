@@ -106,8 +106,14 @@ class Letter
       ].join,
       'id' => id
     )
-    html = Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(markdown)
-    text = Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(markdown)
+    html = with_utm(
+      Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(markdown),
+      delivery
+    )
+    text = with_utm(
+      Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(markdown),
+      delivery
+    )
     ln = lane
     name = "#{recipient.first.strip} #{recipient.last.strip}".strip
     to = recipient.email
@@ -121,11 +127,11 @@ class Letter
       message_id "<#{UUIDTools::UUID.random_create}@mailanes.com>"
       text_part do
         content_type 'text/plain; charset=UTF-8'
-        body with_utm(text, delivery)
+        body text
       end
       html_part do
         content_type 'text/html; charset=UTF-8'
-        body with_utm(html, delivery)
+        body html
       end
     end
     raise "SMTP is not configured in the Lane ##{ln.id}" unless ln.yaml['smtp']
