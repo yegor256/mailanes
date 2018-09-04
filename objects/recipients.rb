@@ -28,6 +28,9 @@ require_relative 'deliveries'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Recipients
+  # All emails have to match this
+  REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+
   def initialize(list:, pgsql: Pgsql.new)
     @list = list
     @pgsql = pgsql
@@ -64,7 +67,7 @@ class Recipients
   end
 
   def add(email, first: '', last: '', source: '')
-    raise "Invalid email #{email}" unless email =~ /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+    raise "Invalid email #{email}" unless email =~ Recipients::REGEX
     recipient = Recipient.new(
       id: @pgsql.exec(
         'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
@@ -107,6 +110,7 @@ class Recipients
     CSV.foreach(file) do |row|
       next if row[0].nil?
       next if exists?(row[0])
+      next unless row[0] =~ Recipients::REGEX
       recipient = add(row[0], first: row[1] || '', last: row[2] || '', source: source)
       if row[3]
         row[3].strip.split(';').each do |dlv|
