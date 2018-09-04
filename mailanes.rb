@@ -366,15 +366,17 @@ post '/do-add' do
   end
   list.recipients.add(
     params[:email],
-    first: params[:first],
-    last: params[:last],
+    first: params[:first] || '',
+    last: params[:last] || '',
     source: "@#{current_user}"
   )
   settings.tbot.notify(
     list.yaml,
-    "New recipient #{params[:email]} has been added",
-    "by #{current_user} to your list ##{list.id}: \"#{list.title}\".",
-    "There are #{list.recipients.per_day.round(2)} emails joining daily."
+    [
+      "New recipient #{params[:email]} has been added",
+      "by #{current_user} to your list ##{list.id}: \"#{list.title}\".",
+      "There are #{list.recipients.per_day.round(2)} emails joining daily."
+    ].join(' ')
   )
   redirect "/add?list=#{list.id}"
 end

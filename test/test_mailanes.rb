@@ -80,10 +80,20 @@ class AppTest < Minitest::Test
     assert(recipient.active?)
   end
 
+  def test_adds_new_recipient
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    list.save_yaml("friends:\n- jeff")
+    login('jeff')
+    post("/do-add?id=#{list.id}&email=me@mailanes.com")
+    assert_equal(302, last_response.status, last_response.body)
+    assert_equal(1, list.recipients.count)
+  end
+
   private
 
-  def login
-    set_cookie('glogin=tester')
+  def login(name = 'tester')
+    set_cookie('glogin=' + name)
     get('/')
     assert_equal(200, last_response.status, last_response.location)
   end
