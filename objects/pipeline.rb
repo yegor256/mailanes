@@ -90,7 +90,8 @@ class Pipeline
           campaign.yaml,
           [
             "The campaign ##{campaign.id} has been exhausted:",
-            "\"#{campaign.title}.\""
+            "\"#{campaign.title},\"",
+            "https://www.mailanes.com/campaign?id=#{campaign.id}"
           ].join(' ')
         )
       else
