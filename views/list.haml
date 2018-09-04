@@ -2,7 +2,7 @@
   Lists
   = succeed ':' do
     = "##{list.id}"
-  = list.title
+  &= list.title
 
 - if list.stop?
   %p.red
@@ -60,7 +60,7 @@
       %a{href: "/campaign?id=#{c.id}"}= "C##{c.id}"
       = '/'
       %a{href: "/lane?id=#{c.lane.id}"}= "L##{c.lane.id}"
-    = "\"#{c.lane.title}\""
+    &= "\"#{c.lane.title}\""
 
 %p
   Delivered

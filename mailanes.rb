@@ -370,7 +370,9 @@ post '/do-add' do
   )
   settings.tbot.notify(
     list.yaml,
-    "New recipient #{params[:email]} has been added by #{current_user} to your list ##{list.id}: #{list.title}"
+    "New recipient #{params[:email]} has been added",
+    "by #{current_user} to your list ##{list.id}: \"#{list.title}\".",
+    "There are #{list.recipients.per_day.round(2)} emails joining daily."
   )
   redirect "/add?list=#{list.id}"
 end

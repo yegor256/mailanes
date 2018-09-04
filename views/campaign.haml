@@ -2,7 +2,7 @@
   Campaign
   = succeed ':' do
     = "##{campaign.id}"
-  = campaign.title
+  &= campaign.title
 
 %p
   %a.item{onclick: '$("#save").show();'}
@@ -13,11 +13,11 @@
   = succeed ':' do
     %a{href: "/list?id=#{list.id}"}= "List ##{list.id}"
   = succeed ';' do
-    = "\"#{list.title}\""
+    &= "\"#{list.title}\""
   - lane = campaign.lane
   = succeed ':' do
     %a{href: "/lane?id=#{lane.id}"}= "Lane ##{lane.id}"
-  = "\"#{lane.title}\""
+  &= "\"#{lane.title}\""
 
 %p
   It is
@@ -65,5 +65,4 @@
       %a{href: "/campaign?id=#{d.campaign.id}"}= "##{d.campaign.id}"
       = d.relax ? "(relax is #{d.relax})" : ''
       = ':'
-      :escaped
-        = d.details.empty? ? 'WAITING' : d.details
+      &= d.details.empty? ? 'WAITING' : d.details
