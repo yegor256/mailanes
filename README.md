@@ -41,6 +41,12 @@ title: Monthly newsletters
 # The FROM field of all letters to be sent from this
 # Lane. This can be overwritten by each individual Letter.
 from: Yegor Bugayenko <yegor256@gmail.com>
+# The CC of the email to be sent
+cc:
+  - Yegor Bugayenko <yegor256@gmail.com>
+# The BCC of the email to be sent
+bcc:
+  - Yegor Bugayenko <yegor256@gmail.com>
 # SMTP parameters of the email sending server
 smtp:
   host: email-smtp.us-east-1.amazonaws.com
@@ -72,6 +78,12 @@ title: Aug 2018
 subject: There are some great news, guys!
 # The FROM field of all emails to be sent
 from: Yegor Bugayenko <yegor256@gmail.com>
+# The CC of the email to be sent
+cc:
+  - Yegor Bugayenko <yegor256@gmail.com>
+# The BCC of the email to be sent
+bcc:
+  - Yegor Bugayenko <yegor256@gmail.com>
 # When this Letter has to be deactivated
 until: 03-09-2018
 # For how many days/hours/minutes the campaign should

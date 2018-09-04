@@ -119,6 +119,8 @@ class Letter
     to = recipient.email
     to = "#{name} <#{recipient.email}>" unless name.empty?
     from = (yaml['from'] || ln.yaml['from']).strip
+    cc = yaml['cc'] || ln.yaml['cc'] || []
+    bcc = yaml['bcc'] || ln.yaml['bcc'] || []
     subject = (yaml['subject'] || ln.yaml['subject'] || '').strip
     if yaml['quote']
       quote = lane.letters.letter(yaml['quote'].to_i)
@@ -142,6 +144,8 @@ class Letter
     mail = Mail.new do
       from from
       to to
+      cc.each { |a| cc a }
+      bcc.each { |a| bcc a }
       subject subject
       message_id "<#{UUIDTools::UUID.random_create}@mailanes.com>"
       text_part do
