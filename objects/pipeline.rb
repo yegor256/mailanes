@@ -84,15 +84,18 @@ class Pipeline
     ].join(' ')
     @pgsql.exec(q).each do |r|
       campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-      next unless @pgsql.exec(query(campaign.id)).empty?
-      @pgsql.exec('UPDATE campaign SET exhausted = NOW() WHERE id = $1', [campaign.id])
-      tbot.notify(
-        campaign.yaml,
-        [
-          "The campaign ##{campaign.id} has been exhausted:",
-          "\"#{campaign.title}.\""
-        ].join(' ')
-      )
+      if @pgsql.exec(query(campaign.id)).empty?
+        @pgsql.exec('UPDATE campaign SET exhausted = NOW() WHERE id = $1', [campaign.id])
+        tbot.notify(
+          campaign.yaml,
+          [
+            "The campaign ##{campaign.id} has been exhausted:",
+            "\"#{campaign.title}.\""
+          ].join(' ')
+        )
+      else
+        @pgsql.exec('UPDATE campaign SET exhausted = NULL WHERE id = $1', [campaign.id])
+      end
     end
   end
 
