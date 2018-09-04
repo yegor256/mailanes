@@ -83,6 +83,10 @@ class Campaign
     (@hash['active'] || @pgsql.exec('SELECT active FROM campaign WHERE id=$1', [@id])[0]['active']) == 't'
   end
 
+  def exhausted?
+    !(@hash['exhausted'] || @pgsql.exec('SELECT exhausted FROM campaign WHERE id=$1', [@id])[0]['exhausted']).nil?
+  end
+
   def toggle
     @pgsql.exec('UPDATE campaign SET active=not(active) WHERE id=$1', [@id])
     @hash = {}

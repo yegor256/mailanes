@@ -26,7 +26,7 @@ require 'telebot'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Tbot
-  def initialize(token)
+  def initialize(token = '')
     @token = token
     @client = Telebot::Client.new(token) unless token.empty?
   end

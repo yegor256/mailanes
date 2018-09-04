@@ -26,6 +26,7 @@ require 'redcarpet'
 require 'redcarpet/render_strip'
 require 'glogin/codec'
 require_relative 'pgsql'
+require_relative 'campaign'
 
 # Letter.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -47,6 +48,17 @@ class Letter
       id: id.to_i,
       pgsql: @pgsql
     )
+  end
+
+  def campaigns
+    q = [
+      'SELECT * FROM campaign',
+      'JOIN letter ON letter.lane=campaign.lane',
+      'WHERE letter.id=$1'
+    ].join(' ')
+    @pgsql.exec(q, [@id]).map do |r|
+      Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+    end
   end
 
   def title

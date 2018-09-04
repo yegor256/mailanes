@@ -23,6 +23,7 @@ require_relative 'campaign'
 require_relative 'letter'
 require_relative 'recipient'
 require_relative 'deliveries'
+require_relative 'tbot'
 
 # Pipeline.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -46,20 +47,83 @@ class Pipeline
     end
   end
 
-  def deactivate
+  def deactivate(tbot = Tbot.new)
     @pgsql.exec('SELECT * FROM letter WHERE active=true').each do |r|
       letter = Letter.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-      letter.toggle if letter.yaml['until'] && Time.parse(letter.yaml['until']) < Time.now
+      next unless letter.yaml['until'] && Time.parse(letter.yaml['until']) < Time.now
+      letter.toggle
+      letter.campaigns.each do |c|
+        tbot.notify(
+          campaign.yaml,
+          [
+            "The letter ##{letter.id} \"#{letter.title}\" has been deactivated",
+            "in the campaign ##{c.id} \"#{c.title}\" due to its UNTIL configuration."
+          ].join(' ')
+        )
+      end
     end
     @pgsql.exec('SELECT * FROM campaign WHERE active=true').each do |r|
       campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-      campaign.toggle if campaign.yaml['until'] && Time.parse(campaign.yaml['until']) < Time.now
+      next unless campaign.yaml['until'] && Time.parse(campaign.yaml['until']) < Time.now
+      campaign.toggle
+      tbot.notify(
+        campaign.yaml,
+        [
+          "The campaign ##{campaign.id} has been deactivated because of its UNTIL configuration:",
+          "\"#{campaign.title}.\""
+        ].join(' ')
+      )
     end
   end
 
+  def exhaust(tbot = Tbot.new)
+    q = [
+      'SELECT * FROM campaign',
+      'WHERE active = true',
+      'AND (exhausted IS NULL OR exhausted < NOW() - INTERVAL \'1 DAY\')'
+    ].join(' ')
+    @pgsql.exec(q).each do |r|
+      campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+      next unless @pgsql.exec(query("c.id = #{campaign.id}")).empty?
+      @pgsql.exec('UPDATE campaign SET exhausted = NOW() WHERE id = $1', [campaign.id])
+      tbot.notify(
+        campaign.yaml,
+        [
+          "The campaign ##{campaign.id} has been exhausted:",
+          "\"#{campaign.title}.\""
+        ].join(' ')
+      )
+    end
+  end
+
+  private
+
   def fetch_one(postman)
     deliveries = Deliveries.new(pgsql: @pgsql)
-    q = [
+    done = false
+    @pgsql.exec(query).each do |r|
+      campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
+      letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql)
+      recipient = Recipient.new(id: r['rid'].to_i, pgsql: @pgsql)
+      delivery = deliveries.add(campaign, letter, recipient)
+      if letter.yaml['relax']
+        time = Time.now
+        if letter.yaml['relax'] =~ /[0-9]+:[0-9]+:[0-9]+/
+          days, hours, minutes = letter.yaml['relax'].split(':')
+          time += (days.to_i * 24 * 60 + hours.to_i * 60 + minutes.to_i) * 60
+        elsif letter.yaml['relax'] =~ /[0-9]{2}-[0-9]{2}-[0-9]{4}/
+          time = Time.parse(letter.yaml['relax'])
+        end
+        delivery.save_relax(time)
+      end
+      postman.deliver(delivery)
+      done = true
+    end
+    done
+  end
+
+  def query(where = 'true = true')
+    [
       'SELECT recipient.id AS rid, MAX(c.id) AS cid, MAX(letter.place), MAX(letter.id) AS lid FROM recipient',
       'JOIN list ON list.id = recipient.list AND list.stop = false',
       'JOIN campaign AS c ON list.id = c.list AND c.active = true',
@@ -85,28 +149,9 @@ class Pipeline
       '  AND (recipient.created < NOW() - INTERVAL \'10 MINUTES\' OR recipient.email LIKE \'%@mailanes.com\')',
       '  AND (SELECT COUNT(id) FROM delivery',
       '    WHERE delivery.campaign=c.id AND delivery.created > NOW() - INTERVAL \'1 DAY\') < c.speed',
+      'AND ' + where,
       'GROUP BY rid',
       'LIMIT 1'
     ].join(' ')
-    done = false
-    @pgsql.exec(q).each do |r|
-      campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
-      letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql)
-      recipient = Recipient.new(id: r['rid'].to_i, pgsql: @pgsql)
-      delivery = deliveries.add(campaign, letter, recipient)
-      if letter.yaml['relax']
-        time = Time.now
-        if letter.yaml['relax'] =~ /[0-9]+:[0-9]+:[0-9]+/
-          days, hours, minutes = letter.yaml['relax'].split(':')
-          time += (days.to_i * 24 * 60 + hours.to_i * 60 + minutes.to_i) * 60
-        elsif letter.yaml['relax'] =~ /[0-9]{2}-[0-9]{2}-[0-9]{4}/
-          time = Time.parse(letter.yaml['relax'])
-        end
-        delivery.save_relax(time)
-      end
-      postman.deliver(delivery)
-      done = true
-    end
-    done
   end
 end

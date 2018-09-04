@@ -145,6 +145,17 @@ class PipelineTest < Minitest::Test
     assert(!letter.active?)
   end
 
+  def test_exhausts_campaigns
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    list.recipients.add('test@mailanes.com')
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    campaign.toggle
+    Pipeline.new.exhaust
+    assert(campaign.exhausted?)
+  end
+
   class FakePostman
     attr_reader :deliveries
 

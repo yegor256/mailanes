@@ -58,6 +58,10 @@ title: Monthlty
 until: 03-09-2018
 # Maximum amount of emails to be sent per day
 speed: 100
+notify:
+  # Notify in Telegram chat. You can get this number
+  # just by starting a chat with https://t.me/mailanes_bot
+  telegram: 136544085
 ```
 
 ### Letter

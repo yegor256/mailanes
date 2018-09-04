@@ -34,11 +34,13 @@
     = succeed ':' do
       %a{href: url("/campaign?id=#{c.id}")}= "##{c.id}"
     = succeed ';' do
-      = c.title
+      &= c.title
     = succeed ':' do
       %a{href: url("/list?id=#{c.list.id}")}= "List ##{c.list.id}"
     = succeed ';' do
-      = c.list.title
+      &= c.list.title
     = succeed ':' do
       %a{href: url("/lane?id=#{c.lane.id}")}= "Lane ##{c.lane.id}"
-    = c.lane.title
+    &= c.lane.title
+    - if c.exhausted?
+      %span.red exhausted

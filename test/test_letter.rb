@@ -24,6 +24,8 @@ require 'yaml'
 require_relative 'test__helper'
 require_relative '../objects/lanes'
 require_relative '../objects/letters'
+require_relative '../objects/lists'
+require_relative '../objects/campaigns'
 
 class LetterTest < Minitest::Test
   def test_sets_active_to_false
@@ -74,5 +76,16 @@ class LetterTest < Minitest::Test
       letter.save_liquid(text)
       assert_equal(text, letter.liquid)
     end
+  end
+
+  def test_fetches_campaigns
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    list.recipients.add('test@mailanes.com')
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    campaign.toggle
+    letter = lane.letters.add
+    assert_equal(1, letter.campaigns.count)
   end
 end
