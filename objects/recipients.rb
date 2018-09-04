@@ -42,7 +42,7 @@ class Recipients
     ].join(' ')
     like = "%#{query}%"
     like = query[1..-1] if query.start_with?('=')
-    @pgsql.exec(q, [@list.id, like, limit]).map do |r|
+    @pgsql.exec(q, [@list.id, like] + (limit > 0 ? [limit] : [])).map do |r|
       Recipient.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end

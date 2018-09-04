@@ -90,6 +90,15 @@ class AppTest < Minitest::Test
     assert_equal(1, list.recipients.count)
   end
 
+  def test_downloads_friends_list
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    list.save_yaml("friends:\n- jeff")
+    login('jeff')
+    get("/download-list?list=#{list.id}")
+    assert_equal(200, last_response.status, last_response.body)
+  end
+
   private
 
   def login(name = 'tester')

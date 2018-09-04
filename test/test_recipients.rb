@@ -37,6 +37,15 @@ class RecipientsTest < Minitest::Test
     assert_equal(1, recipients.all.count)
   end
 
+  def test_fetches_recipients
+    owner = random_owner
+    lists = Lists.new(owner: owner)
+    list = lists.add
+    recipients = Recipients.new(list: list)
+    recipients.add('test00@mailanes.com', source: "@#{owner}")
+    assert_equal(1, recipients.all(query: "=@#{owner}", limit: -1).count)
+  end
+
   def test_count_by_source
     owner = random_owner
     lists = Lists.new(owner: owner)
