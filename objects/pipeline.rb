@@ -84,7 +84,7 @@ class Pipeline
     ].join(' ')
     @pgsql.exec(q).each do |r|
       campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-      next unless @pgsql.exec(query("c.id = #{campaign.id}")).empty?
+      next unless @pgsql.exec(query(campaign.id)).empty?
       @pgsql.exec('UPDATE campaign SET exhausted = NOW() WHERE id = $1', [campaign.id])
       tbot.notify(
         campaign.yaml,
@@ -122,7 +122,12 @@ class Pipeline
     done
   end
 
-  def query(where = 'true = true')
+  def query(campaign = 0)
+    history = [
+      'SELECT COUNT(id) FROM delivery',
+      'WHERE delivery.campaign=c.id',
+      'AND delivery.created > NOW() - INTERVAL \'1 DAY\''
+    ].join(' ')
     [
       'SELECT recipient.id AS rid, MAX(c.id) AS cid, MAX(letter.place), MAX(letter.id) AS lid FROM recipient',
       'JOIN list ON list.id = recipient.list AND list.stop = false',
@@ -136,7 +141,7 @@ class Pipeline
       'LEFT JOIN delivery AS r',
       '  ON r.recipient = recipient.id',
       '    AND r.campaign = c.id',
-      '    AND r.relax > NOW()',
+      campaign.zero? ? '    AND r.relax > NOW()' : '',
       'LEFT JOIN recipient AS stop',
       '  ON recipient.email = stop.email',
       '    AND stop.id != recipient.id',
@@ -147,9 +152,7 @@ class Pipeline
       '  AND stop.id IS NULL',
       '  AND recipient.active=true',
       '  AND (recipient.created < NOW() - INTERVAL \'10 MINUTES\' OR recipient.email LIKE \'%@mailanes.com\')',
-      '  AND (SELECT COUNT(id) FROM delivery',
-      '    WHERE delivery.campaign=c.id AND delivery.created > NOW() - INTERVAL \'1 DAY\') < c.speed',
-      'AND ' + where,
+      campaign.zero? ? "AND (#{history}) < c.speed" : "AND c.id = #{campaign}",
       'GROUP BY rid',
       'LIMIT 1'
     ].join(' ')
