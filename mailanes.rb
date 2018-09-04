@@ -28,6 +28,7 @@ require 'sinatra/cookies'
 require 'raven'
 require 'glogin'
 require 'glogin/codec'
+require 'time_difference'
 
 require_relative 'version'
 require_relative 'objects/owner'

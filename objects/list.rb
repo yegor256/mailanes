@@ -73,6 +73,12 @@ class List
     friends.include?(login)
   end
 
+  def created
+    Time.parse(
+      @hash['created'] || @pgsql.exec('SELECT created FROM list WHERE id=$1', [@id])[0]['created']
+    )
+  end
+
   def campaigns
     @pgsql.exec('SELECT * FROM campaign WHERE campaign.list=$1 ORDER BY created DESC', [@id]).map do |r|
       Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)

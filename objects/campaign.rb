@@ -88,6 +88,12 @@ class Campaign
     @hash = {}
   end
 
+  def created
+    Time.parse(
+      @hash['created'] || @pgsql.exec('SELECT created FROM campaign WHERE id=$1', [@id])[0]['created']
+    )
+  end
+
   def deliveries(limit: 50)
     q = [
       'SELECT * FROM delivery',

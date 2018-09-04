@@ -40,6 +40,7 @@
 %p
   Created:
   = recipient.created.utc.iso8601
+  = "(#{TimeDifference.between(recipient.created, Time.now).humanize} ago)"
 
 %p
   Source:
@@ -57,6 +58,7 @@
       %a{href: "/delivery?id=#{d.id}"}= "##{d.id}"
       = '/'
       = d.created.utc.iso8601
+      = "(#{TimeDifference.between(d.created, Time.now).humanize} ago)"
       with letter
       %a{href: "/letter?id=#{d.letter.id}"}= "##{d.letter.id}"
       in campaign

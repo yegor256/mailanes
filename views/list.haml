@@ -11,6 +11,11 @@
     list! Its recipients will never receive any letters from you.
 
 %p
+  Created:
+  = list.created.utc.iso8601
+  = "(#{TimeDifference.between(list.created, Time.now).humanize} ago)"
+
+%p
   %a.item{onclick: '$("#save").show();'} Edit YAML
   %a.item{onclick: '$("#add").show();$("#email").focus();'} Add Recipient
   %a.item{onclick: '$("#find").show();$("#query").focus();'} Find Recipient

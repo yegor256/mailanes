@@ -20,6 +20,11 @@
   &= "\"#{lane.title}\""
 
 %p
+  Created:
+  = campaign.created.utc.iso8601
+  = "(#{TimeDifference.between(campaign.created, Time.now).humanize} ago)"
+
+%p
   It is
   %strong
     - if campaign.active?
@@ -57,6 +62,7 @@
       %a{href: "/delivery?id=#{d.id}"}= "##{d.id}"
       = '/'
       = d.created.utc.iso8601
+      = "(#{TimeDifference.between(d.created, Time.now).humanize} ago)"
       to
       %a{href: "/recipient?id=#{d.recipient.id}"}= "##{d.recipient.id}"
       with letter
