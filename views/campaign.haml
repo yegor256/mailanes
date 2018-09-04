@@ -24,6 +24,9 @@
   = campaign.created.utc.iso8601
   = "(#{TimeDifference.between(campaign.created, Time.now).humanize} ago)"
 
+- campaign.exhausted?
+  %p.red Exhausted
+
 %p
   It is
   %strong
