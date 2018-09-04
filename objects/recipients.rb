@@ -65,13 +65,24 @@ class Recipients
 
   def add(email, first: '', last: '', source: '')
     raise "Invalid email #{email}" unless email =~ /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
-    Recipient.new(
+    recipient = Recipient.new(
       id: @pgsql.exec(
         'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
         [@list.id, email.downcase.strip, first.strip, last.strip, source.downcase.strip]
       )[0]['id'].to_i,
       pgsql: @pgsql
     )
+    if @list.yaml['exclusive'] && @list.yaml['exclusive'] == 'true'
+      @pgsql.exec(
+        [
+          'UPDATE recipient SET active = false',
+          'JOIN list ON list.id = recipient.list',
+          'WHERE list.owner = $1 AND list.id != $2'
+        ].join(' '),
+        [@list.owner, @list.id]
+      )
+    end
+    recipient
   end
 
   def recipient(id)

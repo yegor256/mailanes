@@ -32,6 +32,9 @@ notify:
 # and can add recipients to it, via /add?list=ID URL.
 friends:
   - yegor256
+# If this is set to TRUE an email right after being added
+# to this list will be de-activated in all other lists
+exclusive: true
 ```
 
 ### Lane
