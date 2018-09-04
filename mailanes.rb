@@ -452,9 +452,7 @@ get '/unsubscribe' do
     list.yaml,
     [
       "Email #{email} has been unsubscribed from your list ##{list.id}: \"#{list.title}\".",
-      params[:delivery] ? "It was the reaction to http://www.mailaines.com/delivery?id=#{params[:delivery]}" : '',
-      "There are #{list.recipients.active_count} active subscribers in the list still,",
-      "out of #{list.recipients.count} total."
+      params[:delivery] ? "It was the reaction to http://www.mailaines.com/delivery?id=#{params[:delivery]}" : ''
     ].join(' ')
   )
   haml :unsubscribed, layout: :layout, locals: merged(
