@@ -24,7 +24,7 @@
   = campaign.created.utc.iso8601
   = "(#{TimeDifference.between(campaign.created, Time.now).humanize} ago)"
 
-- campaign.exhausted?
+- if campaign.exhausted?
   %p.red Exhausted
 
 %p
@@ -72,7 +72,7 @@
       %a{href: "/letter?id=#{d.letter.id}"}= "##{d.letter.id}"
       in campaign
       %a{href: "/campaign?id=#{d.campaign.id}"}= "##{d.campaign.id}"
-      = d.relax ? "(relax is #{d.relax})" : ''
+      = (d.relax ? "(relax is #{d.relax})" : '')
       = ':'
       - if d.details.empty?
         WAITING

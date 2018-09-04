@@ -99,6 +99,23 @@ class AppTest < Minitest::Test
     assert_equal(200, last_response.status, last_response.body)
   end
 
+  def test_some_pages
+    owner = random_owner
+    login(owner)
+    list = Lists.new(owner: owner).add
+    get("/list?id=#{list.id}")
+    assert_equal(200, last_response.status, last_response.body)
+    recipient = list.recipients.add('test-me1@mailanes.com')
+    get("/recipient?id=#{recipient.id}&list=#{list.id}")
+    assert_equal(200, last_response.status, last_response.body)
+    lane = Lanes.new(owner: owner).add
+    get("/lane?id=#{lane.id}")
+    assert_equal(200, last_response.status, last_response.body)
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    get("/campaign?id=#{campaign.id}")
+    assert_equal(200, last_response.status, last_response.body)
+  end
+
   private
 
   def login(name = 'tester')
