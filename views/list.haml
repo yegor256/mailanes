@@ -11,11 +11,6 @@
     list! Its recipients will never receive any letters from you.
 
 %p
-  Created:
-  = list.created.utc.iso8601
-  = "(#{TimeDifference.between(list.created, Time.now).humanize} ago)"
-
-%p
   %a.item{onclick: '$("#save").show();'} Edit YAML
   %a.item{onclick: '$("#add").show();$("#email").focus();'} Add Recipient
   %a.item{onclick: '$("#find").show();$("#query").focus();'} Find Recipient
@@ -57,6 +52,16 @@
     The forth column may contain a semi-colon separated list of deliveries, which
     we will create right after adding the recipient,
     for example "3/88" (campaign ID, letter ID).
+
+%p
+  Created:
+  = list.created.utc.iso8601
+  = "(#{TimeDifference.between(list.created, Time.now).humanize} ago)"
+
+%p
+  It grows by
+  = list.recipients.per_day(10)
+  per day (last 10 days statistics).
 
 %p
   Participates in:
