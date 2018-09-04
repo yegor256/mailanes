@@ -21,6 +21,7 @@
 require 'csv'
 require_relative 'pgsql'
 require_relative 'recipient'
+require_relative 'deliveries'
 
 # Recipients.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -80,6 +81,14 @@ class Recipients
     )[0]
     raise "Recipient ##{id} not found in the list ##{@list.id}" if hash.nil?
     Recipient.new(id: id, pgsql: @pgsql, hash: hash)
+  end
+
+  def per_day(days = 10)
+    total = @pgsql.exec(
+      "SELECT COUNT(*) FROM recipient WHERE list=$1 AND created > NOW() - INTERVAL \'#{days} DAYS\'",
+      [@list.id]
+    )[0]['count'].to_f
+    total.zero? ? 0 : total / days
   end
 
   def upload(file, source: '')

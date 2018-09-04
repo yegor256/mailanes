@@ -38,7 +38,7 @@ class Pgsql
   def exec(query, args = [])
     @mutex.synchronize do
       connect.exec_params(query, args) do |res|
-        puts "#{query} #{args}"
+        # puts "#{query} #{args}"
         if block_given?
           yield res
         else

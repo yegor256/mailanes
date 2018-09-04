@@ -65,4 +65,5 @@
       %a{href: "/campaign?id=#{d.campaign.id}"}= "##{d.campaign.id}"
       = d.relax ? "(relax is #{d.relax})" : ''
       = ':'
-      = d.details.empty? ? 'WAITING' : d.details
+      :escaped
+        = d.details.empty? ? 'WAITING' : d.details

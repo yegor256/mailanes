@@ -47,6 +47,15 @@ class RecipientsTest < Minitest::Test
     assert_equal(1, recipients.count_by_source(source))
   end
 
+  def test_count_per_day
+    owner = random_owner
+    lists = Lists.new(owner: owner)
+    list = lists.add
+    recipients = Recipients.new(list: list)
+    recipients.add('tes-672@mailanes.com')
+    assert_equal(0.25, recipients.per_day(4))
+  end
+
   def test_upload_recipients
     owner = random_owner
     lists = Lists.new(owner: owner)

@@ -388,19 +388,14 @@ end
 
 post '/subscribe' do
   list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
+  notify = []
   if list.recipients.exists?(params[:email])
     recipient = list.recipients.all(query: '=' + params[:email])[0]
     raise "The email #{recipient.email} has already been subscribed to the list ##{list.id}" if recipient.active?
     recipient.toggle
-    settings.tbot.notify(
-      list.yaml,
-      [
-        "A subscriber #{params[:email]} re-entered the list ##{list.id}: \"#{list.title}\".",
-        "There are #{list.recipients.active_count} active subscribers in the list now,",
-        "out of #{list.recipients.count} total.",
-        "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
-      ].join(' ')
-    )
+    notify += [
+      "A subscriber #{params[:email]} re-entered the list ##{list.id}: \"#{list.title}\"."
+    ]
   else
     recipient = list.recipients.add(
       params[:email],
@@ -417,17 +412,20 @@ post '/subscribe' do
         user_agent: request.user_agent
       ).map { |k, v| "#{k}: #{v}" }.join("\n")
     )
-    settings.tbot.notify(
-      list.yaml,
-      [
-        "A new subscriber #{params[:email]} (from #{country})",
-        "just got into your list ##{list.id}: \"#{list.title}\".",
-        "There are #{list.recipients.active_count} active subscribers in the list now,",
-        "out of #{list.recipients.count} total.",
-        "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
-      ].join(' ')
-    )
+    notify += [
+      "A new subscriber #{params[:email]} (from #{country})",
+      "just got into your list ##{list.id}: \"#{list.title}\"."
+    ]
   end
+  settings.tbot.notify(
+    list.yaml,
+    (notify + [
+      "There are #{list.recipients.active_count} active subscribers in the list now,",
+      "out of #{list.recipients.count} total,",
+      "#{list.recipients.per_day.round(2)} joining daily.",
+      "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
+    ]).join(' ')
+  )
   redirect params[:redirect] if params[:redirect]
   haml :subscribed, layout: :layout, locals: merged(
     title: '/subscribed',
