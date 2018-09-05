@@ -476,29 +476,27 @@ end
 get '/unsubscribe' do
   id = settings.codec.decrypt(params[:token]).to_i
   recipient = Recipient.new(id: id, pgsql: settings.pgsql)
-  again = false
-  unless recipient.active?
-    recipient.post_event('Attempted to unsubscribe, while already unsubscribed.')
-    again = true
-  end
-  email = recipient.email
-  recipient.toggle unless again
   list = recipient.list
-  settings.tbot.notify(
-    list.yaml,
-    [
-      "Email #{email}",
-      "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}))",
-      'has been unsubscribed from your list',
-      "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
-      again ? 'Even though they were unsubscribed already.' : '',
-      @locals[:user] ? "It was done by #{current_user}." : '',
-      params[:d] ? "It was the reaction to [this](http://www.mailaines.com/delivery?id=#{params[:d]})" : '',
-      "There are #{list.recipients.active_count} active subscribers in the list still,",
-      "out of #{list.recipients.count} total."
-    ].join(' ')
-  )
-  recipient.post_event('Unsubscribed' + (@locals[:user] ? " by @#{current_user}" : ''))
+  email = recipient.email
+  if recipient.active?
+    recipient.toggle
+    settings.tbot.notify(
+      list.yaml,
+      [
+        "Email #{email}",
+        "/recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id})",
+        'has been unsubscribed from your list',
+        "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
+        @locals[:user] ? "It was done by #{current_user}." : '',
+        params[:d] ? "It was the reaction to [this](http://www.mailaines.com/delivery?id=#{params[:d]})" : '',
+        "There are #{list.recipients.active_count} active subscribers in the list still,",
+        "out of #{list.recipients.count} total."
+      ].join(' ')
+    )
+    recipient.post_event('Unsubscribed' + (@locals[:user] ? " by @#{current_user}" : ''))
+  else
+    recipient.post_event('Attempted to unsubscribe, while already unsubscribed.')
+  end
   haml :unsubscribed, layout: :layout, locals: merged(
     title: '/unsubscribed',
     email: email,

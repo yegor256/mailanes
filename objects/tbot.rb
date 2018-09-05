@@ -52,6 +52,7 @@ class Tbot
 
   def post(chat, msg)
     return if @token.empty?
+    puts msg
     @client.send_message(chat_id: chat, parse_mode: 'Markdown', text: msg)
   end
 end
