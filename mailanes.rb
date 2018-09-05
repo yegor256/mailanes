@@ -227,7 +227,9 @@ get '/block-recipient' do
   recipient = list.recipients.recipient(params[:id].to_i)
   owner.lists.all.each do |s|
     next unless s.stop?
+    next if s.recipients.exists?(recipient.email)
     s.recipients.add(recipient.email)
+    recipient.post_event("It was added to the block list ##{s.id}.")
   end
   redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
 end
