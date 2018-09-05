@@ -222,6 +222,16 @@ post '/comment-recipient' do
   redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
 end
 
+get '/block-recipient' do
+  list = owner.lists.list(params[:list].to_i)
+  recipient = list.recipients.recipient(params[:id].to_i)
+  owner.lists.all.each do |s|
+    next unless s.stop?
+    s.recipients.add(recipient.email)
+  end
+  redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
+end
+
 post '/upload-recipients' do
   list = owner.lists.list(params[:id].to_i)
   Tempfile.open do |f|
@@ -456,19 +466,21 @@ end
 get '/unsubscribe' do
   id = settings.codec.decrypt(params[:token]).to_i
   recipient = Recipient.new(id: id, pgsql: settings.pgsql)
+  again = false
   unless recipient.active?
     recipient.post_event('Attempted to unsubscribe, while already unsubscribed.')
-    raise "You have already been unsubscribed: #{recipient.email}"
+    again = true
   end
   email = recipient.email
-  recipient.toggle
+  recipient.toggle unless again
   list = recipient.list
   settings.tbot.notify(
     list.yaml,
     [
       "Email #{email} has been unsubscribed from your list",
       "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
-      @locals[:user] ? "I was done by #{current_user}." : '',
+      again ? 'Even though they were unsubscribed already.' : '',
+      @locals[:user] ? "It was done by #{current_user}." : '',
       params[:d] ? "It was the reaction to [this](http://www.mailaines.com/delivery?id=#{params[:d]})" : '',
       "There are #{list.recipients.active_count} active subscribers in the list still,",
       "out of #{list.recipients.count} total."

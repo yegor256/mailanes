@@ -27,8 +27,8 @@ require 'pg'
 class Pgsql
   def initialize(host: 'localhost', port: 0, dbname: 'test', user: 'test', password: 'test')
     @host = host
-    port = File.read('target/pgsql.port').to_i if port.zero?
     @port = port
+    @port = File.read('target/pgsql.port').to_i if port.zero? && File.exist?('target/pgsql.port')
     @dbname = dbname
     @user = user
     @password = password

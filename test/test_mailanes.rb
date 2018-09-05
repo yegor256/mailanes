@@ -71,8 +71,8 @@ class AppTest < Minitest::Test
     assert(recipient.active?)
     token = GLogin::Codec.new('?').encrypt(recipient.id.to_s)
     get("/unsubscribe?token=#{CGI.escape(token)}")
-    recipient = list.recipients.all[0]
     assert_equal(200, last_response.status, last_response.body)
+    recipient = list.recipients.all[0]
     assert(!recipient.active?)
     post("/subscribe?list=#{list.id}&email=me@mailanes.com")
     recipient = list.recipients.all[0]
