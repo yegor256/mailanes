@@ -36,6 +36,7 @@ class Tbot
     Telebot::Bot.new(@token).run do |client, message|
       client.send_message(
         chat_id: message.chat.id,
+        parse_mode: 'Markdown',
         text: [
           "Here is your chat ID: #{message.chat.id}.",
           'Use it in your [YAML configs](https://github.com/yegor256/mailanes).'
