@@ -199,7 +199,7 @@ post '/add-recipient' do
 end
 
 get '/recipient' do
-  list = owner.lists.list(params[:list].to_i)
+  list = shared_list(params[:list].to_i)
   recipient = list.recipients.recipient(params[:id].to_i)
   haml :recipient, layout: :layout, locals: merged(
     title: "##{recipient.id}",
@@ -209,14 +209,14 @@ get '/recipient' do
 end
 
 get '/toggle-recipient' do
-  list = owner.lists.list(params[:list].to_i)
+  list = shared_list(params[:list].to_i)
   recipient = list.recipients.recipient(params[:id].to_i)
   recipient.toggle
   redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
 end
 
 post '/comment-recipient' do
-  list = owner.lists.list(params[:list].to_i)
+  list = shared_list(params[:list].to_i)
   recipient = list.recipients.recipient(params[:id].to_i)
   recipient.post_event(params[:comment])
   redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
@@ -368,10 +368,7 @@ get '/toggle-campaign' do
 end
 
 get '/add' do
-  list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
-  if list.owner != current_user && !list.friend?(current_user)
-    raise "@#{current_user} doesn't have access to the list ##{list.id}"
-  end
+  list = shared_list(params[:list].to_i)
   haml :add, layout: :layout, locals: merged(
     title: '/add',
     list: list
@@ -379,10 +376,7 @@ get '/add' do
 end
 
 post '/do-add' do
-  list = List.new(id: params[:id].to_i, pgsql: settings.pgsql)
-  if list.owner != current_user && !list.friend?(current_user)
-    raise "@#{current_user} doesn't have access to the list ##{list.id}"
-  end
+  list = shared_list(params[:id].to_i)
   list.recipients.add(
     params[:email],
     first: params[:first] || '',
@@ -557,4 +551,12 @@ end
 
 def owner
   Owner.new(login: current_user, pgsql: settings.pgsql)
+end
+
+def shared_list(id)
+  list = List.new(id: id, pgsql: settings.pgsql)
+  if list.owner != current_user && !list.friend?(current_user)
+    raise "@#{current_user} doesn't have access to the list ##{list.id}"
+  end
+  list
 end

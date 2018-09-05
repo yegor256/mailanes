@@ -21,6 +21,8 @@
   = succeed ':' do
     %a{href: "/list?id=#{list.id}"}= "List ##{list.id}"
   &= "\"#{list.title}\""
+  - if current_user != list.owner
+    = "(owned by @#{current_user})"
 
 %p
   Email:
