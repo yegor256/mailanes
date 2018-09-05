@@ -26,7 +26,7 @@ require_relative 'delivery'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Deliveries
-  def initialize(pgsql: Pgsql.new)
+  def initialize(pgsql: Pgsql::TEST)
     @pgsql = pgsql
   end
 

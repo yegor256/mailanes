@@ -35,6 +35,9 @@ class Pgsql
     @mutex = Mutex.new
   end
 
+  # Test connection
+  TEST = Pgsql.new
+
   def exec(query, args = [])
     @mutex.synchronize do
       connect.exec_params(query, args) do |res|

@@ -30,7 +30,7 @@ require_relative 'tbot'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Pipeline
-  def initialize(pgsql: Pgsql.new)
+  def initialize(pgsql: Pgsql::TEST)
     @pgsql = pgsql
   end
 

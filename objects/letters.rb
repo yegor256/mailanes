@@ -26,7 +26,7 @@ require_relative 'letter'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Letters
-  def initialize(lane:, pgsql: Pgsql.new)
+  def initialize(lane:, pgsql: Pgsql::TEST)
     @lane = lane
     @pgsql = pgsql
   end

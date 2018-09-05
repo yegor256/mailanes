@@ -35,7 +35,7 @@ require_relative 'campaign'
 class Letter
   attr_reader :id
 
-  def initialize(id:, pgsql: Pgsql.new, hash: {})
+  def initialize(id:, pgsql: Pgsql::TEST, hash: {})
     raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
     @id = id
     @pgsql = pgsql

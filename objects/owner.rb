@@ -29,7 +29,7 @@ require_relative 'deliveries'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Owner
-  def initialize(login:, pgsql: Pgsql.new)
+  def initialize(login:, pgsql: Pgsql::TEST)
     @login = login
     @pgsql = pgsql
   end

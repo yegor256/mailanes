@@ -8,3 +8,12 @@
   has been removed from the list.
   We are sorry to see you leaving.
 
+- if defined? user && (current_user == list.owner || list.friend?(current_user))
+  %p
+    It was recipient
+    %a{href: "/recipient?id=#{recipient.id}&list=#{list.id}"}
+      = "##{recipient.id}"
+    from the list
+    = succeed '.' do
+      %a{href: "/list?id=#{list.id}"}
+        = "##{list.id}"

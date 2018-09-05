@@ -31,7 +31,7 @@ class Recipients
   # All emails have to match this
   REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
-  def initialize(list:, pgsql: Pgsql.new)
+  def initialize(list:, pgsql: Pgsql::TEST)
     @list = list
     @pgsql = pgsql
   end

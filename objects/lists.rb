@@ -26,7 +26,7 @@ require_relative 'list'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Lists
-  def initialize(owner:, pgsql: Pgsql.new)
+  def initialize(owner:, pgsql: Pgsql::TEST)
     @owner = owner
     @pgsql = pgsql
   end

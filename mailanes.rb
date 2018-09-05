@@ -478,7 +478,8 @@ get '/unsubscribe' do
   haml :unsubscribed, layout: :layout, locals: merged(
     title: '/unsubscribed',
     email: email,
-    list: list
+    list: list,
+    recipient: recipient
   )
 end
 
