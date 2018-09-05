@@ -195,6 +195,7 @@ class Letter
         "https://www.mailanes.com/unsubscribe?token=#{CGI.escape(token)}",
         delivery.nil? ? '' : "&d=#{delivery.id}"
       ].join,
+      'profile' => "https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{recipient.list.id}",
       'id' => id
     )
   end
