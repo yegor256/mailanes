@@ -50,6 +50,11 @@ cc:
 # The BCC of the email to be sent
 bcc:
   - Yegor Bugayenko <yegor256@gmail.com>
+# The TO field of all emails to be sent, which
+# you don't need to specify usually, since this
+# address is taken from the recipient details, but sometimes
+# you may need this.
+to: Yegor Bugayenko <yegor256@gmail.com>
 # SMTP parameters of the email sending server
 smtp:
   host: email-smtp.us-east-1.amazonaws.com
@@ -87,6 +92,11 @@ cc:
 # The BCC of the email to be sent
 bcc:
   - Yegor Bugayenko <yegor256@gmail.com>
+# The TO field of all emails to be sent, which
+# you don't need to specify usually, since this
+# address is taken from the recipient details, but sometimes
+# you may need this.
+to: Yegor Bugayenko <yegor256@gmail.com>
 # When this Letter has to be deactivated
 until: 03-09-2018
 # For how many days/hours/minutes the campaign should

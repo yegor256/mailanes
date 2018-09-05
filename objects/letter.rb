@@ -118,6 +118,7 @@ class Letter
     name = "#{recipient.first.strip} #{recipient.last.strip}".strip
     to = recipient.email
     to = "#{name} <#{recipient.email}>" unless name.empty?
+    to = (yaml['to'] || ln.yaml['to'] || to).strip
     from = (yaml['from'] || ln.yaml['from']).strip
     cc = yaml['cc'] || ln.yaml['cc'] || []
     bcc = yaml['bcc'] || ln.yaml['bcc'] || []
