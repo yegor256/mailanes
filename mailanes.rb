@@ -401,6 +401,13 @@ end
 get '/download-list' do
   list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
   raise "You don't have access to the list ##{list.id}" unless list.friend?(current_user)
+  settings.tbot.notify(
+    list.yaml,
+    [
+      "Your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
+      "has been downloaded by #{current_user}."
+    ].join(' ')
+  )
   content_type 'text/csv'
   CSV.generate do |csv|
     list.recipients.all(query: "=@#{current_user}", limit: -1).each do |r|
@@ -421,7 +428,9 @@ post '/subscribe' do
     recipient.toggle
     recipient.post_event('Re-subscribed.')
     notify += [
-      "A subscriber #{params[:email]} re-entered the list ##{list.id}: \"#{list.title}\"."
+      "A subscriber #{params[:email]}",
+      "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}))",
+      "re-entered the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
     ]
   else
     recipient = list.recipients.add(
@@ -442,6 +451,7 @@ post '/subscribe' do
     recipient.post_event('Subscribed.')
     notify += [
       "A new subscriber #{params[:email]} (from #{country})",
+      "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}))",
       "just got into your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
     ]
   end
@@ -477,7 +487,9 @@ get '/unsubscribe' do
   settings.tbot.notify(
     list.yaml,
     [
-      "Email #{email} has been unsubscribed from your list",
+      "Email #{email}",
+      "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}))",
+      'has been unsubscribed from your list',
       "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
       again ? 'Even though they were unsubscribed already.' : '',
       @locals[:user] ? "It was done by #{current_user}." : '',
