@@ -215,6 +215,13 @@ get '/toggle-recipient' do
   redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
 end
 
+post '/comment-recipient' do
+  list = owner.lists.list(params[:list].to_i)
+  recipient = list.recipients.recipient(params[:id].to_i)
+  recipient.post_event(params[:comment])
+  redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
+end
+
 post '/upload-recipients' do
   list = owner.lists.list(params[:id].to_i)
   Tempfile.open do |f|
@@ -373,8 +380,8 @@ post '/do-add' do
   settings.tbot.notify(
     list.yaml,
     [
-      "New recipient #{params[:email]} has been added",
-      "by #{current_user} to your list ##{list.id}: \"#{list.title}\".",
+      "New recipient `#{params[:email]}` has been added",
+      "by #{current_user} to your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
       "There are #{list.recipients.per_day.round(2)} emails joining daily."
     ].join(' ')
   )
@@ -397,8 +404,12 @@ post '/subscribe' do
   notify = []
   if list.recipients.exists?(params[:email])
     recipient = list.recipients.all(query: '=' + params[:email])[0]
-    raise "The email #{recipient.email} has already been subscribed to the list ##{list.id}" if recipient.active?
+    if recipient.active?
+      recipient.post_event('Attempted to subscribe again, but failed.')
+      raise "The email #{recipient.email} has already been subscribed to the list ##{list.id}"
+    end
     recipient.toggle
+    recipient.post_event('Re-subscribed.')
     notify += [
       "A subscriber #{params[:email]} re-entered the list ##{list.id}: \"#{list.title}\"."
     ]
@@ -418,9 +429,10 @@ post '/subscribe' do
         user_agent: request.user_agent
       ).map { |k, v| "#{k}: #{v}" }.join("\n")
     )
+    recipient.post_event('Subscribed.')
     notify += [
       "A new subscriber #{params[:email]} (from #{country})",
-      "just got into your list ##{list.id}: \"#{list.title}\"."
+      "just got into your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
     ]
   end
   settings.tbot.notify(
@@ -429,7 +441,7 @@ post '/subscribe' do
       "There are #{list.recipients.active_count} active subscribers in the list now,",
       "out of #{list.recipients.count} total,",
       "#{list.recipients.per_day.round(2)} joining daily.",
-      "More details are here: https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}"
+      "More details are [here](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id})."
     ]).join(' ')
   )
   redirect params[:redirect] if params[:redirect]
@@ -444,19 +456,25 @@ end
 get '/unsubscribe' do
   id = settings.codec.decrypt(params[:token]).to_i
   recipient = Recipient.new(id: id, pgsql: settings.pgsql)
-  raise "You have already been unsubscribed: #{recipient.email}" unless recipient.active?
+  unless recipient.active?
+    recipient.post_event('Attempted to unsubscribe, while already unsubscribed.')
+    raise "You have already been unsubscribed: #{recipient.email}"
+  end
   email = recipient.email
   recipient.toggle
   list = recipient.list
   settings.tbot.notify(
     list.yaml,
     [
-      "Email #{email} has been unsubscribed from your list ##{list.id}: \"#{list.title}\".",
-      params[:d] ? "It was the reaction to http://www.mailaines.com/delivery?id=#{params[:d]}" : '',
+      "Email #{email} has been unsubscribed from your list",
+      "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
+      @locals[:user] ? "I was done by #{current_user}." : '',
+      params[:d] ? "It was the reaction to [this](http://www.mailaines.com/delivery?id=#{params[:d]})" : '',
       "There are #{list.recipients.active_count} active subscribers in the list still,",
       "out of #{list.recipients.count} total."
     ].join(' ')
   )
+  recipient.post_event('Unsubscribed' + (@locals[:user] ? " by @#{current_user}" : ''))
   haml :unsubscribed, layout: :layout, locals: merged(
     title: '/unsubscribed',
     email: email,

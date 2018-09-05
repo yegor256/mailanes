@@ -48,6 +48,12 @@
 
 %pre= recipient.yaml.to_yaml
 
+%form.hidden{method: 'POST', action: '/comment-recipient'}
+  %input{type: 'hidden', name: 'list', value: list.id}
+  %input{type: 'hidden', name: 'id', value: recipient.id}
+  %input{type: 'text', name: 'comment', placeholder: 'What just happened?...', size: 50, required: 'true', autocomplete: 'off'}
+  %input{type: 'submit', value: 'Comment'}
+
 - deliveries = recipient.deliveries
 - if deliveries.empty?
   %p

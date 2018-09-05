@@ -80,7 +80,7 @@ class List
   end
 
   def campaigns
-    @pgsql.exec('SELECT * FROM campaign WHERE campaign.list=$1 ORDER BY created DESC', [@id]).map do |r|
+    @pgsql.exec('SELECT * FROM campaign WHERE list=$1 ORDER BY created DESC', [@id]).map do |r|
       Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end

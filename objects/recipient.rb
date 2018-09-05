@@ -90,6 +90,10 @@ class Recipient
     )
   end
 
+  def post_event(msg)
+    @pgsql.exec('INSERT INTO delivery (recipient, details) VALUES ($1, $2)', [@id, msg])
+  end
+
   def deliveries(limit: 50)
     q = [
       'SELECT * FROM delivery',

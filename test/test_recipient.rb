@@ -47,4 +47,13 @@ class RecipientTest < Minitest::Test
     recipient.toggle
     assert(recipient.active?)
   end
+
+  def test_posts_event
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    recipient = Recipients.new(list: list).add('te99st@mailanes.com')
+    assert_equal(0, recipient.deliveries.count)
+    recipient.post_event('he is a good guy')
+    assert_equal(1, recipient.deliveries.count)
+  end
 end
