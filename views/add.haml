@@ -12,6 +12,18 @@
     %input{type: 'text', name: 'last', placeholder: 'Last name', size: 28, autocomplete: 'off', tabindex: 3}
     %input{type: 'submit', value: 'Add', tabindex: 4}
 
+%form{method: 'POST', action: '/upload-recipients', id: 'upload', enctype: 'multipart/form-data'}
+  %input{type: 'hidden', name: 'id', value: list.id}
+  %input{type: 'hidden', name: 'source', value: "@#{current_user}"}
+  %input{type: 'hidden', name: 'redirect', value: "/add?list=#{list.id}"}
+  %input{name: 'file', type: 'file', accept: 'text/plain'}
+  %input{type: 'submit', value: 'Upload'}
+  %br
+  %label.small.gray
+    Make sure it's a headerless CSV file,
+    with an email in the first column,
+    first name in the second,
+    and the last name in the third one.
 %p
   There are
   = list.recipients.count

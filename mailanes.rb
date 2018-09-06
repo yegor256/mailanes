@@ -235,13 +235,13 @@ get '/block-recipient' do
 end
 
 post '/upload-recipients' do
-  list = owner.lists.list(params[:id].to_i)
+  list = shared_list(params[:id].to_i)
   Tempfile.open do |f|
     FileUtils.copy(params[:file][:tempfile], f.path)
     File.delete(params[:file][:tempfile])
-    list.recipients.upload(f.path)
+    list.recipients.upload(f.path, source: params[:source] || '')
   end
-  redirect "/list?id=#{list.id}"
+  redirect params[:redirect] || "/list?id=#{list.id}"
 end
 
 get '/download-recipients' do
