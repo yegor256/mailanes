@@ -164,6 +164,7 @@ class Letter
         Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(appendix),
         delivery
       ).split("\n").map { |t| '> ' + t }.join("\n")
+      raise "There is no subject in the letter ##{quote.id}" unless quote.yaml['subject']
       subject = 'Re: ' + quote.yaml['subject'].strip
     end
     mail = Mail.new do
