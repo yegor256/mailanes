@@ -119,7 +119,7 @@ class Letter
   private
 
   def deliver_telegram(content)
-    chat = lane['telegram']['chat_id'].to_i
+    chat = lane.yaml['telegram']['chat_id'].to_i
     start = Time.now
     @tbot.post(chat, content)
     [
