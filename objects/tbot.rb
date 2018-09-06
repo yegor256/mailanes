@@ -50,8 +50,6 @@ class Tbot
     post(yaml['notify']['telegram'].to_i, msg)
   end
 
-  private
-
   def post(chat, msg, c: @client)
     return if @token.empty?
     c.send_message(chat_id: chat, parse_mode: 'Markdown', text: msg)
