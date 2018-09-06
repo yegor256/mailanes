@@ -64,7 +64,7 @@ class Lanes
     )
   end
 
-  def letter(id)
+  def letter(id, tbot: Tbot.new)
     hash = @pgsql.exec(
       'SELECT letter.* FROM letter JOIN lane ON letter.lane=lane.id WHERE lane.owner=$1 AND letter.id=$2',
       [@owner, id]
@@ -72,7 +72,8 @@ class Lanes
     Letter.new(
       id: hash['id'].to_i,
       pgsql: @pgsql,
-      hash: hash
+      hash: hash,
+      tbot: tbot
     )
   end
 end

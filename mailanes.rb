@@ -90,9 +90,9 @@ configure do
     user: config['pgsql']['user'],
     password: config['pgsql']['password']
   )
-  set :pipeline, Pipeline.new(pgsql: settings.pgsql)
   set :postman, Postman.new(settings.codec)
   set :tbot, Tbot.new(config['telegram_token'])
+  set :pipeline, Pipeline.new(pgsql: settings.pgsql, tbot: settings.tbot)
   if ENV['RACK_ENV'] != 'test'
     Thread.new do
       settings.tbot.start
@@ -103,8 +103,8 @@ configure do
         start = Time.now
         begin
           settings.pipeline.fetch(settings.postman)
-          settings.pipeline.deactivate(settings.tbot)
-          settings.pipeline.exhaust(settings.tbot)
+          settings.pipeline.deactivate
+          settings.pipeline.exhaust
         rescue StandardError => e
           puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
         end
@@ -317,7 +317,7 @@ post '/save-letter' do
 end
 
 post '/test-letter' do
-  letter = owner.lanes.letter(params[:id].to_i)
+  letter = owner.lanes.letter(params[:id].to_i, tbot: settings.tbot)
   list = owner.lists.list(params[:list].to_i)
   recipient = list.recipients.all.sample(1)[0]
   raise "There are no recipients in the list ##{list.id}" if recipient.nil?

@@ -30,8 +30,9 @@ require_relative 'tbot'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Pipeline
-  def initialize(pgsql: Pgsql::TEST)
+  def initialize(pgsql: Pgsql::TEST, tbot: Tbot.new)
     @pgsql = pgsql
+    @tbot = tbot
   end
 
   def fetch(postman, cycles: 100)
@@ -47,13 +48,13 @@ class Pipeline
     end
   end
 
-  def deactivate(tbot = Tbot.new)
+  def deactivate
     @pgsql.exec('SELECT * FROM letter WHERE active=true').each do |r|
       letter = Letter.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
       next unless letter.yaml['until'] && Time.parse(letter.yaml['until']) < Time.now
       letter.toggle
       letter.campaigns.each do |c|
-        tbot.notify(
+        @tbot.notify(
           campaign.yaml,
           [
             "The letter ##{letter.id} \"#{letter.title}\" has been deactivated",
@@ -66,7 +67,7 @@ class Pipeline
       campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
       next unless campaign.yaml['until'] && Time.parse(campaign.yaml['until']) < Time.now
       campaign.toggle
-      tbot.notify(
+      @tbot.notify(
         campaign.yaml,
         [
           "The campaign ##{campaign.id} has been deactivated because of its UNTIL configuration:",
@@ -76,7 +77,7 @@ class Pipeline
     end
   end
 
-  def exhaust(tbot = Tbot.new)
+  def exhaust
     q = [
       'SELECT * FROM campaign',
       'WHERE active = true',
@@ -86,7 +87,7 @@ class Pipeline
       campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
       if @pgsql.exec(query(campaign.id)).empty?
         @pgsql.exec('UPDATE campaign SET exhausted = NOW() WHERE id = $1', [campaign.id])
-        tbot.notify(
+        @tbot.notify(
           campaign.yaml,
           [
             "The campaign ##{campaign.id} has been exhausted:",
@@ -107,7 +108,7 @@ class Pipeline
     done = false
     @pgsql.exec(query).each do |r|
       campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
-      letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql)
+      letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql, tbot: @tbot)
       recipient = Recipient.new(id: r['rid'].to_i, pgsql: @pgsql)
       delivery = deliveries.add(campaign, letter, recipient)
       if letter.yaml['relax']
