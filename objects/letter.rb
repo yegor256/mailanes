@@ -107,9 +107,9 @@ class Letter
 
   def deliver(recipient, codec = GLogin::Codec.new(''), delivery: nil)
     content = markdown(liquid, codec, recipient, delivery)
-    if yaml['transport'].nil? || yaml['transport'].casecmp('smtp')
+    if yaml['transport'].nil? || yaml['transport'].casecmp('smtp').zero?
       deliver_smtp(content, recipient, codec, delivery)
-    elsif yaml['transport'].casecmp('telegram')
+    elsif yaml['transport'].casecmp('telegram').zero?
       deliver_telegram(content)
     else
       raise "Unknown transport \"#{yaml['transport']}\" for the letter ##{@id}"
