@@ -209,6 +209,8 @@ class Letter
     template = Liquid::Template.parse(lqd)
     token = codec.encrypt(recipient.id.to_s)
     template.render(
+      'id' => recipient.id,
+      'list_id' => recipient.list.id,
       'email' => recipient.email,
       'first' => recipient.first.empty? ? nil : recipient.first,
       'last' => recipient.last.empty? ? nil : recipient.last,
@@ -217,8 +219,7 @@ class Letter
         "https://www.mailanes.com/unsubscribe?token=#{CGI.escape(token)}",
         delivery.nil? ? '' : "&d=#{delivery.id}"
       ].join,
-      'profile' => "https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{recipient.list.id}",
-      'id' => id
+      'profile' => "https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{recipient.list.id}"
     )
   end
 
