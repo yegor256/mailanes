@@ -35,11 +35,12 @@ require_relative 'campaign'
 class Letter
   attr_reader :id
 
-  def initialize(id:, pgsql: Pgsql::TEST, hash: {})
+  def initialize(id:, pgsql: Pgsql::TEST, hash: {}, tbot: Tbot.new)
     raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
     @id = id
     @pgsql = pgsql
     @hash = hash
+    @tbot = tbot
   end
 
   def lane
@@ -106,6 +107,29 @@ class Letter
 
   def deliver(recipient, codec = GLogin::Codec.new(''), delivery: nil)
     content = markdown(liquid, codec, recipient, delivery)
+    if yaml['transport'].nil? || yaml['transport'].casecmp('smtp')
+      deliver_smtp(content, recipient, codec, delivery)
+    elsif yaml['transport'].casecmp('telegram')
+      deliver_telegram(content)
+    else
+      raise "Unknown transport \"#{yaml['transport']}\" for the letter ##{@id}"
+    end
+  end
+
+  private
+
+  def deliver_telegram(content)
+    chat = lane['telegram']['chat_id'].to_i
+    start = Time.now
+    @tbot.post(chat, content)
+    [
+      "Sent #{content.length} chars in Markdown",
+      "to Telegram chat ID ##{chat},",
+      "in #{(Time.now - start).round(2)}s"
+    ].join(' ')
+  end
+
+  def deliver_smtp(content, recipient, codec, delivery)
     html = with_utm(
       Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(content),
       delivery
@@ -180,8 +204,6 @@ class Letter
       "in #{(Time.now - start).round(2)}s"
     ].join(' ')
   end
-
-  private
 
   def markdown(lqd, codec, recipient, delivery)
     template = Liquid::Template.parse(lqd)

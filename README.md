@@ -61,6 +61,10 @@ smtp:
   port: 587
   user: AKIAI1TIS4FF6UGJT3CQ
   password: ArPxO8gf56y02G8cKM80IpvMQve8Pss+L4+inJZ3UG3t
+# Here you can specify the Telegram transport details, if
+# some of your letters are going to be delivered via Telegram.
+telegram:
+  chat_id: 7389473289
 ```
 
 ### Campaign
@@ -81,6 +85,7 @@ notify:
 ### Letter
 
 ```
+# The title of the letter
 title: Aug 2018
 # The subject of all emails to be sent
 subject: There are some great news, guys!
@@ -104,6 +109,10 @@ until: 03-09-2018
 relax: "20:0:0"
 # The ID of the letter to quote while sending this one
 quote: 12
+# This can be either SMTP or Telegram. If it's SMTP, you have
+# to specify the SMTP section in the Lane. If it's Telegram,
+# you have to specify telegram chat ID in the Lane.
+transport: SMTP
 ```
 
 Here is how your Liquid template may look like:

@@ -34,13 +34,13 @@ class Tbot
   def start
     return if @token.empty?
     Telebot::Bot.new(@token).run do |client, message|
-      client.send_message(
-        chat_id: message.chat.id,
-        parse_mode: 'Markdown',
-        text: [
+      post(
+        message.chat.id,
+        [
           "Here is your chat ID: #{message.chat.id}.",
           'Use it in your [YAML configs](https://github.com/yegor256/mailanes).'
-        ].join(' ')
+        ].join(' '),
+        c: client
       )
     end
   end
@@ -50,9 +50,10 @@ class Tbot
     post(yaml['notify']['telegram'].to_i, msg)
   end
 
-  def post(chat, msg)
+  private
+
+  def post(chat, msg, c: @client)
     return if @token.empty?
-    puts msg
-    @client.send_message(chat_id: chat, parse_mode: 'Markdown', text: msg)
+    c.send_message(chat_id: chat, parse_mode: 'Markdown', text: msg)
   end
 end
