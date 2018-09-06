@@ -45,12 +45,20 @@ class Delivery
     )
   end
 
+  def letter?
+    !(@hash['letter'] || @pgsql.exec('SELECT letter FROM delivery WHERE id=$1', [@id])[0]['letter']).nil?
+  end
+
   def letter
     id = @hash['letter'] || @pgsql.exec('SELECT letter FROM delivery WHERE id=$1', [@id])[0]['letter']
     Letter.new(
       id: id.to_i,
       pgsql: @pgsql
     )
+  end
+
+  def campaign?
+    !(@hash['campaign'] || @pgsql.exec('SELECT campaign FROM delivery WHERE id=$1', [@id])[0]['campaign']).nil?
   end
 
   def campaign
