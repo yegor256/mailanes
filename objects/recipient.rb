@@ -94,6 +94,10 @@ class Recipient
     @pgsql.exec('INSERT INTO delivery (recipient, details) VALUES ($1, $2)', [@id, msg])
   end
 
+  def move_to(list)
+    @pgsql.exec('UPDATE recipient SET list = $1 WHERE id = $2', [list.id, @id])
+  end
+
   def deliveries(limit: 50)
     q = [
       'SELECT * FROM delivery',

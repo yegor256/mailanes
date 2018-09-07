@@ -205,7 +205,8 @@ get '/recipient' do
   haml :recipient, layout: :layout, locals: merged(
     title: "##{recipient.id}",
     list: list,
-    recipient: recipient
+    recipient: recipient,
+    targets: owner.lists.all
   )
 end
 
@@ -225,7 +226,7 @@ post '/comment-recipient' do
 end
 
 get '/block-recipient' do
-  list = owner.lists.list(params[:list].to_i)
+  list = shared_list(params[:list].to_i)
   recipient = list.recipients.recipient(params[:id].to_i)
   owner.lists.all.each do |s|
     next unless s.stop?
@@ -234,6 +235,15 @@ get '/block-recipient' do
     recipient.post_event("It was added to the block list ##{s.id}.")
   end
   redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
+end
+
+post '/move-recipient' do
+  list = owner.lists.list(params[:list].to_i)
+  recipient = list.recipients.recipient(params[:id].to_i)
+  target = owner.lists.list(params[:target].to_i)
+  recipient.move_to(target)
+  recipient.post_event("Moved to the list ##{target.id} by @#{current_user}")
+  redirect "/recipient?list=#{target.id}&id=#{recipient.id}"
 end
 
 post '/upload-recipients' do

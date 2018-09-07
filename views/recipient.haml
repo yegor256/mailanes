@@ -32,29 +32,41 @@
 - if !recipient.first.empty?
   %p
     First:
-    = recipient.first
+    &= recipient.first
 
 - if !recipient.last.empty?
   %p
     Last:
-    = recipient.last
+    &= recipient.last
 
 %p
   Created:
   = recipient.created.utc.iso8601
   = "(#{TimeDifference.between(recipient.created, Time.now).humanize} ago)"
 
-%p
-  Source:
-  = recipient.source
+- if !recipient.source.empty?
+  %p
+    Source:
+    &= recipient.source
 
-%pre= recipient.yaml.to_yaml
+%pre
+  &= recipient.yaml.to_yaml
 
 %form{method: 'POST', action: '/comment-recipient'}
   %input{type: 'hidden', name: 'list', value: list.id}
   %input{type: 'hidden', name: 'id', value: recipient.id}
   %input{type: 'text', name: 'comment', placeholder: 'What just happened?...', size: 50, required: 'true', autocomplete: 'off'}
   %input{type: 'submit', value: 'Comment'}
+
+- if !targets.empty? && list.owner == current_user
+  %form{method: 'POST', action: '/move-recipient'}
+    %input{type: 'hidden', name: 'list', value: list.id}
+    %input{type: 'hidden', name: 'id', value: recipient.id}
+    %select{name: 'target'}
+      - targets.each do |t|
+        %option{value: t.id}
+          &= "##{t.id}: #{t.title}"
+    %input{type: 'submit', value: 'Comment'}
 
 - deliveries = recipient.deliveries
 - if deliveries.empty?
