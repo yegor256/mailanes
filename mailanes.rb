@@ -189,12 +189,13 @@ end
 
 post '/add-recipient' do
   list = owner.lists.list(params[:id].to_i)
-  list.recipients.add(
+  recipient = list.recipients.add(
     params[:email],
     first: params[:first],
     last: params[:last],
     source: "@#{current_user}"
   )
+  recipient.post_event("Added to the list by @#{current_user}")
   redirect "/list?id=#{list.id}"
 end
 
@@ -212,13 +213,14 @@ get '/toggle-recipient' do
   list = shared_list(params[:list].to_i)
   recipient = list.recipients.recipient(params[:id].to_i)
   recipient.toggle
+  recipient.post_event((recipient.active? ? 'Activated' : 'Deactivated') + " by @#{current_user}")
   redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
 end
 
 post '/comment-recipient' do
   list = shared_list(params[:list].to_i)
   recipient = list.recipients.recipient(params[:id].to_i)
-  recipient.post_event(params[:comment])
+  recipient.post_event("#{params[:comment]} / posted by @#{current_user}")
   redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
 end
 
