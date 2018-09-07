@@ -65,7 +65,8 @@
       %a{href: "/delivery?id=#{d.id}"}= "##{d.id}"
       = '/'
       = d.created.utc.iso8601
-      = "(#{TimeDifference.between(d.created, Time.now).humanize} ago)"
+      - diff = TimeDifference.between(d.created, Time.now).humanize
+      = "(#{diff.empty? ? 'just now' : diff + ' ago'})"
       to
       %a{href: "/recipient?id=#{d.recipient.id}"}= "##{d.recipient.id}"
       with letter
