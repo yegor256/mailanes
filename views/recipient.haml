@@ -49,8 +49,9 @@
     Source:
     &= recipient.source
 
-%pre
-  &= recipient.yaml.to_yaml
+- if !recipient.yaml.to_a.empty?
+  %pre
+    &= recipient.yaml.to_yaml
 
 %form{method: 'POST', action: '/comment-recipient'}
   %input{type: 'hidden', name: 'list', value: list.id}
