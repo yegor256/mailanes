@@ -66,7 +66,7 @@
       - targets.each do |t|
         %option{value: t.id}
           &= "##{t.id}: #{t.title}"
-    %input{type: 'submit', value: 'Comment'}
+    %input{type: 'submit', value: 'Move'}
 
 - deliveries = recipient.deliveries
 - if deliveries.empty?
@@ -79,7 +79,7 @@
       = '/'
       = d.created.utc.iso8601
       - diff = TimeDifference.between(d.created, Time.now).humanize
-      = "(#{diff.empty? ? 'just now' : diff + ' ago'})"
+      = "(#{diff.nil? ? 'just now' : diff + ' ago'})"
       - if d.letter?
         with letter
         %a{href: "/letter?id=#{d.letter.id}"}= "##{d.letter.id}"
