@@ -12,6 +12,8 @@
     Edit YAML and Liquid
   %a.item{onclick: '$("#test").show();'}
     Test Email
+  %a.item{onclick: '$("#copy").show();'}
+    Copy
 
 %p
   It belongs to the lane
@@ -60,3 +62,12 @@
   %input{type: 'submit', value: 'Test'}
   %label.small.gray
     The email will be sent to a random recipient from the given list.
+
+%form.hidden{method: 'POST', action: '/copy-letter', id: 'copy'}
+  %input{type: 'hidden', name: 'id', value: letter.id}
+  %select{name: 'lane'}
+    - lanes.all.each do |lane|
+      %option{value: lane.id}= "##{lane.id}: #{lane.title}"
+  %input{type: 'submit', value: 'Copy'}
+  %label.small.gray
+    A duplicate letter will be created in this lane.

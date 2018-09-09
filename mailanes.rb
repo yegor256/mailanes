@@ -311,7 +311,8 @@ get '/letter' do
   haml :letter, layout: :layout, locals: merged(
     title: "##{letter.id}",
     letter: letter,
-    lists: owner.lists
+    lists: owner.lists,
+    lanes: owner.lanes
   )
 end
 
@@ -335,6 +336,15 @@ post '/test-letter' do
   raise "There are no recipients in the list ##{list.id}" if recipient.nil?
   letter.deliver(list.recipients.all.sample(1)[0])
   redirect "/letter?id=#{letter.id}"
+end
+
+post '/copy-letter' do
+  letter = owner.lanes.letter(params[:id].to_i)
+  lane = owner.lanes.lane(params[:lane].to_i)
+  copy = lane.letters.add(letter.title + ' / COPY')
+  copy.save_yaml(letter.yaml)
+  copy.save_liquid(letter.liquid)
+  redirect "/letter?id=#{copy.id}"
 end
 
 get '/toggle-letter' do
