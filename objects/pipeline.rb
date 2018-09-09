@@ -78,25 +78,26 @@ class Pipeline
   end
 
   def exhaust
-    @pgsql.exec('SELECT * FROM campaign WHERE active = true').each do |r|
+    @pgsql.exec('SELECT * FROM campaign WHERE active = true AND exhausted IS NOT NULL').each do |r|
       campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-      queue = @pgsql.exec(query(campaign.id)).count
-      if queue.zero? && !campaign.exhausted?
-        @pgsql.exec('UPDATE campaign SET exhausted = NOW() WHERE id = $1', [campaign.id])
-        @tbot.notify(
-          campaign.yaml,
-          [
-            "The campaign ##{campaign.id} has been exhausted:",
-            "[\"#{campaign.title}\"](https://www.mailanes.com/campaign?id=#{campaign.id})."
-          ].join(' ')
-        )
-      end
-      next unless campaign.exhausted? && !queue.zero?
+      next if @pgsql.exec(query(campaign.id)).empty?
       @pgsql.exec('UPDATE campaign SET exhausted = NULL WHERE id = $1', [campaign.id])
       @tbot.notify(
         campaign.yaml,
         [
           "The campaign ##{campaign.id} is not exhausted anymore (#{queue} recipients in the queue):",
+          "[\"#{campaign.title}\"](https://www.mailanes.com/campaign?id=#{campaign.id})."
+        ].join(' ')
+      )
+    end
+    @pgsql.exec('SELECT * FROM campaign WHERE active = true AND exhausted IS NULL').each do |r|
+      campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+      next unless @pgsql.exec(query(campaign.id)).empty?
+      @pgsql.exec('UPDATE campaign SET exhausted = NOW() WHERE id = $1', [campaign.id])
+      @tbot.notify(
+        campaign.yaml,
+        [
+          "The campaign ##{campaign.id} has been exhausted:",
           "[\"#{campaign.title}\"](https://www.mailanes.com/campaign?id=#{campaign.id})."
         ].join(' ')
       )
