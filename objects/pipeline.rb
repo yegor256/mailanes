@@ -135,8 +135,7 @@ class Pipeline
       '  AND recipient.active=true',
       '  AND (recipient.created < NOW() - INTERVAL \'10 MINUTES\' OR recipient.email LIKE \'%@mailanes.com\')',
       campaign.zero? ? "AND (#{history}) < c.speed" : "AND c.id = #{campaign}",
-      'GROUP BY rid',
-      'LIMIT 1'
+      'GROUP BY rid'
     ].join(' ')
   end
 
@@ -145,7 +144,7 @@ class Pipeline
   def fetch_one(postman)
     deliveries = Deliveries.new(pgsql: @pgsql)
     done = false
-    @pgsql.exec(Pipeline.query).each do |r|
+    @pgsql.exec(Pipeline.query + ' LIMIT 1').each do |r|
       campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
       letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql, tbot: @tbot)
       recipient = Recipient.new(id: r['rid'].to_i, pgsql: @pgsql)
