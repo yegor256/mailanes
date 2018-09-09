@@ -375,6 +375,14 @@ post '/add-campaign' do
   redirect '/campaigns'
 end
 
+get '/pipeline' do
+  campaign = owner.campaigns.campaign(params[:id].to_i)
+  haml :campaign, layout: :layout, locals: merged(
+    title: "##{campaign.id}",
+    campaign: campaign
+  )
+end
+
 get '/campaign' do
   campaign = owner.campaigns.campaign(params[:id].to_i)
   haml :campaign, layout: :layout, locals: merged(

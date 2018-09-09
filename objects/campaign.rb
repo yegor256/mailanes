@@ -115,6 +115,10 @@ class Campaign
     @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE campaign=$1', [@id])[0]['count'].to_i
   end
 
+  def pipeline
+    @pgsql.exec(Pipeline.query(@id))
+  end
+
   def pipeline_count
     @pgsql.exec(Pipeline.query(@id)).count
   end

@@ -117,7 +117,9 @@ class Pipeline
       'AND delivery.created > NOW() - INTERVAL \'1 DAY\''
     ].join(' ')
     [
-      'SELECT recipient.id AS rid, MAX(c.id) AS cid, MAX(letter.place), MAX(letter.id) AS lid FROM recipient',
+      'SELECT recipient.id AS rid, MAX(c.id) AS cid, MAX(letter.place), MAX(letter.id) AS lid,',
+      'MAX(list.id) AS list_id, MAX(recipient.email) AS email',
+      'FROM recipient',
       'JOIN list ON list.id = recipient.list AND list.stop = false',
       'JOIN campaign AS c ON list.id = c.list AND c.active = true',
       'JOIN lane ON lane.id = c.lane',

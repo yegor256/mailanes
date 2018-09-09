@@ -1,0 +1,11 @@
+%h2
+  Pipeline of Campaign
+  = succeed ':' do
+    = "##{campaign.id}"
+  &= campaign.title
+
+- campaign.pipeline.each do |r|
+  %p
+    %a{href: "/recipient?list=#{r['list_id']}&id=#{r['rid']}"}= "##{r['email']}"
+    with letter
+    %a{href: "/letter?id=#{d['lid']}"}= "##{r['lid']}"
