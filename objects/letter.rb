@@ -104,8 +104,10 @@ class Letter
   end
 
   def save_yaml(yaml)
-    YAML.safe_load(yaml)
+    yml = YAML.safe_load(yaml)
     @pgsql.exec('UPDATE letter SET yaml=$1 WHERE id=$2', [yaml, @id])
+    speed = yml['speed'] ? yml['speed'].to_i : 65_536
+    @pgsql.exec('UPDATE letter SET speed=$1 WHERE id=$2', [speed, @id])
     @hash = {}
   end
 

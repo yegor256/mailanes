@@ -113,6 +113,8 @@ quote: 12
 # to specify the SMTP section in the Lane. If it's Telegram,
 # you have to specify telegram chat ID in the Lane.
 transport: SMTP
+# Maximum amount of emails to be sent per day
+speed: 100
 ```
 
 Here is how your Liquid template may look like:

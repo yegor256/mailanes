@@ -106,9 +106,14 @@ class Pipeline
   end
 
   def self.query(campaign = 0)
-    history = [
+    chistory = [
       'SELECT COUNT(id) FROM delivery',
       'WHERE delivery.campaign=c.id',
+      'AND delivery.created > NOW() - INTERVAL \'1 DAY\''
+    ].join(' ')
+    lhistory = [
+      'SELECT COUNT(id) FROM delivery',
+      'WHERE delivery.letter=letter.id',
       'AND delivery.created > NOW() - INTERVAL \'1 DAY\''
     ].join(' ')
     [
@@ -135,7 +140,8 @@ class Pipeline
       '  AND stop.id IS NULL',
       '  AND recipient.active=true',
       '  AND (recipient.created < NOW() - INTERVAL \'10 MINUTES\' OR recipient.email LIKE \'%@mailanes.com\')',
-      campaign.zero? ? "AND (#{history}) < c.speed" : "AND c.id = #{campaign}",
+      campaign.zero? ? "AND (#{chistory}) < c.speed" : "AND c.id = #{campaign}",
+      campaign.zero? ? "AND (#{lhistory}) < letter.speed" : '',
       'GROUP BY rid'
     ].join(' ')
   end
