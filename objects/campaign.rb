@@ -22,6 +22,7 @@ require 'yaml'
 require_relative 'pgsql'
 require_relative 'lane'
 require_relative 'list'
+require_relative 'pipeline'
 
 # Campaign.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -112,5 +113,9 @@ class Campaign
 
   def deliveries_count
     @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE campaign=$1', [@id])[0]['count'].to_i
+  end
+
+  def pipeline_count
+    @pgsql.exec(Pipeline.query(@id)).count
   end
 end

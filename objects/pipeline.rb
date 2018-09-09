@@ -80,7 +80,7 @@ class Pipeline
   def exhaust
     @pgsql.exec('SELECT * FROM campaign WHERE active = true AND exhausted IS NOT NULL').each do |r|
       campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-      next if @pgsql.exec(query(campaign.id)).empty?
+      next if @pgsql.exec(Pipeline.query(campaign.id)).empty?
       @pgsql.exec('UPDATE campaign SET exhausted = NULL WHERE id = $1', [campaign.id])
       @tbot.notify(
         campaign.yaml,
@@ -92,7 +92,7 @@ class Pipeline
     end
     @pgsql.exec('SELECT * FROM campaign WHERE active = true AND exhausted IS NULL').each do |r|
       campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-      next unless @pgsql.exec(query(campaign.id)).empty?
+      next unless @pgsql.exec(Pipeline.query(campaign.id)).empty?
       @pgsql.exec('UPDATE campaign SET exhausted = NOW() WHERE id = $1', [campaign.id])
       @tbot.notify(
         campaign.yaml,
@@ -104,33 +104,7 @@ class Pipeline
     end
   end
 
-  private
-
-  def fetch_one(postman)
-    deliveries = Deliveries.new(pgsql: @pgsql)
-    done = false
-    @pgsql.exec(query).each do |r|
-      campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
-      letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql, tbot: @tbot)
-      recipient = Recipient.new(id: r['rid'].to_i, pgsql: @pgsql)
-      delivery = deliveries.add(campaign, letter, recipient)
-      if letter.yaml['relax']
-        time = Time.now
-        if letter.yaml['relax'] =~ /[0-9]+:[0-9]+:[0-9]+/
-          days, hours, minutes = letter.yaml['relax'].split(':')
-          time += (days.to_i * 24 * 60 + hours.to_i * 60 + minutes.to_i) * 60
-        elsif letter.yaml['relax'] =~ /[0-9]{2}-[0-9]{2}-[0-9]{4}/
-          time = Time.parse(letter.yaml['relax'])
-        end
-        delivery.save_relax(time)
-      end
-      postman.deliver(delivery)
-      done = true
-    end
-    done
-  end
-
-  def query(campaign = 0)
+  def self.query(campaign = 0)
     history = [
       'SELECT COUNT(id) FROM delivery',
       'WHERE delivery.campaign=c.id',
@@ -164,5 +138,31 @@ class Pipeline
       'GROUP BY rid',
       'LIMIT 1'
     ].join(' ')
+  end
+
+  private
+
+  def fetch_one(postman)
+    deliveries = Deliveries.new(pgsql: @pgsql)
+    done = false
+    @pgsql.exec(Pipeline.query).each do |r|
+      campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
+      letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql, tbot: @tbot)
+      recipient = Recipient.new(id: r['rid'].to_i, pgsql: @pgsql)
+      delivery = deliveries.add(campaign, letter, recipient)
+      if letter.yaml['relax']
+        time = Time.now
+        if letter.yaml['relax'] =~ /[0-9]+:[0-9]+:[0-9]+/
+          days, hours, minutes = letter.yaml['relax'].split(':')
+          time += (days.to_i * 24 * 60 + hours.to_i * 60 + minutes.to_i) * 60
+        elsif letter.yaml['relax'] =~ /[0-9]{2}-[0-9]{2}-[0-9]{4}/
+          time = Time.parse(letter.yaml['relax'])
+        end
+        delivery.save_relax(time)
+      end
+      postman.deliver(delivery)
+      done = true
+    end
+    done
   end
 end
