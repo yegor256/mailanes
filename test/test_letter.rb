@@ -21,6 +21,10 @@
 require 'minitest/autorun'
 require 'rack/test'
 require 'yaml'
+require 'tmpdir'
+require 'gserver'
+require 'fakesmtpd'
+require 'timeout'
 require_relative 'test__helper'
 require_relative '../objects/lanes'
 require_relative '../objects/letters'
@@ -87,5 +91,40 @@ class LetterTest < Minitest::Test
     campaign.toggle
     letter = lane.letters.add
     assert_equal(1, letter.campaigns.count)
+  end
+
+  def test_sends_via_smtp
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    recipient = list.recipients.add('test11@mailanes.com')
+    lane = Lanes.new(owner: owner).add
+    letter = lane.letters.add
+    port = random_port
+    Dir.mktmpdir do |dir|
+      smtpd = FakeSMTPd::Runner.new(
+        dir: File.join(dir, 'messages'),
+        port: port,
+        logfile: File.join(dir, 'smtpd.log'),
+        pidfile: File.join(dir, 'smtpd.pid')
+      )
+      letter.save_yaml(
+        [
+          'from: test@mailanes.com',
+          'smtp:',
+          '  host: localhost',
+          "  port: #{port}",
+          '  user: test',
+          '  password: test'
+        ].join("\n")
+      )
+      begin
+        smtpd.start
+        Timeout.timeout(5) do
+          letter.deliver(recipient)
+        end
+      ensure
+        smtpd.stop
+      end
+    end
   end
 end

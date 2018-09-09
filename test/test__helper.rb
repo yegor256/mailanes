@@ -30,9 +30,24 @@ end
 require 'minitest/autorun'
 module Minitest
   class Test
+    # rubocop:disable Style/ClassVars
+    @@ports = Set.new
+    # rubocop:enable Style/ClassVars
+
     def random_owner
       require 'securerandom'
       'u' + SecureRandom.hex[0..8]
+    end
+
+    def random_port
+      loop do
+        server = TCPServer.new('127.0.0.1', 0)
+        port = server.addr[1]
+        server.close
+        next if @@ports.include?(port)
+        @@ports << port
+        return port
+      end
     end
   end
 end

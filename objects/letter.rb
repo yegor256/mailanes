@@ -123,7 +123,7 @@ class Letter
   private
 
   def deliver_telegram(content)
-    chat = lane.yaml['telegram']['chat_id'].to_i
+    chat = cfg(nil, 'telegram', 'chat_id').to_i
     start = Time.now
     @tbot.post(chat, content)
     [
@@ -142,15 +142,14 @@ class Letter
       Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(content),
       delivery
     )
-    ln = lane
     name = "#{recipient.first.strip} #{recipient.last.strip}".strip
     to = recipient.email
     to = "#{name} <#{recipient.email}>" unless name.empty?
-    to = (yaml['to'] || ln.yaml['to'] || to).strip
-    from = (yaml['from'] || ln.yaml['from']).strip
-    cc = yaml['cc'] || ln.yaml['cc'] || []
-    bcc = yaml['bcc'] || ln.yaml['bcc'] || []
-    subject = (yaml['subject'] || ln.yaml['subject'] || '').strip
+    to = cfg(to, 'to').strip
+    from = cfg(nil, 'from').strip
+    cc = cfg([], 'cc')
+    bcc = cfg([], 'bcc')
+    subject = cfg('', 'subject').strip
     if yaml['quote']
       quote = lane.letters.letter(yaml['quote'].to_i)
       appendix = markdown(quote.liquid, codec, recipient, delivery)
@@ -187,14 +186,13 @@ class Letter
         body html
       end
     end
-    raise "SMTP is not configured in the Lane ##{ln.id}" unless ln.yaml['smtp']
     mail.delivery_method(
       :smtp,
-      address: ln.yaml['smtp']['host'],
-      port: ln.yaml['smtp']['port'].to_i,
-      domain: ln.yaml['smtp']['host'],
-      user_name: ln.yaml['smtp']['user'],
-      password: ln.yaml['smtp']['password'],
+      address: cfg(nil, 'smtp', 'host'),
+      port: cfg(25, 'smtp', 'port').to_i,
+      domain: cfg(nil, 'smtp', 'host'),
+      user_name: cfg(nil, 'smtp', 'user'),
+      password: cfg(nil, 'smtp', 'password'),
       authentication: 'plain',
       enable_starttls_auto: true
     )
@@ -203,9 +201,7 @@ class Letter
     [
       "Sent #{html.length} chars in HTML (#{text.length} in plain text)",
       "to #{to} (recipient ##{recipient.id} in list ##{recipient.list.id})",
-      "from #{from}, with the subject line \"#{subject}\",",
-      "via SMTP at #{ln.yaml['smtp']['host']}:#{ln.yaml['smtp']['port']}",
-      "(authenticated as #{ln.yaml['smtp']['user']}),",
+      "from #{from}, with the subject line \"#{subject}\" via SMTP,",
       "in #{(Time.now - start).round(2)}s"
     ].join(' ')
   end
@@ -235,5 +231,27 @@ class Letter
       r += delivery.nil? ? '0' : delivery.campaign.id.to_s
       r
     end
+  end
+
+  def cfg(default, *items)
+    result = yaml
+    items.each do |i|
+      result = result[i]
+      break if result.nil?
+    end
+    if result.nil?
+      result = lane.yaml
+      items.each do |i|
+        result = result[i]
+        break if result.nil?
+      end
+    end
+    if result.nil?
+      if default.nil?
+        raise "#{items.join('/')} not found in the YAML config of the letter ##{id} and of the lane ##{lane.id}"
+      end
+      result = default
+    end
+    result
   end
 end
