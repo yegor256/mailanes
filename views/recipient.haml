@@ -49,16 +49,16 @@
     Source:
     &= recipient.source
 
-- if !recipient.yaml.to_a.empty?
-  %pre
-    &= recipient.yaml.to_yaml
-
 - relax = recipient.relax
 - if !relax.zero?
   %p
     Relax:
     = relax
     days.
+
+- if !recipient.yaml.to_a.empty?
+  %pre
+    &= recipient.yaml.to_yaml
 
 %form{method: 'POST', action: '/comment-recipient'}
   %input{type: 'hidden', name: 'list', value: list.id}
