@@ -377,7 +377,7 @@ end
 
 get '/pipeline' do
   campaign = owner.campaigns.campaign(params[:id].to_i)
-  haml :campaign, layout: :layout, locals: merged(
+  haml :pipeline, layout: :layout, locals: merged(
     title: "##{campaign.id}",
     campaign: campaign
   )
