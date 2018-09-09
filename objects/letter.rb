@@ -89,6 +89,10 @@ class Letter
     @hash = {}
   end
 
+  def place
+    (@hash['place'] || @pgsql.exec('SELECT place FROM letter WHERE id=$1', [@id])[0]['place']).to_i
+  end
+
   def move(inc = 1)
     @pgsql.exec('UPDATE letter SET place=place + $1 WHERE id = $2', [inc, @id])
     @hash = {}

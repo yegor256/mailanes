@@ -41,6 +41,7 @@
     %span{class: ('cross' unless r.active?)}
       &= r.title
     %br
+    %span.item.small= '%+d' % r.place
     %a.item.small{href: "/letter-up?id=#{r.id}"} Up
     %a.item.small{href: "/letter-down?id=#{r.id}"} Down
 
