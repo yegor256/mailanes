@@ -72,8 +72,8 @@ class Recipient
   # be delivered to this guy (can be zero)
   def relax
     max = @pgsql.exec('SELECT MAX(relax) FROM delivery WHERE recipient = $1', [@id])[0]['max']
-    relax = max.nil? ? Time.now : Time.parse(max['max'])
-    ((Time.now - relax) / (24 * 60 * 60)).to_i
+    relax = max.nil? ? Time.now : Time.parse(max)
+    ((relax - Time.now) / (24 * 60 * 60)).round.to_i
   end
 
   def email

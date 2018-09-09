@@ -23,6 +23,10 @@ require 'rack/test'
 require_relative 'test__helper'
 require_relative '../objects/lists'
 require_relative '../objects/recipients'
+require_relative '../objects/lanes'
+require_relative '../objects/campaigns'
+require_relative '../objects/pipeline'
+require_relative '../objects/postman'
 
 class RecipientTest < Minitest::Test
   def test_toggles_recipient
@@ -73,5 +77,14 @@ class RecipientTest < Minitest::Test
     list = Lists.new(owner: owner).add
     recipient = Recipients.new(list: list).add('te89t@mailanes.com')
     assert_equal(0, recipient.relax)
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    campaign.toggle
+    first = lane.letters.add
+    first.toggle
+    first.save_yaml('relax: "1:0:0"')
+    post = Postman::Fake.new
+    Pipeline.new.fetch(post)
+    assert_equal(1, recipient.relax)
   end
 end
