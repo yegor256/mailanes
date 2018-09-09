@@ -68,6 +68,14 @@ class Recipient
     (@hash['active'] || @pgsql.exec('SELECT active FROM recipient WHERE id=$1', [@id])[0]['active']) == 't'
   end
 
+  # Amount of days to wait until something new can
+  # be delivered to this guy (can be zero)
+  def relax
+    max = @pgsql.exec('SELECT MAX(relax) FROM delivery WHERE recipient = $1', [@id])[0]['max']
+    relax = max.nil? ? Time.now : Time.parse(max['max'])
+    ((Time.now - relax) / (24 * 60 * 60)).to_i
+  end
+
   def email
     @hash['email'] || @pgsql.exec('SELECT email FROM recipient WHERE id=$1', [@id])[0]['email']
   end

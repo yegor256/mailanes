@@ -53,6 +53,13 @@
   %pre
     &= recipient.yaml.to_yaml
 
+- relax = recipient.relax
+- if !relax.zero?
+  %p
+    Relax:
+    = relax
+    days.
+
 %form{method: 'POST', action: '/comment-recipient'}
   %input{type: 'hidden', name: 'list', value: list.id}
   %input{type: 'hidden', name: 'id', value: recipient.id}

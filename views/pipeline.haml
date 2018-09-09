@@ -4,8 +4,13 @@
     = "##{campaign.id}"
   &= campaign.title
 
+%p
+  There are
+  = campaign.pipeline_count
+  recipient(s) in the pipeline:
+
 - campaign.pipeline.each do |r|
   %p
-    %a{href: "/recipient?list=#{r['list_id']}&id=#{r['rid']}"}= "##{r['email']}"
+    %a{href: "/recipient?list=#{r['list_id']}&id=#{r['rid']}"}= r['email']
     with letter
     %a{href: "/letter?id=#{r['lid']}"}= "##{r['lid']}"

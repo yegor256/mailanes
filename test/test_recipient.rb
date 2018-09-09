@@ -67,4 +67,11 @@ class RecipientTest < Minitest::Test
     assert_equal(0, list.recipients.count)
     assert_equal(1, target.recipients.count)
   end
+
+  def test_reads_relax
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    recipient = Recipients.new(list: list).add('te89t@mailanes.com')
+    assert_equal(0, recipient.relax)
+  end
 end
