@@ -80,7 +80,8 @@ class Pipeline
   def exhaust
     @pgsql.exec('SELECT * FROM campaign WHERE active = true AND exhausted IS NOT NULL').each do |r|
       campaign = Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-      next if @pgsql.exec(Pipeline.query(campaign.id)).empty?
+      queue = @pgsql.exec(Pipeline.query(campaign.id)).count
+      next if queue.zero?
       @pgsql.exec('UPDATE campaign SET exhausted = NULL WHERE id = $1', [campaign.id])
       @tbot.notify(
         campaign.yaml,
