@@ -41,4 +41,18 @@ class CampaignTest < Minitest::Test
     Pipeline.new.fetch(Postman::Fake.new)
     assert_equal(1, campaign.deliveries.count)
   end
+
+  def test_counts_pipeline
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    list.recipients.add('test@mailanes.com')
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    campaign.toggle
+    letter = lane.letters.add
+    letter.toggle
+    assert_equal(1, campaign.pipeline_count)
+    Pipeline.new.fetch(Postman::Fake.new)
+    assert_equal(0, campaign.pipeline_count)
+  end
 end

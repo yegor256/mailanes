@@ -123,7 +123,7 @@ class Pipeline
       'LEFT JOIN delivery AS r',
       '  ON r.recipient = recipient.id',
       '    AND r.campaign = c.id',
-      campaign.zero? ? '    AND r.relax > NOW()' : '',
+      '    AND r.relax ' + (campaign.zero? ? '> NOW()' : '!= r.relax'),
       'LEFT JOIN recipient AS stop',
       '  ON recipient.email = stop.email',
       '    AND stop.id != recipient.id',
