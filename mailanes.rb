@@ -318,7 +318,13 @@ end
 
 get '/letter-up' do
   letter = owner.lanes.letter(params[:id].to_i)
-  letter.up
+  letter.move(+1)
+  redirect "/lane?id=#{letter.lane.id}"
+end
+
+get '/letter-down' do
+  letter = owner.lanes.letter(params[:id].to_i)
+  letter.move(-1)
   redirect "/lane?id=#{letter.lane.id}"
 end
 

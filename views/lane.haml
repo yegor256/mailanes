@@ -39,5 +39,6 @@
     = succeed ':' do
       %a{href: "/letter?id=#{r.id}"}= "##{r.id}"
     = r.title
-    %a{href: "/letter-up?id=#{r.id}"} Move up
+    %a.item.small{href: "/letter-up?id=#{r.id}"} Up
+    %a.item.small{href: "/letter-down?id=#{r.id}"} Down
 

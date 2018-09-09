@@ -89,8 +89,8 @@ class Letter
     @hash = {}
   end
 
-  def up
-    @pgsql.exec('UPDATE letter SET place=place+1 WHERE id=$1', [@id])
+  def move(inc = 1)
+    @pgsql.exec('UPDATE letter SET place=place + $1 WHERE id = $2', [inc, @id])
     @hash = {}
   end
 
