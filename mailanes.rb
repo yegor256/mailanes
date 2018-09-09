@@ -342,7 +342,7 @@ post '/copy-letter' do
   letter = owner.lanes.letter(params[:id].to_i)
   lane = owner.lanes.lane(params[:lane].to_i)
   copy = lane.letters.add(letter.title + ' / COPY')
-  copy.save_yaml(letter.yaml)
+  copy.save_yaml(letter.yaml.to_yaml)
   copy.save_liquid(letter.liquid)
   redirect "/letter?id=#{copy.id}"
 end
