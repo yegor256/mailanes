@@ -190,9 +190,9 @@ end
 post '/add-recipient' do
   list = owner.lists.list(params[:id].to_i)
   recipient = list.recipients.add(
-    params[:email],
-    first: params[:first],
-    last: params[:last],
+    params[:email].downcase.strip,
+    first: params[:first].strip,
+    last: params[:last].strip,
     source: "@#{current_user}"
   )
   recipient.post_event("Added to the list by @#{current_user}")
