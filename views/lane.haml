@@ -2,7 +2,7 @@
   Lane
   = succeed ':' do
     = "##{lane.id}"
-  = lane.title
+  &= lane.title
 
 %p
   %a.item{onclick: '$("#save").show();'}
@@ -35,10 +35,11 @@
   letter(s):
 
 - lane.letters.all.each do |r|
-  %p{class: ('cross' unless r.active?)}
+  %p
     = succeed ':' do
       %a{href: "/letter?id=#{r.id}"}= "##{r.id}"
-    = r.title
+    %span{class: ('cross' unless r.active?)}
+      &= r.title
     %a.item.small{href: "/letter-up?id=#{r.id}"} Up
     %a.item.small{href: "/letter-down?id=#{r.id}"} Down
 
