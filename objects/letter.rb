@@ -211,6 +211,7 @@ class Letter
   def markdown(lqd, codec, recipient, delivery)
     template = Liquid::Template.parse(lqd)
     token = codec.encrypt(recipient.id.to_s)
+    query = "token=#{CGI.escape(token)}" + (delivery.nil? ? '' : "&d=#{delivery.id}")
     template.render(
       'id' => recipient.id,
       'list_id' => recipient.list.id,
@@ -218,10 +219,8 @@ class Letter
       'first' => recipient.first.empty? ? nil : recipient.first,
       'last' => recipient.last.empty? ? nil : recipient.last,
       'token' => token,
-      'unsubscribe' => [
-        "https://www.mailanes.com/unsubscribe?token=#{CGI.escape(token)}",
-        delivery.nil? ? '' : "&d=#{delivery.id}"
-      ].join,
+      'unsubscribe_query' => query,
+      'unsubscribe' => "https://www.mailanes.com/unsubscribe?#{query}",
       'profile' => "https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{recipient.list.id}"
     )
   end
