@@ -188,6 +188,7 @@ class Letter
         body html
       end
     end
+    mail.header['List-Unsubscribe'] = unsubscribe(codec, recipient, delivery)
     mail.delivery_method(
       :smtp,
       address: cfg(nil, 'smtp', 'host'),
@@ -208,17 +209,20 @@ class Letter
     ].join(' ')
   end
 
+  def unsubscribe(codec, recipient, delivery)
+    token = codec.encrypt(recipient.id.to_s)
+    "token=#{CGI.escape(token)}" + (delivery.nil? ? '' : "&d=#{delivery.id}")
+  end
+
   def markdown(lqd, codec, recipient, delivery)
     template = Liquid::Template.parse(lqd)
-    token = codec.encrypt(recipient.id.to_s)
-    query = "token=#{CGI.escape(token)}" + (delivery.nil? ? '' : "&d=#{delivery.id}")
+    query = unsubscribe(codec, recipient, delivery)
     template.render(
       'id' => recipient.id,
       'list_id' => recipient.list.id,
       'email' => recipient.email,
       'first' => recipient.first.empty? ? nil : recipient.first,
       'last' => recipient.last.empty? ? nil : recipient.last,
-      'token' => token,
       'unsubscribe_query' => query,
       'unsubscribe' => "https://www.mailanes.com/unsubscribe?#{query}",
       'profile' => "https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{recipient.list.id}"
