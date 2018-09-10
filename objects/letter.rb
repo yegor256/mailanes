@@ -188,11 +188,15 @@ class Letter
         body html
       end
     end
-    mail.header['List-Unsubscribe'] = '<[https://www.mailanes.com/unsubscribe?' +
-      unsubscribe(codec, recipient, delivery) + ']>'
+    mail.header['List-Unsubscribe'] = [
+      '<https://www.mailanes.com/unsubscribe?',
+      unsubscribe(codec, recipient, delivery),
+      ">, <mailto:#{recipient.id}@mailanes.com?subject=unsubscribe>"
+    ].join
     mail.header['List-Id'] = recipient.id.to_s
     mail.header['Return-Path'] = 'reply@mailanes.com'
-    mail.header['X-Mailanes-Delivery'] = delivery.id.to_s unless delivery.nil?
+    mail.header['X-Complaints-To'] = 'reply@mailanes.com'
+    mail.header['X-Mailanes-Recipient'] = recipient.id.to_s
     mail.delivery_method(
       :smtp,
       address: cfg(nil, 'smtp', 'host'),
