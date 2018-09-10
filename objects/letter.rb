@@ -188,7 +188,7 @@ class Letter
         body html
       end
     end
-    mail.header['List-Unsubscribe'] = unsubscribe(codec, recipient, delivery)
+    mail.header['List-Unsubscribe'] = 'https://www.mailanes.com/unsubscribe?' + unsubscribe(codec, recipient, delivery)
     mail.delivery_method(
       :smtp,
       address: cfg(nil, 'smtp', 'host'),
