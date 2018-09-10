@@ -188,7 +188,9 @@ class Letter
         body html
       end
     end
-    mail.header['List-Unsubscribe'] = 'https://www.mailanes.com/unsubscribe?' + unsubscribe(codec, recipient, delivery)
+    mail.header['List-Unsubscribe'] = '<[https://www.mailanes.com/unsubscribe?' +
+      unsubscribe(codec, recipient, delivery) + ']>'
+    mail.header['List-Id'] = recipient.id.to_s
     mail.header['Return-Path'] = 'reply@mailanes.com'
     mail.header['X-Mailanes-Delivery'] = delivery.id.to_s unless delivery.nil?
     mail.delivery_method(
