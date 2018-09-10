@@ -482,7 +482,7 @@ post '/subscribe' do
     )
     recipient.post_event('Subscribed.')
     notify += [
-      "A new subscriber #{params[:email]} (from #{country})",
+      "A new subscriber #{params[:email]} from #{country}",
       "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}))",
       "just got into your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
     ]

@@ -40,8 +40,10 @@ class Pgsql
 
   def exec(query, args = [])
     @mutex.synchronize do
+      start = Time.now
       connect.exec_params(query, args) do |res|
-        # puts "#{query} #{args}"
+        elapsed = Time.now - start
+        puts "#{query} in #{elapsed.round(2)}s" if elapsed > 0.1
         if block_given?
           yield res
         else

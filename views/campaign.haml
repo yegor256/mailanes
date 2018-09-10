@@ -29,8 +29,10 @@
 
 %p
   In the pipeline:
-  %a{href: "/pipeline?id=#{campaign.id}"}= campaign.pipeline_count
-  recipient(s).
+  = succeed '.' do
+    %a{href: "/pipeline?id=#{campaign.id}"}
+      = campaign.pipeline_count
+      recipient(s)
   In the list:
   = campaign.list.recipients.count
   recipient(s).
@@ -73,7 +75,7 @@
       %a{href: "/delivery?id=#{d.id}"}= "##{d.id}"
       = '/'
       = d.created.utc.iso8601
-      - diff = TimeDifference.between(d.created, Time.now).humanize
+      - diff = TimeDifference.between(d.created, Time.now).humanize.downcase
       = "(#{diff.empty? ? 'just now' : diff + ' ago'})"
       to
       %a{href: "/recipient?id=#{d.recipient.id}"}= "##{d.recipient.id}"
