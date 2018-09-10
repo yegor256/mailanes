@@ -189,6 +189,7 @@ class Letter
       end
     end
     mail.header['List-Unsubscribe'] = 'https://www.mailanes.com/unsubscribe?' + unsubscribe(codec, recipient, delivery)
+    mail.header['Return-Path'] = (delivery.nil? ? '0' : delivery.id.to_s) + '@mailanes.com'
     mail.delivery_method(
       :smtp,
       address: cfg(nil, 'smtp', 'host'),
