@@ -21,6 +21,7 @@
 require 'minitest/autorun'
 require 'rack/test'
 require 'yaml'
+require 'tmpdir'
 require_relative 'test__helper'
 require_relative '../objects/lists'
 require_relative '../objects/lanes'
@@ -32,27 +33,48 @@ class CampaignTest < Minitest::Test
   def test_reports_in_campaign
     owner = random_owner
     list = Lists.new(owner: owner).add
-    list.recipients.add('test@mailanes.com')
+    list.recipients.add('test743@mailanes.com')
     lane = Lanes.new(owner: owner).add
     campaign = Campaigns.new(owner: owner).add(list, lane)
     campaign.toggle
     letter = lane.letters.add
     letter.toggle
-    Pipeline.new.fetch(Postman::Fake.new)
+    Pipeline.new.fetch(Postman::Fake.new, cycles: 1)
     assert_equal(1, campaign.deliveries.count)
   end
 
   def test_counts_pipeline
     owner = random_owner
     list = Lists.new(owner: owner).add
-    list.recipients.add('test@mailanes.com')
+    list.recipients.add('test032@mailanes.com')
     lane = Lanes.new(owner: owner).add
     campaign = Campaigns.new(owner: owner).add(list, lane)
     campaign.toggle
     letter = lane.letters.add
     letter.toggle
     assert_equal(1, campaign.pipeline_count)
-    Pipeline.new.fetch(Postman::Fake.new)
+    Pipeline.new.fetch(Postman::Fake.new, cycles: 1)
+    p campaign.pipeline
     assert_equal(0, campaign.pipeline_count)
+  end
+
+  def test_counts_pipeline_in_large_campaign
+    skip
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    total = 5_000
+    Dir.mktmpdir do |dir|
+      csv = File.join(dir, 'tmp.csv')
+      File.write(csv, Array.new(total).map { |i| "speed-test-#{i}@mailanes.com" }.join("\n"))
+      list.recipients.upload(csv)
+    end
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    campaign.toggle
+    letter = lane.letters.add
+    letter.toggle
+    start = Time.now
+    assert_equal(total, campaign.pipeline_count)
+    puts "It took #{Time.now - start} seconds"
   end
 end

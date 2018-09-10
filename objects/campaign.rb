@@ -120,6 +120,6 @@ class Campaign
   end
 
   def pipeline_count
-    @pgsql.exec(Pipeline.query(@id)).count
+    @pgsql.exec('SELECT COUNT(*) FROM (' + Pipeline.query(@id) + ') x')[0]['count'].to_i
   end
 end

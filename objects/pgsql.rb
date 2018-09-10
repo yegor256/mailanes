@@ -43,7 +43,10 @@ class Pgsql
       start = Time.now
       connect.exec_params(query, args) do |res|
         elapsed = Time.now - start
-        puts "#{query} in #{elapsed.round(2)}s" if elapsed > 0.1
+        if elapsed > 1
+          puts "#{query} in #{elapsed.round(2)}s"
+          puts connect.exec_params('EXPLAIN ANALYZE ' + query, args).map { |r| r['QUERY PLAN'] }.join("\n")
+        end
         if block_given?
           yield res
         else

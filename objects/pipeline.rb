@@ -117,8 +117,9 @@ class Pipeline
       'AND delivery.created > NOW() - INTERVAL \'1 DAY\''
     ].join(' ')
     [
-      'SELECT recipient.id AS rid, MAX(c.id) AS cid, MAX(letter.place), MAX(letter.id) AS lid,',
-      'MAX(list.id) AS list_id, MAX(recipient.email) AS email',
+      'SELECT DISTINCT ON (recipient.id)',
+      'recipient.id AS rid, c.id AS cid, letter.place, letter.id AS lid,',
+      'list.id AS list_id, recipient.email AS email',
       'FROM recipient',
       'JOIN list ON list.id = recipient.list AND list.stop = false',
       'JOIN campaign AS c ON list.id = c.list AND c.active = true',
@@ -143,8 +144,7 @@ class Pipeline
       '  AND recipient.active=true',
       '  AND (recipient.created < NOW() - INTERVAL \'10 MINUTES\' OR recipient.email LIKE \'%@mailanes.com\')',
       campaign.zero? ? "AND (#{chistory}) < c.speed" : "AND c.id = #{campaign}",
-      campaign.zero? ? "AND (#{lhistory}) < letter.speed" : '',
-      'GROUP BY rid'
+      campaign.zero? ? "AND (#{lhistory}) < letter.speed" : ''
     ].join(' ')
   end
 
