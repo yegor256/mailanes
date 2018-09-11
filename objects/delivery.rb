@@ -22,6 +22,7 @@ require_relative 'pgsql'
 require_relative 'campaign'
 require_relative 'letter'
 require_relative 'recipient'
+require_relative 'tbot'
 
 # Delivery.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -49,11 +50,12 @@ class Delivery
     !(@hash['letter'] || @pgsql.exec('SELECT letter FROM delivery WHERE id=$1', [@id])[0]['letter']).nil?
   end
 
-  def letter
+  def letter(tbot: Tbot.new)
     id = @hash['letter'] || @pgsql.exec('SELECT letter FROM delivery WHERE id=$1', [@id])[0]['letter']
     Letter.new(
       id: id.to_i,
-      pgsql: @pgsql
+      pgsql: @pgsql,
+      tbot: tbot
     )
   end
 

@@ -20,6 +20,7 @@
 
 require_relative 'pgsql'
 require_relative 'letter'
+require_relative 'tbot'
 
 # Letters.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -41,24 +42,26 @@ class Letters
     end
   end
 
-  def add(title = 'undefined')
+  def add(title = 'undefined', tbot: Tbot.new)
     yaml = "title: #{title}\n"
     Letter.new(
       id: @pgsql.exec(
         'INSERT INTO letter (lane, yaml) VALUES ($1, $2) RETURNING id',
         [@lane.id, yaml]
       )[0]['id'].to_i,
-      pgsql: @pgsql
+      pgsql: @pgsql,
+      tbot: tbot
     )
   end
 
-  def letter(id)
+  def letter(id, tbot: Tbot.new)
     hash = @pgsql.exec('SELECT * FROM letter WHERE lane=$1 AND id=$2', [@lane.id, id])[0]
     raise "Letter ##{id} not found in the lane ##{@lane.id}" if hash.nil?
     Letter.new(
       id: hash['id'].to_i,
       pgsql: @pgsql,
-      hash: hash
+      hash: hash,
+      tbot: tbot
     )
   end
 end

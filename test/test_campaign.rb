@@ -54,7 +54,6 @@ class CampaignTest < Minitest::Test
     letter.toggle
     assert_equal(1, campaign.pipeline_count)
     Pipeline.new.fetch(Postman::Fake.new, cycles: 1)
-    p campaign.pipeline
     assert_equal(0, campaign.pipeline_count)
   end
 

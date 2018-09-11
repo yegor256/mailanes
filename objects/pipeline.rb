@@ -168,7 +168,7 @@ class Pipeline
         end
         delivery.save_relax(time)
       end
-      postman.deliver(delivery)
+      postman.deliver(delivery, tbot: @tbot)
       done = true
     end
     done

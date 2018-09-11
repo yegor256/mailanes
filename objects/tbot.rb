@@ -26,6 +26,18 @@ require 'telebot'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Tbot
+  # Fake one
+  class Fake
+    attr_reader :sent
+    def initialize
+      @sent = []
+    end
+
+    def post(chat, msg)
+      @sent << "#{chat}: #{msg}"
+    end
+  end
+
   def initialize(token = '')
     @token = token
     @client = Telebot::Client.new(token) unless token.empty?

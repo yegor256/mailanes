@@ -127,4 +127,28 @@ class LetterTest < Minitest::Test
       end
     end
   end
+
+  def test_sends_via_telegram
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    recipient = list.recipients.add('tes-t11@mailanes.com')
+    lane = Lanes.new(owner: owner).add
+    lane.save_yaml(
+      [
+        'telegram:',
+        '  chat_id: 0'
+      ].join("\n")
+    )
+    tbot = Tbot::Fake.new
+    letter = lane.letters.add('some title', tbot: tbot)
+    letter.save_liquid('How are you?')
+    letter.save_yaml(
+      [
+        'transport: telegram'
+      ].join("\n")
+    )
+    letter.deliver(recipient)
+    assert_equal(1, tbot.sent.count)
+    assert(tbot.sent[0].include?('How are you?'))
+  end
 end

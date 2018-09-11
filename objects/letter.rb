@@ -261,7 +261,7 @@ class Letter
     end
     if result.nil?
       if default.nil?
-        raise "#{items.join('/')} not found in the YAML config of the letter ##{id} and of the lane ##{lane.id}"
+        raise "\"#{items.join('/')}\" not found in the YAML config of the letter ##{id} and of the lane ##{lane.id}"
       end
       result = default
     end

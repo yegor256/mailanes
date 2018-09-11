@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 require 'glogin/codec'
+require_relative 'tbot'
 
 # Postman.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -27,8 +28,14 @@ require 'glogin/codec'
 class Postman
   # Doing nothing, just closing
   class Fake
-    def deliver(delivery)
-      delivery.close('fake delivery')
+    attr_reader :deliveries
+    def initialize
+      @deliveries = []
+    end
+
+    def deliver(delivery, tbot: Tbot.new)
+      raise if tbot.nil?
+      @deliveries << delivery
     end
   end
 
@@ -36,8 +43,8 @@ class Postman
     @codec = codec
   end
 
-  def deliver(delivery)
-    letter = delivery.letter
+  def deliver(delivery, tbot: Tbot.new)
+    letter = delivery.letter(tbot: tbot)
     recipient = delivery.recipient
     log = ''
     begin
