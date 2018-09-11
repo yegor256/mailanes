@@ -56,7 +56,7 @@
 %p
   Created:
   = list.created.utc.iso8601
-  = "(#{TimeDifference.between(list.created, Time.now).humanize} ago)"
+  = "(#{Ago.new(list.created)})"
 
 %p
   It grows by

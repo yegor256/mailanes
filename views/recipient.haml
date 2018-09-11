@@ -42,7 +42,7 @@
 %p
   Created:
   = recipient.created.utc.iso8601
-  = "(#{TimeDifference.between(recipient.created, Time.now).humanize} ago)"
+  = "(#{Ago.new(recipient.created)})"
 
 - if !recipient.source.empty?
   %p
@@ -86,8 +86,7 @@
       %a{href: "/delivery?id=#{d.id}"}= "##{d.id}"
       = '/'
       = d.created.utc.iso8601
-      - diff = TimeDifference.between(d.created, Time.now).humanize.downcase
-      = "(#{diff.nil? ? 'just now' : diff + ' ago'})"
+      = "(#{Ago.new(d.created)})"
       - if d.letter?
         with letter
         %a{href: "/letter?id=#{d.letter.id}"}= "##{d.letter.id}"

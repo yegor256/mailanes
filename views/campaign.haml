@@ -22,7 +22,7 @@
 %p
   Created:
   = campaign.created.utc.iso8601
-  = "(#{TimeDifference.between(campaign.created, Time.now).humanize} ago)"
+  = "(#{Ago.new(campaign.created)})"
 
 - if campaign.exhausted?
   %p.red Exhausted
@@ -75,8 +75,7 @@
       %a{href: "/delivery?id=#{d.id}"}= "##{d.id}"
       = '/'
       = d.created.utc.iso8601
-      - diff = TimeDifference.between(d.created, Time.now).humanize.downcase
-      = "(#{diff.empty? ? 'just now' : diff + ' ago'})"
+      = "(#{Ago.new(d.created)})"
       to
       %a{href: "/recipient?id=#{d.recipient.id}"}= "##{d.recipient.id}"
       with letter
