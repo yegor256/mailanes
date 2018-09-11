@@ -54,6 +54,11 @@ configure do
       'secret' => '?',
       'bucket' => '?'
     },
+    'pop3' => {
+      'host' => '',
+      'login' => '',
+      'password' => ''
+    },
     'pgsql' => {
       'host' => 'localhost',
       'port' => 0,
@@ -92,6 +97,13 @@ configure do
   )
   set :postman, Postman.new(settings.codec)
   set :tbot, Tbot.new(config['telegram_token'])
+  set :bounces, Bounces.new(
+    config['pop3']['host'],
+    config['pop3']['login'],
+    config['pop3']['password'],
+    settings.codec,
+    pgsql: settings.pgsql
+  )
   set :pipeline, Pipeline.new(pgsql: settings.pgsql, tbot: settings.tbot)
   if ENV['RACK_ENV'] != 'test'
     Thread.new do
@@ -105,6 +117,7 @@ configure do
           settings.pipeline.fetch(settings.postman)
           settings.pipeline.deactivate
           settings.pipeline.exhaust
+          settings.bounces.fetch
         rescue StandardError => e
           puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
         end
