@@ -42,10 +42,14 @@ class Bounces
       body = m.pop
       match = body.match(%r{X-Mailanes-Recipient: ([a-zA-Z0-9=+/]+)})
       unless match.nil?
-        id = @codec.decrypt(match[1]).to_i
-        recipient = Recipient.new(id, pgsql: @pgsql)
-        recipient.toggle if recipient.active?
-        recipient.post_event(body)
+        begin
+          id = @codec.decrypt(match[1]).to_i
+          recipient = Recipient.new(id, pgsql: @pgsql)
+          recipient.toggle if recipient.active?
+          recipient.post_event(body[0..1024])
+        rescue StandardError => _
+          puts 'Unclear message in the inbox...'
+        end
       end
       m.delete
     end
