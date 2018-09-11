@@ -191,7 +191,7 @@ class Letter
     mail.header['List-Unsubscribe'] = [
       '<https://www.mailanes.com/unsubscribe?',
       unsubscribe(codec, recipient, delivery),
-      ">, <mailto:#{recipient.id}@mailanes.com?subject=unsubscribe>"
+      ">, <mailto:unsubscribe-#{recipient.id}@mailanes.com?subject=unsubscribe>"
     ].join
     mail.header['List-Id'] = recipient.id.to_s
     mail.header['Return-Path'] = 'reply@mailanes.com'
