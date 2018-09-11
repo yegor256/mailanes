@@ -50,10 +50,11 @@ class Bounces
           recipient = Recipient.new(id: decoded, pgsql: @pgsql)
           recipient.toggle if recipient.active?
           recipient.post_event(body[0..1024])
+          list = recipient.list
           tbot.notify(
             recipient.list.yaml,
             [
-              "The email #{email} to recipient",
+              "The email #{recipient.email} to recipient",
               "[##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id})",
               'bounced back, that\'s why we deactivated it in the list',
               "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
