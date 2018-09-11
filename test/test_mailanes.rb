@@ -64,17 +64,18 @@ class AppTest < Minitest::Test
 
   def test_subscribes_and_unsubscribes
     list = Lists.new(owner: random_owner).add
-    post("/subscribe?list=#{list.id}&email=me@mailanes.com&reason=Just+love+you")
+    email = "#{SecureRandom.hex[0..8]}@mailanes.com"
+    post("/subscribe?list=#{list.id}&email=#{email}&reason=Just+love+you")
     assert_equal(200, last_response.status, last_response.body)
     assert_equal(1, list.recipients.count)
     recipient = list.recipients.all[0]
     assert(recipient.active?)
-    token = GLogin::Codec.new('?').encrypt(recipient.id.to_s)
+    token = GLogin::Codec.new('').encrypt(recipient.id.to_s)
     get("/unsubscribe?token=#{CGI.escape(token)}")
     assert_equal(200, last_response.status, last_response.body)
     recipient = list.recipients.all[0]
     assert(!recipient.active?)
-    post("/subscribe?list=#{list.id}&email=me@mailanes.com")
+    post("/subscribe?list=#{list.id}&email=#{email}")
     recipient = list.recipients.all[0]
     assert_equal(200, last_response.status, last_response.body)
     assert(recipient.active?)
@@ -85,7 +86,8 @@ class AppTest < Minitest::Test
     list = Lists.new(owner: owner).add
     list.save_yaml("friends:\n- jeff")
     login('jeff')
-    post("/do-add?id=#{list.id}&email=me@mailanes.com")
+    email = "#{SecureRandom.hex[0..8]}@mailanes.com"
+    post("/do-add?id=#{list.id}&email=#{email}")
     assert_equal(302, last_response.status, last_response.body)
     assert_equal(1, list.recipients.count)
   end

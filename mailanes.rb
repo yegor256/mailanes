@@ -68,7 +68,7 @@ configure do
       'password' => 'test'
     },
     'telegram_token' => '',
-    'token_secret' => '?',
+    'token_secret' => '',
     'sentry' => ''
   }
   config = YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml'))) unless ENV['RACK_ENV'] == 'test'

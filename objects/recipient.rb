@@ -30,6 +30,7 @@ class Recipient
 
   def initialize(id:, pgsql: Pgsql::TEST, hash: {})
     raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
+    raise 'ID has to be larger than zero' if id.zero?
     @id = id
     @pgsql = pgsql
     @hash = hash
@@ -40,6 +41,7 @@ class Recipient
       'SELECT list.* FROM list JOIN recipient ON recipient.list=list.id WHERE recipient.id=$1',
       [@id]
     )[0]
+    raise "Recipient #{@id} is outside of the list?" if hash.nil?
     List.new(
       id: hash['id'].to_i,
       pgsql: @pgsql,
