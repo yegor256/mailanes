@@ -1,0 +1,22 @@
+%h2
+  Already subscribed!
+
+%p
+  Your email
+  %code
+    = recipient.email
+  is already in the list
+  = succeed '.' do
+    = "##{list.id}"
+
+- if redirect
+  %p
+    Click
+    %a{href: redirect} here
+    to get back to where you came from.
+
+%p
+  If you want to unsubscribe,
+  = succeed '.' do
+    %a{href: '/unsubscribe?token=' + CGI.escape(token)} click here
+

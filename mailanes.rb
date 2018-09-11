@@ -455,7 +455,13 @@ post '/subscribe' do
     recipient = list.recipients.all(query: '=' + params[:email])[0]
     if recipient.active?
       recipient.post_event('Attempted to subscribe again, but failed.')
-      raise "The email #{recipient.email} has already been subscribed to the list ##{list.id}"
+      return haml :already, layout: :layout, locals: merged(
+        title: '/already',
+        recipient: recipient,
+        list: list,
+        token: settings.codec.encrypt(recipient.id.to_s),
+        redirect: params[:redirect]
+      )
     end
     recipient.toggle
     recipient.post_event('Re-subscribed.')
