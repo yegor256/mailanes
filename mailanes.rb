@@ -345,7 +345,7 @@ end
 post '/test-letter' do
   letter = owner.lanes.letter(params[:id].to_i, tbot: settings.tbot)
   list = owner.lists.list(params[:list].to_i)
-  recipient = list.recipients.all.sample(1)[0]
+  recipient = list.recipients.all(active_only: true).sample(1)[0]
   raise "There are no recipients in the list ##{list.id}" if recipient.nil?
   letter.deliver(list.recipients.all.sample(1)[0])
   redirect "/letter?id=#{letter.id}"

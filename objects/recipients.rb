@@ -36,10 +36,11 @@ class Recipients
     @pgsql = pgsql
   end
 
-  def all(query: '', limit: 100)
+  def all(query: '', limit: 100, active_only: false)
     q = [
       'SELECT * FROM recipient',
       'WHERE list=$1 AND (email LIKE $2 OR first LIKE $2 OR last LIKE $2 OR yaml LIKE $2 OR source LIKE $2)',
+      active_only ? 'AND active = true' : '',
       'ORDER BY created DESC',
       limit > 0 ? 'LIMIT $3' : ''
     ].join(' ')
