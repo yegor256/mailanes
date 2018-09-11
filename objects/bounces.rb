@@ -46,16 +46,16 @@ class Bounces
           plain = match[1].to_i
           decoded = @codec.decrypt(match[2]).to_i
           raise "#{plain} != #{decoded}" if plain != decoded
-          recipient = Recipient.new(decoded, pgsql: @pgsql)
+          recipient = Recipient.new(id: decoded, pgsql: @pgsql)
           recipient.toggle if recipient.active?
           recipient.post_event(body[0..1024])
           puts "Recipient ##{recipient.id}/#{recipient.email} bounced :("
         rescue StandardError => e
-          puts "Unclear message from ##{plain} in the inbox (#{e.message}):\n#{body}"
+          puts "Unclear message from ##{plain} in the inbox\n#{e.message}\n\t#{e.backtrace.join("\n\t")}:\n#{body}"
         end
       end
       puts "Message #{m.unique_id} processed and deleted"
-      # m.delete
+      m.delete
     end
     pop.finish
   end
