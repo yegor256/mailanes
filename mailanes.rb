@@ -35,6 +35,7 @@ require_relative 'objects/pipeline'
 require_relative 'objects/postman'
 require_relative 'objects/tbot'
 require_relative 'objects/ago'
+require_relative 'objects/bounces'
 
 if ENV['RACK_ENV'] != 'test'
   require 'rack/ssl'
