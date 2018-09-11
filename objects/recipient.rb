@@ -70,6 +70,15 @@ class Recipient
     (@hash['active'] || @pgsql.exec('SELECT active FROM recipient WHERE id=$1', [@id])[0]['active']) == 't'
   end
 
+  def bounced?
+    (@hash['bounced'] || @pgsql.exec('SELECT bounced FROM recipient WHERE id=$1', [@id])[0]['bounced']) == 't'
+  end
+
+  def bounce
+    @pgsql.exec('UPDATE recipient SET bounced=true WHERE id=$1', [@id])
+    @hash = {}
+  end
+
   # Amount of days to wait until something new can
   # be delivered to this guy (can be zero)
   def relax
