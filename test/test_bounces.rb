@@ -30,6 +30,11 @@ class BouncesTest < Minitest::Test
     owner = random_owner
     list = Lists.new(owner: owner).add
     list.recipients.add('test@mailanes.com')
-    Bounces.new('pop.secureserver.net', 'reply@mailanes.com', '---', GLogin::Codec.new('')).fetch
+    Bounces.new(
+      'pop.secureserver.net',
+      'reply@mailanes.com',
+      '---',
+      GLogin::Codec.new('---')
+    ).fetch
   end
 end

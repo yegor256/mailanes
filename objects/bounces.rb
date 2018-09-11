@@ -40,7 +40,6 @@ class Bounces
     pop.start(@login, @password)
     pop.each_mail do |m|
       body = m.pop
-      puts body
       match = body.match(%r{X-Mailanes-Recipient: ([a-zA-Z0-9=+/]+)})
       unless match.nil?
         begin
@@ -50,10 +49,11 @@ class Bounces
           recipient.post_event(body[0..1024])
           puts "Recipient ##{recipient.id}/#{recipient.email} bounced :("
         rescue StandardError => _
-          puts 'Unclear message in the inbox...'
+          puts "Unclear message in the inbox:\n#{body}"
         end
       end
-      m.delete
+      # m.delete
+      puts "Message #{m.unique_id} processed and deleted"
     end
     pop.finish
   end
