@@ -40,6 +40,7 @@ class Bounces
     pop.start(@login, @password)
     pop.each_mail do |m|
       body = m.pop
+      puts body
       match = body.match(%r{X-Mailanes-Recipient: ([a-zA-Z0-9=+/]+)})
       unless match.nil?
         begin
@@ -47,6 +48,7 @@ class Bounces
           recipient = Recipient.new(id, pgsql: @pgsql)
           recipient.toggle if recipient.active?
           recipient.post_event(body[0..1024])
+          puts "Recipient ##{recipient.id}/#{recipient.email} bounced :("
         rescue StandardError => _
           puts 'Unclear message in the inbox...'
         end
