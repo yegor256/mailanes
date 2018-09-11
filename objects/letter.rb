@@ -111,7 +111,7 @@ class Letter
     @hash = {}
   end
 
-  def deliver(recipient, codec = GLogin::Codec.new(''), delivery: nil)
+  def deliver(recipient, codec = GLogin::Codec.new, delivery: nil)
     content = markdown(liquid, codec, recipient, delivery)
     if yaml['transport'].nil? || yaml['transport'].casecmp('smtp').zero?
       deliver_smtp(content, recipient, codec, delivery)

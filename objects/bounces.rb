@@ -54,8 +54,8 @@ class Bounces
           puts "Unclear message from ##{plain} in the inbox (#{e.message}):\n#{body}"
         end
       end
-      # m.delete
       puts "Message #{m.unique_id} processed and deleted"
+      # m.delete
     end
     pop.finish
   end

@@ -39,7 +39,7 @@ class Postman
     end
   end
 
-  def initialize(codec = GLogin::Codec.new(''))
+  def initialize(codec = GLogin::Codec.new)
     @codec = codec
   end
 

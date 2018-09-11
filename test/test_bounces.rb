@@ -33,8 +33,8 @@ class BouncesTest < Minitest::Test
     Bounces.new(
       'pop.secureserver.net',
       'reply@mailanes.com',
-      '',
-      GLogin::Codec.new('')
+      '--',
+      GLogin::Codec.new('--')
     ).fetch
   end
 end
