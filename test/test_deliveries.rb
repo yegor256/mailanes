@@ -58,4 +58,16 @@ class DeliveriesTest < Minitest::Test
     delivery.close(msg)
     assert_equal(msg, delivery.details)
   end
+
+  def test_deletes_delivery
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    recipient = list.recipients.add('test1@mailanes.com')
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    letter = lane.letters.add
+    deliveries = Deliveries.new
+    delivery = deliveries.add(campaign, letter, recipient)
+    delivery.delete
+  end
 end

@@ -92,4 +92,8 @@ class Delivery
   def relax
     @hash['relax'] || @pgsql.exec('SELECT relax FROM delivery WHERE id=$1', [@id])[0]['relax']
   end
+
+  def delete
+    @pgsql.exec('DELETE FROM delivery WHERE id=$1', [@id])
+  end
 end

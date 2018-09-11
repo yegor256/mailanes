@@ -274,6 +274,13 @@ get '/delivery' do
   )
 end
 
+get '/delete-delivery' do
+  delivery = owner.deliveries.delivery(params[:id].to_i)
+  recipient = delivery.recipient
+  delivery.delete
+  redirect "/recipient?id=#{recipient.id}&list=#{recipient.list.id}"
+end
+
 get '/lanes' do
   haml :lanes, layout: :layout, locals: merged(
     title: '/lanes',
@@ -530,7 +537,7 @@ get '/unsubscribe' do
         "out of #{list.recipients.count} total."
       ].join(' ')
     )
-    recipient.post_event('Unsubscribed' + (@locals[:user] ? " by @#{current_user}" : ''))
+    recipient.post_event('Unsubscribed' + (@locals[:user] ? " by @#{current_user}" : '') + '.')
   else
     recipient.post_event('Attempted to unsubscribe, while already unsubscribed.')
   end
