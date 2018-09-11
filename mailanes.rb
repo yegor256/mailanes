@@ -118,7 +118,7 @@ configure do
           settings.pipeline.fetch(settings.postman)
           settings.pipeline.deactivate
           settings.pipeline.exhaust
-          settings.bounces.fetch
+          settings.bounces.fetch(settings.tbot)
         rescue StandardError => e
           puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
         end

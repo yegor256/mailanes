@@ -21,6 +21,7 @@
 require 'net/pop'
 require_relative 'pgsql'
 require_relative 'recipient'
+require_relative 'tbot'
 
 # Fetch all bounces and deactivate recipients.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -35,7 +36,7 @@ class Bounces
     @codec = codec
   end
 
-  def fetch
+  def fetch(tbot: Tbot.new)
     pop = Net::POP3.new(@host)
     pop.start(@login, @password)
     pop.each_mail do |m|
@@ -49,6 +50,15 @@ class Bounces
           recipient = Recipient.new(id: decoded, pgsql: @pgsql)
           recipient.toggle if recipient.active?
           recipient.post_event(body[0..1024])
+          tbot.notify(
+            recipient.list.yaml,
+            [
+              "The email #{email} to recipient",
+              "[##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id})",
+              'bounced back, that\'s why we deactivated it in the list',
+              "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
+            ].join(' ')
+          )
           puts "Recipient ##{recipient.id}/#{recipient.email} bounced :("
         rescue StandardError => e
           puts "Unclear message from ##{plain} in the inbox\n#{e.message}\n\t#{e.backtrace.join("\n\t")}:\n#{body}"
