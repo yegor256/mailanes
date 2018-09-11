@@ -41,8 +41,8 @@ class Bounces
     pop.each_mail do |m|
       body = m.pop
       match = body.match(%r{X-Mailanes-Recipient: ([a-zA-Z0-9=+/]+)})
-      id = @codec.decrypt(match[1]).to_
       unless match.nil?
+        id = @codec.decrypt(match[1]).to_i
         recipient = Recipient.new(id, pgsql: @pgsql)
         recipient.toggle if recipient.active?
         recipient.post_event(body)
