@@ -79,8 +79,13 @@
 
 %p
   There are
-  = list.recipients.count
-  recipient(s):
+  - total = list.recipients.count
+  = total
+  recipient(s),
+  - active = list.recipients.active_count
+  = active
+  = "(#{total.zero? ? 0 : 100 * active / total}%)"
+  are active:
 
 %p
   - list.recipients.all(query: params[:query] || '').each do |r|
