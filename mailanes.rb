@@ -195,7 +195,7 @@ get '/list' do
   )
 end
 
-get '/find-recipient' do
+post '/find-recipient' do
   query = params[:query]
   first = owner.lists.all[0]
   raise 'You have no lists yet' if first.nil?

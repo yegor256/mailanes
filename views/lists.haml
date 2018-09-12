@@ -3,7 +3,7 @@
 
 %p
   %a.item{onclick: '$("#add").show();$("#email").focus();'} Add List
-  %a.item{onclick: '$("#find").show();$("#id").focus();'} Find Recipient
+  %a.item{onclick: '$("#find").show();$("#query").focus();'} Find Recipient
 
 %form.hidden{method: 'POST', action: '/add-list', id: 'add'}
   %input{type: 'text', name: 'title', placeholder: 'List title...', size: 45, required: 'true', autocomplete: 'off'}
