@@ -57,8 +57,9 @@ class Tbot
     end
   end
 
-  def notify(yaml, msg)
+  def notify(type, yaml, msg)
     return unless yaml['notify'] && yaml['notify']['telegram']
+    return if yaml['notify']['ignore'].is_a?(Array) && yaml['notify']['ignore'][type]
     post(yaml['notify']['telegram'].to_i, msg)
   end
 

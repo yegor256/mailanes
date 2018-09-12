@@ -451,6 +451,7 @@ post '/do-add' do
     source: "@#{current_user}"
   )
   settings.tbot.notify(
+    'add',
     list.yaml,
     [
       "New recipient `#{params[:email]}` has been added",
@@ -465,6 +466,7 @@ get '/download-list' do
   list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
   raise "You don't have access to the list ##{list.id}" unless list.friend?(current_user)
   settings.tbot.notify(
+    'download',
     list.yaml,
     [
       "Your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
@@ -525,6 +527,7 @@ post '/subscribe' do
     ]
   end
   settings.tbot.notify(
+    'subscribe',
     list.yaml,
     (notify + [
       "There are #{list.recipients.active_count} active subscribers in the list now,",
@@ -550,6 +553,7 @@ get '/unsubscribe' do
   if recipient.active?
     recipient.toggle
     settings.tbot.notify(
+      'unsubscribe',
       list.yaml,
       [
         "The recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id})",

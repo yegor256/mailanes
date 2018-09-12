@@ -55,6 +55,7 @@ class Pipeline
       letter.toggle
       letter.campaigns.each do |c|
         @tbot.notify(
+          'deactivate',
           campaign.yaml,
           [
             "The letter ##{letter.id} \"#{letter.title}\" has been deactivated",
@@ -68,6 +69,7 @@ class Pipeline
       next unless campaign.yaml['until'] && Time.parse(campaign.yaml['until']) < Time.now
       campaign.toggle
       @tbot.notify(
+        'deactivate',
         campaign.yaml,
         [
           "The campaign ##{campaign.id} has been deactivated because of its UNTIL configuration:",
@@ -84,6 +86,7 @@ class Pipeline
       next if queue.zero?
       @pgsql.exec('UPDATE campaign SET exhausted = NULL WHERE id = $1', [campaign.id])
       @tbot.notify(
+        'exhaust',
         campaign.yaml,
         [
           "The campaign ##{campaign.id} is not exhausted anymore (#{queue} recipients in the queue):",
@@ -96,6 +99,7 @@ class Pipeline
       next unless @pgsql.exec(Pipeline.query(campaign.id)).empty?
       @pgsql.exec('UPDATE campaign SET exhausted = NOW() WHERE id = $1', [campaign.id])
       @tbot.notify(
+        'exhaust',
         campaign.yaml,
         [
           "The campaign ##{campaign.id} has been exhausted:",

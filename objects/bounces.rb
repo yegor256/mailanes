@@ -64,6 +64,7 @@ class Bounces
       recipient.post_event(body[0..1024])
       list = recipient.list
       tbot.notify(
+        'bounce',
         recipient.list.yaml,
         [
           "The email #{recipient.email} to recipient",
