@@ -199,7 +199,7 @@ post '/find-recipient' do
   query = params[:query]
   first = owner.lists.all[0]
   raise 'You have no lists yet' if first.nil?
-  recipients = first.all(query: query, limit: 1, in_list_only: false)
+  recipients = first.recipients.all(query: query, limit: 1, in_list_only: false)
   redirect '/lists' if recipients.empty?
   list = recipients[0].list
   redirect "/list?id=#{list.id}&query=#{CGI.escape(query)}"
