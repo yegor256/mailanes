@@ -28,6 +28,14 @@ notify:
   # Notify in Telegram chat. You can get this number
   # just by starting a chat with https://t.me/mailanes_bot
   telegram: 136544085
+  # You may ignore some notifications
+  ignore:
+    - subscribe
+    - unsubscribe
+    - add
+    - comment
+    - download
+    - bounce
 # List of GitHub account who also have access to this list
 # and can add recipients to it, via /add?list=ID URL.
 friends:

@@ -246,6 +246,15 @@ post '/comment-recipient' do
   list = shared_list(params[:list].to_i)
   recipient = list.recipients.recipient(params[:id].to_i)
   recipient.post_event("#{params[:comment]} / posted by @#{current_user}")
+  settings.tbot.notify(
+    'comment',
+    list.yaml,
+    [
+      "The recipient ##{recipient.id}/#{params[:email]}",
+      "has got a new comment from #{current_user}:\n\n",
+      params[:comment]
+    ].join(' ')
+  )
   redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
 end
 
