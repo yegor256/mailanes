@@ -77,8 +77,10 @@
   = list.deliveries_count
   emails.
   Bounce rate:
+  - rate = list.recipients.bounce_rate
   = succeed '.' do
-    = "#{(list.recipients.bounce_rate * 100).round(2)}%"
+    %span{class: (rate > 0.5 ? 'red' : '')}
+    = "#{(rate * 100).round(2)}%"
 
 %p
   There are
