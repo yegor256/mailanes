@@ -79,7 +79,7 @@
   Bounce rate:
   - rate = list.recipients.bounce_rate
   = succeed '.' do
-    %span{class: (rate > 0.5 ? 'red' : '')}
+    %span{class: (rate > 0.05 ? 'red' : '')}
     = "#{(rate * 100).round(2)}%"
 
 %p
