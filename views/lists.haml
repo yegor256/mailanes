@@ -1,9 +1,17 @@
 %h2
   Lists
 
-%form{method: 'POST', action: '/add-list'}
+%p
+  %a.item{onclick: '$("#add").show();$("#email").focus();'} Add List
+  %a.item{onclick: '$("#find").show();$("#id").focus();'} Find Recipient
+
+%form.hidden{method: 'POST', action: '/add-list', id: 'add'}
   %input{type: 'text', name: 'title', placeholder: 'List title...', size: 45, required: 'true', autocomplete: 'off'}
   %input{type: 'submit', value: 'Add'}
+
+%form.hidden{method: 'POST', action: '/find-recipient', id: 'find'}
+  %input{type: 'text', name: 'query', placeholder: 'Query', id: 'query', size: 45, required: 'true', autocomplete: 'off'}
+  %input{type: 'submit', value: 'Find'}
 
 %p
   All your lists:

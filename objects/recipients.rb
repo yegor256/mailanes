@@ -36,17 +36,26 @@ class Recipients
     @pgsql = pgsql
   end
 
-  def all(query: '', limit: 100, active_only: false)
+  def all(query: '', limit: 100, active_only: false, in_list_only: true)
     q = [
-      'SELECT * FROM recipient',
-      'WHERE list=$1 AND (email LIKE $2 OR first LIKE $2 OR last LIKE $2 OR yaml LIKE $2 OR source LIKE $2)',
-      active_only ? 'AND active = true' : '',
-      'ORDER BY created DESC',
+      'SELECT recipient.* FROM recipient',
+      'JOIN list ON list.id = recipient.list AND list.owner = $1',
+      'WHERE (' + [
+        'email LIKE $2',
+        'OR first LIKE $2',
+        'OR last LIKE $2',
+        'OR recipient.yaml LIKE $2',
+        'OR source LIKE $2',
+        query =~ /^=\d+$$/ ? 'OR recipient.id = $2 :: INTEGER' : ''
+      ].join(' ') + ')',
+      in_list_only ? "AND recipient.list = #{@list.id}" : '',
+      active_only ? 'AND recipient.active = true' : '',
+      'ORDER BY recipient.created DESC',
       limit > 0 ? 'LIMIT $3' : ''
     ].join(' ')
     like = "%#{query}%"
     like = query[1..-1] if query.start_with?('=')
-    @pgsql.exec(q, [@list.id, like] + (limit > 0 ? [limit] : [])).map do |r|
+    @pgsql.exec(q, [@list.owner, like] + (limit > 0 ? [limit] : [])).map do |r|
       Recipient.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end

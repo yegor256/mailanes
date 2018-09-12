@@ -195,6 +195,16 @@ get '/list' do
   )
 end
 
+get '/find-recipient' do
+  query = params[:query]
+  first = owner.lists.all[0]
+  raise 'You have no lists yet' if first.nil?
+  recipients = first.all(query: query, limit: 1, in_list_only: false)
+  redirect '/lists' if recipients.empty?
+  list = recipients[0].list
+  redirect "/list?id=#{list.id}&query=#{CGI.escape(query)}"
+end
+
 post '/save-list' do
   list = owner.lists.list(params[:id].to_i)
   list.save_yaml(params[:yaml])
