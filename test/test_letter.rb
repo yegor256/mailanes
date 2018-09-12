@@ -119,9 +119,7 @@ class LetterTest < Minitest::Test
       )
       begin
         smtpd.start
-        Timeout.timeout(5) do
-          letter.deliver(recipient)
-        end
+        letter.deliver(recipient)
       ensure
         smtpd.stop
       end

@@ -21,6 +21,7 @@
 require 'yaml'
 require 'mail'
 require 'uuidtools'
+require 'timeout'
 require 'liquid'
 require 'redcarpet'
 require 'redcarpet/render_strip'
@@ -210,7 +211,9 @@ class Letter
       enable_starttls_auto: true
     )
     start = Time.now
-    mail.deliver
+    Timeout.timeout(5) do
+      mail.deliver
+    end
     [
       "Sent #{html.length} chars in HTML (#{text.length} in plain text)",
       "to #{to} (recipient ##{recipient.id} in list ##{recipient.list.id})",
