@@ -191,7 +191,9 @@ class Letter
     mail.header['List-Unsubscribe'] = [
       '<https://www.mailanes.com/unsubscribe?',
       unsubscribe(codec, recipient, delivery),
-      ">, <mailto:reply@mailanes.com?subject=unsubscribe+#{CGI.escape(codec.encrypt(recipient.id.to_s))}>"
+      '>, <mailto:reply@mailanes.com?subject=',
+      CGI.escape("MAILANES:#{recipient.id}:#{codec.encrypt(recipient.id.to_s)}"),
+      '>'
     ].join
     mail.header['List-Id'] = recipient.id.to_s
     mail.header['Return-Path'] = 'reply@mailanes.com'
