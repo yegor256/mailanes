@@ -65,6 +65,23 @@ class RecipientsTest < Minitest::Test
     assert_equal(0.25, recipients.per_day(4))
   end
 
+  def test_bounce_rate
+    owner = random_owner
+    lists = Lists.new(owner: owner)
+    list = lists.add
+    recipients = Recipients.new(list: list)
+    first = recipients.add('tes-109@mailanes.com')
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    letter = lane.letters.add
+    deliveries = Deliveries.new
+    deliveries.add(campaign, letter, first)
+    second = recipients.add('tes-110@mailanes.com')
+    deliveries.add(campaign, letter, second)
+    second.bounce
+    assert_equal(0.5, recipients.bounce_rate)
+  end
+
   def test_upload_recipients
     owner = random_owner
     lists = Lists.new(owner: owner)

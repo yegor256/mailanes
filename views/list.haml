@@ -76,6 +76,9 @@
   Delivered
   = list.deliveries_count
   emails.
+  Bounce rate:
+  = succeed '.' do
+    = "#{(list.recipients.bounce_rate * 100).round(2)}%"
 
 %p
   There are

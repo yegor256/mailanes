@@ -68,6 +68,17 @@ class Recipients
     @pgsql.exec('SELECT COUNT(id) FROM recipient WHERE list=$1 AND active=true', [@list.id])[0]['count'].to_i
   end
 
+  def bounce_rate
+    q = [
+      'SELECT COUNT(recipient.id) FROM recipient',
+      'JOIN delivery ON delivery.recipient = recipient.id',
+      'WHERE list = $1'
+    ].join(' ')
+    sent = @pgsql.exec(q, [@list.id])[0]['count'].to_i
+    bounced = @pgsql.exec(q + ' AND bounced = true', [@list.id])[0]['count'].to_i
+    sent.zero? ? 0 : bounced.to_f / sent
+  end
+
   def count_by_source(source)
     @pgsql.exec('SELECT COUNT(id) FROM recipient WHERE list=$1 AND source=$2', [@list.id, source])[0]['count'].to_i
   end
