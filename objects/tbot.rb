@@ -59,12 +59,17 @@ class Tbot
 
   def notify(type, yaml, msg)
     return unless yaml['notify'] && yaml['notify']['telegram']
-    return if yaml['notify']['ignore'].is_a?(Array) && yaml['notify']['ignore'][type]
+    return if yaml['notify']['ignore'].is_a?(Array) && yaml['notify']['ignore'].include?(type)
     post(yaml['notify']['telegram'].to_i, msg)
   end
 
   def post(chat, msg, c: @client)
     return if @token.empty?
-    c.send_message(chat_id: chat, parse_mode: 'Markdown', text: msg)
+    c.send_message(
+      chat_id: chat,
+      parse_mode: 'Markdown',
+      disable_web_page_preview: true,
+      text: msg
+    )
   end
 end
