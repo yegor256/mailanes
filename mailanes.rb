@@ -115,7 +115,7 @@ configure do
         sleep 60
         start = Time.now
         begin
-          # settings.pipeline.fetch(settings.postman)
+          settings.pipeline.fetch(settings.postman)
           settings.pipeline.deactivate
           settings.pipeline.exhaust
           settings.bounces.fetch(tbot: settings.tbot)
