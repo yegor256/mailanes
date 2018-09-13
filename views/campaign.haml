@@ -79,7 +79,7 @@
   %select{name: 'target'}
     - campaigns.all.each do |c|
       %option{value: c.id}= "##{c.id}: #{c.title}"
-  %input{type: 'submit', value: 'Merge Into'}
+  %input{type: 'submit', value: 'Merge Into', onclick: "return confirm('Are you sure? This campaign will be deleted.');"}
 
 %p
   Delivered

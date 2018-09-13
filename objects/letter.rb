@@ -213,6 +213,7 @@ class Letter
     start = Time.now
     Timeout.timeout(5) do
       mail.deliver
+      puts "Email sent to #{to}"
     end
     [
       "Sent #{html.length} chars in HTML (#{text.length} in plain text)",
