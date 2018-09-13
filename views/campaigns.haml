@@ -2,7 +2,7 @@
   Campaigns
 
 %p
-  %a.item{onclick: '$("#add").show();'}
+  %a.item{onclick: '$("#add").show();$("#title").focus();'}
     Start a Campaign
 
 - if lists.count.zero?
@@ -15,7 +15,7 @@
   %form.hidden{method: 'POST', action: '/add-campaign', id: 'add'}
     %fieldset
       %label Start a new campaign
-      %input{type: 'text', name: 'title', placeholder: 'Campaign title...', size: 45, required: 'true', autocomplete: 'off'}
+      %input{type: 'text', name: 'title', id: 'title', placeholder: 'Campaign title...', size: 45, required: 'true', autocomplete: 'off'}
       %label List:
       %select{name: 'list'}
         - lists.all.each do |list|
