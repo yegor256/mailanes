@@ -40,7 +40,8 @@
     &= c.lane.title
     - if c.exhausted?
       %span.red exhausted
-    %div.small
+    %br
+    %span.small{style: 'display:inline-block'}
       - c.lists.each do |list|
         %a{href: url("/list?id=#{list.id}")}= "List ##{list.id}"
         = succeed ';' do
