@@ -5,9 +5,9 @@
   &= lane.title
 
 %p
-  %a.item{onclick: '$("#save").show();'}
+  %a.item{onclick: '$("#save").show();$("#yaml").focus();'}
     Edit YAML
-  %a.item{onclick: '$("#add").show();'}
+  %a.item{onclick: '$("#add").show();$("#title").focus();'}
     Add letter
 
 %form.hidden{method: 'POST', action: '/save-lane', id: 'save'}
@@ -16,12 +16,12 @@
     %label
       %a{href: 'https://github.com/yegor256/mailanes#lane'} YAML
       config:
-    %textarea{name: 'yaml', style: 'width:100%;height:12em;', required: 'true'}= lane.yaml.to_yaml
+    %textarea{name: 'yaml', id: 'yaml', style: 'width:100%;height:12em;', required: 'true'}= lane.yaml.to_yaml
     %input{type: 'submit', value: 'Save'}
 
 %form.hidden{method: 'POST', action: '/add-letter', id: 'add'}
   %input{type: 'hidden', name: 'id', value: lane.id}
-  %input{type: 'text', name: 'title', placeholder: 'Letter title', size: 40, required: 'true', autocomplete: 'off'}
+  %input{type: 'text', id: 'title', name: 'title', placeholder: 'Letter title', size: 40, required: 'true', autocomplete: 'off'}
   %input{type: 'submit', value: 'Add Letter'}
 
 %p
