@@ -72,7 +72,7 @@
       %option{value: list.id}= "##{list.id}: #{list.title}"
   %input{type: 'submit', value: 'Add'}
 
-%form.hidden{method: 'POST', action: '/merge', id: 'merge'}
+%form.hidden{method: 'POST', action: '/merge-campaign', id: 'merge'}
   %input{type: 'hidden', name: 'id', value: campaign.id}
   %select{name: 'target'}
     - campaigns.all.each do |c|
