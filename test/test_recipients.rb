@@ -92,6 +92,7 @@ class RecipientsTest < Minitest::Test
         f.path,
         [
           'test@example.com,Jeff,Lebowski',
+          'test@example.com,Jeff,Lebowski',
           'test2@example.com,Walter,Sobchak',
           'broken-email,Walter,Sobchak',
           ',Walter,Sobchak'
