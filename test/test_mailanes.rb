@@ -105,15 +105,21 @@ class AppTest < Minitest::Test
     owner = random_owner
     login(owner)
     list = Lists.new(owner: owner).add
+    get('/lists')
+    assert_equal(200, last_response.status, last_response.body)
     get("/list?id=#{list.id}")
     assert_equal(200, last_response.status, last_response.body)
     recipient = list.recipients.add('test-me1@mailanes.com')
     get("/recipient?id=#{recipient.id}&list=#{list.id}")
     assert_equal(200, last_response.status, last_response.body)
     lane = Lanes.new(owner: owner).add
+    get('/lanes')
+    assert_equal(200, last_response.status, last_response.body)
     get("/lane?id=#{lane.id}")
     assert_equal(200, last_response.status, last_response.body)
     campaign = Campaigns.new(owner: owner).add(list, lane)
+    get('/campaigns')
+    assert_equal(200, last_response.status, last_response.body)
     get("/campaign?id=#{campaign.id}")
     assert_equal(200, last_response.status, last_response.body)
   end

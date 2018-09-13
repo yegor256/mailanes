@@ -39,8 +39,8 @@
       %a{href: url("/lane?id=#{c.lane.id}")}= "Lane ##{c.lane.id}"
     &= c.lane.title
     - c.lists.each do |list|
-        %a{href: url("/list?id=#{c.list.id}")}= "List ##{c.list.id}"
+      %a{href: url("/list?id=#{list.id}")}= "List ##{list.id}"
       = succeed ';' do
-        &= c.list.title
+        &= list.title
     - if c.exhausted?
       %span.red exhausted
