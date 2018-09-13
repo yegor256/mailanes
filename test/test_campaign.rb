@@ -42,7 +42,12 @@ class CampaignTest < Minitest::Test
   def test_merges_into
     owner = random_owner
     lane = Lanes.new(owner: owner).add
+    list = Lists.new(owner: owner).add
     first = Campaigns.new(owner: owner).add(Lists.new(owner: owner).add, lane)
+    lane = Lanes.new(owner: owner).add
+    deliveries = Deliveries.new
+    deliveries.add(first, lane.letters.add, list.recipients.add('x82@mailanes.com'))
+    deliveries.add(first, lane.letters.add, list.recipients.add('x84@mailanes.com'))
     second = Campaigns.new(owner: owner).add(Lists.new(owner: owner).add, lane)
     first.merge_into(second)
     assert_equal(2, second.lists.count)

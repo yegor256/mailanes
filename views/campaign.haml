@@ -36,10 +36,8 @@
 
 %p
   In the pipeline:
-  = succeed '.' do
-    %a{href: "/pipeline?id=#{campaign.id}"}
-      = campaign.pipeline_count
-      recipient(s)
+  %a{href: "/pipeline?id=#{campaign.id}"}= campaign.pipeline_count
+  recipient(s).
   In all lists:
   = campaign.recipients_count
   recipient(s).
