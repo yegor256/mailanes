@@ -33,14 +33,15 @@ class Pgsql
     @user = user
     @password = password
     @mutex = Mutex.new
+    @pool = []
   end
 
   # Test connection
   TEST = Pgsql.new
 
   def exec(query, args = [])
-    start = Time.now
     connect do |c|
+      start = Time.now
       c.exec_params(query, args) do |res|
         elapsed = Time.now - start
         if elapsed > 5
@@ -59,9 +60,16 @@ class Pgsql
   end
 
   def connect
-    @connect ||= PG.connect(dbname: @dbname, host: @host, port: @port, user: @user, password: @password)
-    @mutex.synchronize do
-      yield @connect
+    conn = @mutex.synchronize do
+      @pool << PG.connect(dbname: @dbname, host: @host, port: @port, user: @user, password: @password) if @pool.empty?
+      @pool.shift
+    end
+    begin
+      yield conn
+    ensure
+      @mutex.synchronize do
+        @pool << conn
+      end
     end
   end
 end
