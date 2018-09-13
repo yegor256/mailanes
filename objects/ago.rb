@@ -31,6 +31,6 @@ class Ago
 
   def to_s
     diff = TimeDifference.between(@time, Time.now).humanize
-    diff.nil? ? 'just now' : diff.downcase + ' ago'
+    diff.nil? ? 'just now' : diff.split(' ', 3).take(2).join(' ').downcase + ' ago'
   end
 end
