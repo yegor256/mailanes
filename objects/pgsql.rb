@@ -39,13 +39,13 @@ class Pgsql
   TEST = Pgsql.new
 
   def exec(query, args = [])
-    @mutex.synchronize do
-      start = Time.now
-      connect.exec_params(query, args) do |res|
+    start = Time.now
+    connect do |c|
+      c.exec_params(query, args) do |res|
         elapsed = Time.now - start
         if elapsed > 5
           puts "#{query} in #{elapsed.round(2)}s"
-          # puts connect.exec_params('EXPLAIN ANALYZE ' + query, args).map { |r| r['QUERY PLAN'] }.join("\n")
+          # puts c.exec_params('EXPLAIN ANALYZE ' + query, args).map { |r| r['QUERY PLAN'] }.join("\n")
         end
         if block_given?
           yield res
@@ -60,5 +60,8 @@ class Pgsql
 
   def connect
     @connect ||= PG.connect(dbname: @dbname, host: @host, port: @port, user: @user, password: @password)
+    @mutex.synchronize do
+      yield @connect
+    end
   end
 end

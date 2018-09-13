@@ -62,7 +62,7 @@ class CampaignTest < Minitest::Test
     campaign.toggle
     letter = lane.letters.add
     letter.toggle
-    Pipeline.new.fetch(Postman::Fake.new, cycles: 1)
+    Pipeline.new.fetch(Postman::Fake.new, cycles: 10)
     assert_equal(1, campaign.deliveries.count)
   end
 
@@ -76,7 +76,7 @@ class CampaignTest < Minitest::Test
     letter = lane.letters.add
     letter.toggle
     assert_equal(1, campaign.pipeline_count)
-    Pipeline.new.fetch(Postman::Fake.new, cycles: 1)
+    Pipeline.new.fetch(Postman::Fake.new, cycles: 10)
     assert_equal(0, campaign.pipeline_count)
   end
 

@@ -26,14 +26,11 @@ require_relative '../objects/pgsql'
 class PgsqlTest < Minitest::Test
   def test_retrieves_lists
     db = Pgsql::TEST
-    db.connect.exec('SELECT * FROM list') do |r|
-      # later
+    db.connect do |c|
+      c.exec('SELECT * FROM list') do |r|
+        # later
+      end
     end
-  end
-
-  def test_connects_only_once
-    db = Pgsql::TEST
-    assert_equal(db.connect, db.connect)
   end
 
   def test_handles_many_connections

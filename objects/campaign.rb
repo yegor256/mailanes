@@ -102,9 +102,13 @@ class Campaign
   end
 
   def merge_into(target)
-    @pgsql.exec('UPDATE source SET campaign = $1 WHERE campaign = $2', [target.id, @id])
-    @pgsql.exec('UPDATE delivery SET campaign = $1 WHERE campaign = $2', [target.id, @id])
-    @pgsql.exec('DELETE FROM campaign WHERE id = $1', [@id])
+    @pgsql.connect do |c|
+      c.transaction do |con|
+        con.exec_params('UPDATE source SET campaign = $1 WHERE campaign = $2', [target.id, @id])
+        con.exec_params('UPDATE delivery SET campaign = $1 WHERE campaign = $2', [target.id, @id])
+        con.exec_params('DELETE FROM campaign WHERE id = $1', [@id])
+      end
+    end
     @hash = {}
   end
 
