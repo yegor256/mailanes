@@ -75,7 +75,7 @@ class Recipients
       'WHERE list = $1'
     ].join(' ')
     sent = @pgsql.exec(q, [@list.id])[0]['count'].to_i
-    bounced = @pgsql.exec(q + ' AND bounced = true', [@list.id])[0]['count'].to_i
+    bounced = @pgsql.exec(q + ' AND bounced IS NOT NULL', [@list.id])[0]['count'].to_i
     sent.zero? ? 0 : bounced.to_f / sent
   end
 

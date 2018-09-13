@@ -71,11 +71,11 @@ class Recipient
   end
 
   def bounced?
-    (@hash['bounced'] || @pgsql.exec('SELECT bounced FROM recipient WHERE id=$1', [@id])[0]['bounced']) == 't'
+    !(@hash['bounced'] || @pgsql.exec('SELECT bounced FROM recipient WHERE id=$1', [@id])[0]['bounced']).nil?
   end
 
   def bounce
-    @pgsql.exec('UPDATE recipient SET bounced=true WHERE id=$1', [@id])
+    @pgsql.exec('UPDATE recipient SET bounced=NOW() WHERE id=$1', [@id])
     @hash = {}
   end
 
