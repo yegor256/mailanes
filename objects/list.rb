@@ -80,7 +80,12 @@ class List
   end
 
   def campaigns
-    q = 'SELECT campaign.* FROM campaign JOIN source ON source.list = $1 ORDER BY campaign.created DESC'
+    q = [
+      'SELECT campaign.* FROM campaign',
+      'JOIN source ON source.campaign = campaign.id',
+      'WHERE source.list = $1',
+      'ORDER BY campaign.created DESC'
+    ].join(' ')
     @pgsql.exec(q, [@id]).map do |r|
       Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
