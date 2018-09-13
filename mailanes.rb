@@ -285,6 +285,15 @@ post '/upload-recipients' do
     FileUtils.copy(params[:file][:tempfile], f.path)
     File.delete(params[:file][:tempfile])
     list.recipients.upload(f.path, source: params[:source] || '')
+    settings.tbot.notify(
+      'upload',
+      list.yaml,
+      [
+        "#{File.readlines(f.path).count} recipients uploaded into",
+        "the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
+        "by #{current_user}."
+      ].join(' ')
+    )
   end
   redirect params[:redirect] || "/list?id=#{list.id}"
 end

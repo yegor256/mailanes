@@ -35,6 +35,7 @@ notify:
     - add
     - comment
     - download
+    - upload
     - bounce
 # List of GitHub account who also have access to this list
 # and can add recipients to it, via /add?list=ID URL.

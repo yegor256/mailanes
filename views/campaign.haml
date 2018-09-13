@@ -20,11 +20,14 @@
 
 %p
   Lists:
+
+%ul
   - campaign.lists.each do |list|
-    = succeed ':' do
-      %a{href: "/list?id=#{list.id}"}= "List ##{list.id}"
-    = succeed ';' do
-      &= "\"#{list.title}\""
+    %li
+      = succeed ':' do
+        %a{href: "/list?id=#{list.id}"}= "List ##{list.id}"
+      = succeed ';' do
+        &= "\"#{list.title}\""
 
 %p
   Created:
