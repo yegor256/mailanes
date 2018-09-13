@@ -101,6 +101,12 @@ class Campaign
     )
   end
 
+  def merge_into(target)
+    @pgsql.exec('UPDATE source SET campaign = $1 WHERE campaign = $2', [target.id, @id])
+    @pgsql.exec('DELETE FROM campaign WHERE id = $1', [@id])
+    @hash = {}
+  end
+
   def deliveries(limit: 50)
     q = [
       'SELECT * FROM delivery',

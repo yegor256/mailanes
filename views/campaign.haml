@@ -7,6 +7,10 @@
 %p
   %a.item{onclick: '$("#save").show();'}
     Edit YAML
+  %a.item{onclick: '$("#add").show();'}
+    Add List
+  %a.item{onclick: '$("#merge").show();'}
+    Merge Into
 
 %p
   - lane = campaign.lane
@@ -64,11 +68,18 @@
     %input{type: 'submit', value: 'Save'}
 
 %form.hidden{method: 'POST', action: '/add-source', id: 'add'}
-  %label List:
+  %input{type: 'hidden', name: 'id', value: campaign.id}
   %select{name: 'list'}
     - lists.all.each do |list|
       %option{value: list.id}= "##{list.id}: #{list.title}"
   %input{type: 'submit', value: 'Add'}
+
+%form.hidden{method: 'POST', action: '/merge', id: 'merge'}
+  %input{type: 'hidden', name: 'id', value: campaign.id}
+  %select{name: 'target'}
+    - campaigns.all.each do |c|
+      %option{value: c.id}= "##{c.id}: #{c.title}"
+  %input{type: 'submit', value: 'Merge Into'}
 
 %p
   Delivered

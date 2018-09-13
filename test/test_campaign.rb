@@ -39,6 +39,15 @@ class CampaignTest < Minitest::Test
     assert_equal(list.id, campaign.lists[0].id)
   end
 
+  def test_merges_into
+    owner = random_owner
+    lane = Lanes.new(owner: owner).add
+    first = Campaigns.new(owner: owner).add(Lists.new(owner: owner).add, lane)
+    second = Campaigns.new(owner: owner).add(Lists.new(owner: owner).add, lane)
+    first.merge_into(second)
+    assert_equal(2, second.lists.count)
+  end
+
   def test_reports_in_campaign
     owner = random_owner
     list = Lists.new(owner: owner).add
