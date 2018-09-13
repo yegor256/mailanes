@@ -24,4 +24,4 @@
 %p= delivery.details
 
 %p
-  %a.red{href: "/delete-delivery?id=#{delivery.id}"} Delete
+  %a.red{href: "/delete-delivery?id=#{delivery.id}", onclick: "return confirm('Are you sure?');"} Delete

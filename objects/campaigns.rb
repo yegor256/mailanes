@@ -32,31 +32,27 @@ class Campaigns
   end
 
   def all
-    query = [
-      'SELECT campaign.* FROM campaign',
-      'JOIN list ON campaign.list=list.id',
-      'WHERE list.owner=$1',
-      'ORDER BY campaign.created DESC'
-    ].join(' ')
-    @pgsql.exec(query, [@owner]).map do |r|
+    @pgsql.exec('SELECT * FROM campaign WHERE owner=$1 ORDER BY created DESC', [@owner]).map do |r|
       Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end
 
   def add(list, lane, title = 'unknown')
     yaml = "title: #{title}\n"
-    Campaign.new(
+    campaign = Campaign.new(
       id: @pgsql.exec(
-        'INSERT INTO campaign (list, lane, yaml) VALUES ($1, $2, $3) RETURNING id',
-        [list.id, lane.id, yaml]
+        'INSERT INTO campaign (owner, lane, yaml) VALUES ($1, $2, $3) RETURNING id',
+        [@owner, lane.id, yaml]
       )[0]['id'].to_i,
       pgsql: @pgsql
     )
+    campaign.add(list)
+    campaign
   end
 
   def campaign(id)
     hash = @pgsql.exec(
-      'SELECT campaign.* FROM campaign JOIN list ON campaign.list=list.id WHERE campaign.id=$1 AND list.owner=$2',
+      'SELECT * FROM campaign WHERE id=$1 AND owner=$2',
       [id, @owner]
     )[0]
     Campaign.new(

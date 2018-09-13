@@ -30,6 +30,15 @@ require_relative '../objects/postman'
 require_relative '../objects/pipeline'
 
 class CampaignTest < Minitest::Test
+  def test_iterates_lists
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    assert_equal(1, campaign.lists.count)
+    assert_equal(list.id, campaign.lists[0].id)
+  end
+
   def test_reports_in_campaign
     owner = random_owner
     list = Lists.new(owner: owner).add

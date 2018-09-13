@@ -25,7 +25,7 @@ require_relative 'test__helper'
 require_relative '../objects/lists'
 
 class ListsTest < Minitest::Test
-  def test_creates_list
+  def test_create_a_list
     lists = Lists.new(owner: random_owner)
     title = 'My friends'
     list = lists.add(title)
@@ -34,7 +34,7 @@ class ListsTest < Minitest::Test
     assert_equal(title, lists.all[0].title)
   end
 
-  def test_finds_list
+  def test_find_a_list
     lists = Lists.new(owner: random_owner)
     title = 'test me'
     id = lists.add(title).id

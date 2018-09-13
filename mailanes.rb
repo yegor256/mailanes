@@ -427,8 +427,16 @@ get '/campaign' do
   campaign = owner.campaigns.campaign(params[:id].to_i)
   haml :campaign, layout: :layout, locals: merged(
     title: "##{campaign.id}",
-    campaign: campaign
+    campaign: campaign,
+    lists: owner.lists
   )
+end
+
+post '/add-source' do
+  campaign = owner.campaigns.campaign(params[:id].to_i)
+  list = owner.lists.list(params[:list].to_i)
+  campaign.add(list)
+  redirect "/campaign?id=#{campaign.id}"
 end
 
 post '/save-campaign' do

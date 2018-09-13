@@ -38,16 +38,18 @@ class Campaign
     @hash = hash
   end
 
-  def list
-    hash = @pgsql.exec(
-      'SELECT list.* FROM list JOIN campaign ON campaign.list=list.id WHERE campaign.id=$1',
-      [@id]
+  def add(list)
+    @pgsql.exec(
+      'INSERT INTO source (list, campaign) VALUES ($1, $2)',
+      [list.id, @id]
     )[0]
-    List.new(
-      id: hash['id'].to_i,
-      pgsql: @pgsql,
-      hash: hash
-    )
+  end
+
+  def lists
+    q = 'SELECT list.* FROM list JOIN source ON source.list = list.id WHERE source.campaign = $1'
+    @pgsql.exec(q, [@id]).map do |r|
+      List.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
+    end
   end
 
   def lane
@@ -102,7 +104,7 @@ class Campaign
   def deliveries(limit: 50)
     q = [
       'SELECT * FROM delivery',
-      'WHERE campaign=$1',
+      'WHERE campaign = $1',
       'ORDER BY delivery.created DESC',
       'LIMIT $2'
     ].join(' ')
@@ -113,6 +115,13 @@ class Campaign
 
   def deliveries_count
     @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE campaign=$1', [@id])[0]['count'].to_i
+  end
+
+  def recipients_count
+    @pgsql.exec(
+      'SELECT COUNT(*) FROM recipient JOIN source ON source.list = recipient.list WHERE source.campaign=$1',
+      [@id]
+    )[0]['count'].to_i
   end
 
   def pipeline
