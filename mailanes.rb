@@ -408,7 +408,7 @@ end
 get '/toggle-letter' do
   letter = owner.lanes.letter(params[:id].to_i)
   letter.toggle
-  redirect("/letter?id=#{letter.id}", "The letter ##{letter.id} has been toggled")
+  flash("/letter?id=#{letter.id}", "The letter ##{letter.id} is now #{letter.active? ? 'active' : 'deactivated'}")
 end
 
 get '/campaigns' do
@@ -468,7 +468,10 @@ end
 get '/toggle-campaign' do
   campaign = owner.campaigns.campaign(params[:id].to_i)
   campaign.toggle
-  flash("/campaign?id=#{campaign.id}", "The campaign ##{campaign.id} has been toggled")
+  flash(
+    "/campaign?id=#{campaign.id}",
+    "The campaign ##{campaign.id} is now #{campaign.active? ? 'active' : 'deactivated'}"
+  )
 end
 
 get '/add' do
