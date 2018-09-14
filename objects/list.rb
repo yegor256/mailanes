@@ -112,7 +112,7 @@ class List
       'AND s.list = $1 AND t.list = $2'
     ].join(' ')
     @pgsql.exec(q, [list.id, @id]).map do |r|
-      [
+      {
         from: Recipient.new(
           id: r['s_id'].to_i, pgsql: @pgsql, hash: {
             'id': r['s_id'].to_i,
@@ -127,7 +127,7 @@ class List
             'email': r['t_email']
           }
         )
-      ]
+      }
     end
   end
 
