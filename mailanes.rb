@@ -209,7 +209,7 @@ post '/absorb' do
       candidates: list.absorb_candidates(source)
     )
   end
-  # list.absorb(source)
+  list.absorb(source)
   flash("/list?id=#{list.id}", "Duplicates from the list ##{source.id} have been moved to the list ##{list.id}")
 end
 
