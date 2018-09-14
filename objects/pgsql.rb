@@ -72,4 +72,20 @@ class Pgsql
       end
     end
   end
+
+  def print(query, args = [])
+    rows = exec(query, args)
+    if rows.empty?
+      puts 'EMPTY'
+      return
+    end
+    puts query + ':'
+    puts rows[0].keys.map { |k| format('%-16s', k.to_s) }.join(' ')
+    rows.each do |r|
+      puts(r.values.map do |v|
+        v = 'NULL' if v.nil?
+        format('%-16s', v.to_s[0..15])
+      end.join(' '))
+    end
+  end
 end

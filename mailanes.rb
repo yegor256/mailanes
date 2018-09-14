@@ -193,8 +193,16 @@ get '/list' do
   list = owner.lists.list(params[:id].to_i)
   haml :list, layout: :layout, locals: merged(
     title: "##{list.id}",
+    lists: owner.lists,
     list: list
   )
+end
+
+post '/absorb' do
+  list = owner.lists.list(params[:id].to_i)
+  source = owner.lists.list(params[:list].to_i)
+  list.absorb(source)
+  flash("/list?id=#{list.id}", "Duplicates from the list ##{source.id} have been moved to the list ##{list.id}")
 end
 
 post '/save-list' do

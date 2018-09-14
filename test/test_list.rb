@@ -22,8 +22,12 @@ require 'minitest/autorun'
 require 'rack/test'
 require 'yaml'
 require_relative 'test__helper'
+require_relative '../objects/pgsql'
 require_relative '../objects/list'
 require_relative '../objects/lists'
+require_relative '../objects/lanes'
+require_relative '../objects/campaigns'
+require_relative '../objects/deliveries'
 
 class ListTest < Minitest::Test
   def test_reads_list
@@ -49,5 +53,26 @@ class ListTest < Minitest::Test
     owner = random_owner
     list = Lists.new(owner: owner).add
     assert_equal(0, list.deliveries_count)
+  end
+
+  def test_absorbs_duplicates
+    Pgsql::TEST.exec('DELETE FROM delivery')
+    owner = random_owner
+    lane = Lanes.new(owner: owner).add
+    letter = lane.letters.add
+    lists = Lists.new(owner: random_owner)
+    first = lists.add
+    campaign = Campaigns.new(owner: owner).add(first, lane)
+    second = lists.add
+    campaign.add(second)
+    dup = 'ab1@mailanes.com'
+    recipient = first.recipients.add(dup)
+    Deliveries.new.add(campaign, letter, recipient)
+    Deliveries.new.add(Campaigns.new(owner: owner).add(first, lane), letter, recipient)
+    Deliveries.new.add(campaign, letter, second.recipients.add(dup))
+    Deliveries.new.add(campaign, letter, second.recipients.add('ab2@mailanes.com'))
+    first.absorb(second)
+    assert_equal(1, first.recipients.count)
+    assert_equal(1, second.recipients.count)
   end
 end
