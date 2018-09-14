@@ -95,4 +95,4 @@
 %p
   - list.recipients.all(query: params[:query] || '').each do |r|
     %span{class: ('cross' unless r.active?)}
-      %a{href: "/recipient?list=#{list.id}&id=#{r.id}"}= r.email
+      %a{href: "/recipient?id=#{r.id}"}= r.email

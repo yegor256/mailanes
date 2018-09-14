@@ -13,6 +13,22 @@
   %input{type: 'text', name: 'query', placeholder: 'Query', id: 'query', size: 45, required: 'true', autocomplete: 'off'}
   %input{type: 'submit', value: 'Find'}
 
+- if !found.nil?
+  %p
+    Found
+    = found.count
+    recipients by
+    = "\"#{params[:query]}\":"
+  %ul
+    - found.each do |r|
+      - list = r.list
+      %li
+        %a{href: "/recipient?id=#{r.id}"}= r.email
+        in
+        = succeed ':' do
+          %a{href: url("/list?id=#{list.id}")}= "List ##{list.id}"
+        &= "\"#{list.title}\""
+
 %p
   All your lists:
 

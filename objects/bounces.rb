@@ -69,7 +69,7 @@ class Bounces
         recipient.list.yaml,
         [
           "The email #{recipient.email} to recipient",
-          "[##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id})",
+          "[##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
           'bounced back, that\'s why we deactivated it in the list',
           "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
           "Bounce rate of the list is #{(rate * 100).round(2)}% (#{rate > 0.05 ? 'too high!' : 'it is OK'})."

@@ -6,7 +6,7 @@
 %p
   - recipient = delivery.recipient
   = succeed ':' do
-    %a{href: "/recipient?id=#{recipient.id}&list=#{recipient.list.id}"}= "Recipient ##{recipient.id}"
+    %a{href: "/recipient?id=#{recipient.id}"}= "Recipient ##{recipient.id}"
   = "#{recipient.email}"
 
 %p

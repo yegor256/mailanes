@@ -239,7 +239,7 @@ class Letter
       'last' => recipient.last.empty? ? nil : recipient.last,
       'unsubscribe_query' => query,
       'unsubscribe' => "https://www.mailanes.com/unsubscribe?#{query}",
-      'profile' => "https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{recipient.list.id}"
+      'profile' => "https://www.mailanes.com/recipient?id=#{recipient.id}"
     )
   end
 

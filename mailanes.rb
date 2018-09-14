@@ -176,15 +176,17 @@ get '/' do
 end
 
 get '/lists' do
+  mine = owner.lists
   haml :lists, layout: :layout, locals: merged(
     title: '/lists',
-    lists: owner.lists
+    lists: owner.lists,
+    found: params[:query] && !mine.empty? ? mine[0].recipients.all(query: params[:query], in_list_only: false) : nil
   )
 end
 
 post '/add-list' do
-  owner.lists.add(params[:title])
-  redirect '/lists'
+  list = owner.lists.add(params[:title])
+  flash('/lists', "List ##{list.id} was created")
 end
 
 get '/list' do
@@ -195,20 +197,10 @@ get '/list' do
   )
 end
 
-post '/find-recipient' do
-  query = params[:query]
-  first = owner.lists.all[0]
-  raise 'You have no lists yet' if first.nil?
-  recipients = first.recipients.all(query: query, limit: 1, in_list_only: false)
-  redirect '/lists' if recipients.empty?
-  list = recipients[0].list
-  redirect "/list?id=#{list.id}&query=#{CGI.escape(query)}"
-end
-
 post '/save-list' do
   list = owner.lists.list(params[:id].to_i)
   list.save_yaml(params[:yaml])
-  redirect "/list?id=#{list.id}"
+  flash("/list?id=#{list.id}", "YAML has been saved to the list ##{list.id}")
 end
 
 post '/add-recipient' do
@@ -220,12 +212,12 @@ post '/add-recipient' do
     source: "@#{current_user}"
   )
   recipient.post_event("Added to the list by @#{current_user}")
-  redirect "/list?id=#{list.id}"
+  flash("/list?id=#{list.id}", "The recipient ##{recipient.id} has been added to the list ##{list.id}")
 end
 
 get '/recipient' do
-  list = shared_list(params[:list].to_i)
-  recipient = list.recipients.recipient(params[:id].to_i)
+  recipient = Recipient.new(id: params[:id].to_i, pgsql: settings.pgsql)
+  list = shared_list(recipient.list.id)
   haml :recipient, layout: :layout, locals: merged(
     title: "##{recipient.id}",
     list: list,
@@ -239,7 +231,7 @@ get '/toggle-recipient' do
   recipient = list.recipients.recipient(params[:id].to_i)
   recipient.toggle
   recipient.post_event((recipient.active? ? 'Activated' : 'Deactivated') + " by @#{current_user}")
-  redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
+  flash("/recipient?id=#{recipient.id}", "The recipient ##{recipient.id} has been toggled")
 end
 
 post '/comment-recipient' do
@@ -255,19 +247,26 @@ post '/comment-recipient' do
       params[:comment]
     ].join(' ')
   )
-  redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
+  flash(
+    "/recipient?id=#{recipient.id}",
+    "The comment has been posted to the recipient ##{recipient.id}"
+  )
 end
 
 get '/block-recipient' do
   list = shared_list(params[:list].to_i)
   recipient = list.recipients.recipient(params[:id].to_i)
-  owner.lists.all.each do |s|
-    next unless s.stop?
-    next if s.recipients.exists?(recipient.email)
+  stops = owner.lists.all.select do |s|
+    return false unless s.stop?
+    return false if s.recipients.exists?(recipient.email)
     s.recipients.add(recipient.email)
     recipient.post_event("It was added to the block list ##{s.id}.")
+    true
   end
-  redirect "/recipient?list=#{list.id}&id=#{recipient.id}"
+  flash(
+    "/recipient?id=#{recipient.id}",
+    "The recipient has been added to #{stops.count} block lists"
+  )
 end
 
 post '/move-recipient' do
@@ -276,7 +275,10 @@ post '/move-recipient' do
   target = owner.lists.list(params[:target].to_i)
   recipient.move_to(target)
   recipient.post_event("Moved to the list ##{target.id} by @#{current_user}")
-  redirect "/recipient?list=#{target.id}&id=#{recipient.id}"
+  flash(
+    "/recipient?id=#{recipient.id}",
+    "The recipient ##{recipient.id} has been moved to the list ##{target.id}"
+  )
 end
 
 post '/upload-recipients' do
@@ -295,7 +297,7 @@ post '/upload-recipients' do
       ].join(' ')
     )
   end
-  redirect params[:redirect] || "/list?id=#{list.id}"
+  flash(params[:redirect] || "/list?id=#{list.id}", "The CSV has been uploaded to the list ##{list.id}")
 end
 
 get '/download-recipients' do
@@ -320,7 +322,7 @@ get '/delete-delivery' do
   delivery = owner.deliveries.delivery(params[:id].to_i)
   recipient = delivery.recipient
   delivery.delete
-  redirect "/recipient?id=#{recipient.id}&list=#{recipient.list.id}"
+  redirect "/recipient?id=#{recipient.id}"
 end
 
 get '/lanes' do
@@ -534,7 +536,7 @@ post '/subscribe' do
     recipient.post_event('Re-subscribed.')
     notify += [
       "A subscriber #{params[:email]}",
-      "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}))",
+      "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
       "re-entered the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
     ]
   else
@@ -556,7 +558,7 @@ post '/subscribe' do
     recipient.post_event('Subscribed.')
     notify += [
       "A new subscriber #{params[:email]} from #{country}",
-      "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id}))",
+      "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
       "just got into your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
     ]
   end
@@ -567,7 +569,7 @@ post '/subscribe' do
       "There are #{list.recipients.active_count} active subscribers in the list now,",
       "out of #{list.recipients.count} total,",
       "#{list.recipients.per_day.round(2)} joining daily.",
-      "More details are [here](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id})."
+      "More details are [here](https://www.mailanes.com/recipient?id=#{recipient.id})."
     ]).join(' ')
   )
   redirect params[:redirect] if params[:redirect]
@@ -590,7 +592,7 @@ get '/unsubscribe' do
       'unsubscribe',
       list.yaml,
       [
-        "The recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}&list=#{list.id})",
+        "The recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
         "with the email #{email} has been unsubscribed from your list",
         "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
         @locals[:user] ? "It was done by #{current_user}." : '',
@@ -652,7 +654,16 @@ end
 def merged(hash)
   out = @locals.merge(hash)
   out[:local_assigns] = out
+  if cookies[:flash_msg]
+    out[:flash_msg] = cookies[:flash_msg]
+    cookies.delete(:flash_msg)
+  end
   out
+end
+
+def flash(uri, msg)
+  cookies[:flash_msg] = msg
+  redirect uri
 end
 
 def current_user

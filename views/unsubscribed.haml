@@ -12,7 +12,7 @@
   - if current_user == list.owner || list.friend?(current_user)
     %p
       It was recipient
-      %a{href: "/recipient?id=#{recipient.id}&list=#{list.id}"}
+      %a{href: "/recipient?id=#{recipient.id}"}
         = "##{recipient.id}"
       from the list
       = succeed '.' do

@@ -110,7 +110,7 @@ class AppTest < Minitest::Test
     get("/list?id=#{list.id}")
     assert_equal(200, last_response.status, last_response.body)
     recipient = list.recipients.add('test-me1@mailanes.com')
-    get("/recipient?id=#{recipient.id}&list=#{list.id}")
+    get("/recipient?id=#{recipient.id}")
     assert_equal(200, last_response.status, last_response.body)
     lane = Lanes.new(owner: owner).add
     get('/lanes')

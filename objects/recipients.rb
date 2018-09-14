@@ -40,13 +40,13 @@ class Recipients
     q = [
       'SELECT recipient.* FROM recipient',
       'JOIN list ON list.id = recipient.list AND list.owner = $1',
-      'WHERE (' + [
+      'WHERE',
+      query =~ /^=\d+$/ ? 'recipient.id = $2 :: INTEGER' : '(' + [
         'email LIKE $2',
         'OR first LIKE $2',
         'OR last LIKE $2',
         'OR recipient.yaml LIKE $2',
-        'OR source LIKE $2',
-        query =~ /^=\d+$$/ ? 'OR recipient.id = $2 :: INTEGER' : ''
+        'OR source LIKE $2'
       ].join(' ') + ')',
       in_list_only ? "AND recipient.list = #{@list.id}" : '',
       active_only ? 'AND recipient.active = true' : '',
