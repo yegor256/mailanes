@@ -45,6 +45,8 @@
   %select{name: 'list'}
     - lists.all.each do |list|
       %option{value: list.id}= "##{list.id}: #{list.title}"
+  %input{type: 'checkbox', name: 'dry', value: 'dry'}
+  %label Dry run
   %input{type: 'submit', value: 'Absorb'}
   %label.small.gray
     All emails from the selected list, which also exist in the

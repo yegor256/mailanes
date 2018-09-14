@@ -71,6 +71,7 @@ class ListTest < Minitest::Test
     Deliveries.new.add(Campaigns.new(owner: owner).add(first, lane), letter, recipient)
     Deliveries.new.add(campaign, letter, second.recipients.add(dup))
     Deliveries.new.add(campaign, letter, second.recipients.add('ab2@mailanes.com'))
+    assert_equal(1, first.absorb_candidates(second).count)
     first.absorb(second)
     assert_equal(1, first.recipients.count)
     assert_equal(1, second.recipients.count)

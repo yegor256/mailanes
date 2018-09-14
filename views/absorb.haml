@@ -1,0 +1,13 @@
+%h2
+  Absorb candidates for the List
+  = succeed ':' do
+    = "##{list.id}"
+  &= list.title
+
+- candidates.each do |c|
+  %p
+    From
+    %a{href: "/recipient?id=#{c[:from].id}"}= c[:from].email
+    to
+    %a{href: "/recipient?id=#{c[:to].id}"}= c[:to].email
+

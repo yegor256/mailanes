@@ -201,7 +201,15 @@ end
 post '/absorb' do
   list = owner.lists.list(params[:id].to_i)
   source = owner.lists.list(params[:list].to_i)
-  list.absorb(source)
+  if params[:dry] == 'dry'
+    return haml :absorb, layout: :layout, locals: merged(
+      title: "##{list.id}",
+      source: source,
+      list: list,
+      candidates: list.absorb_candidates(source)
+    )
+  end
+  # list.absorb(source)
   flash("/list?id=#{list.id}", "Duplicates from the list ##{source.id} have been moved to the list ##{list.id}")
 end
 

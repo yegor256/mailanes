@@ -103,6 +103,34 @@ class List
     )[0]['count'].to_i
   end
 
+  def absorb_candidates(list)
+    q = [
+      'SELECT s.id AS s_id, s.list AS s_list, s.email AS s_email,',
+      't.id AS t_id, t.list AS t_list, t.email AS t_email',
+      'FROM recipient AS s',
+      'JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
+      'AND s.list = $1 AND t.list = $2'
+    ].join(' ')
+    @pgsql.exec(q, [list.id, @id]).map do |r|
+      [
+        from: Recipient.new(
+          id: r['s_id'].to_i, pgsql: @pgsql, hash: {
+            'id': r['s_id'].to_i,
+            'list': r['s_list'].to_i,
+            'email': r['s_email']
+          }
+        ),
+        to: Recipient.new(
+          id: r['t_id'].to_i, pgsql: @pgsql, hash: {
+            'id': r['t_id'].to_i,
+            'list': r['t_list'].to_i,
+            'email': r['t_email']
+          }
+        )
+      ]
+    end
+  end
+
   # Take duplicate recipients from this list and merge them
   # into itself
   def absorb(list)
