@@ -176,7 +176,7 @@ get '/' do
 end
 
 get '/lists' do
-  mine = owner.lists
+  mine = owner.lists.all
   haml :lists, layout: :layout, locals: merged(
     title: '/lists',
     lists: owner.lists,
