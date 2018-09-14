@@ -90,13 +90,17 @@
 - if !abs.empty?
   %p
     There are
-    %span.red duplicates
+    %span.red
+      = abs.map { |a| a[:total] }.inject(&:+)
+      duplicates
     in the following lists:
+  %ul
     - abs.each do |a|
-      = a[:total]
-      = '/'
-      %a{href: "/list?id=#{a[:list].id}"}= "##{a[:list].id}"
-      &= a[:list].title
+      %li
+        %span.red= a[:total]
+        in
+        %a{href: "/list?id=#{a[:list].id}"}= "##{a[:list].id}"
+        &= a[:list].title
 
 
 %p
