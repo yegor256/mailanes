@@ -9,7 +9,7 @@
   %input{type: 'text', name: 'title', placeholder: 'List title...', size: 45, required: 'true', autocomplete: 'off'}
   %input{type: 'submit', value: 'Add'}
 
-%form.hidden{method: 'POST', action: '/find-recipient', id: 'find'}
+%form.hidden{method: 'GET', action: '/lists', id: 'find'}
   %input{type: 'text', name: 'query', placeholder: 'Query', id: 'query', size: 45, required: 'true', autocomplete: 'off'}
   %input{type: 'submit', value: 'Find'}
 
