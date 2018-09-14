@@ -29,6 +29,13 @@
           %a{href: url("/list?id=#{list.id}")}= "List ##{list.id}"
         &= "\"#{list.title}\""
 
+- dups = lists.duplicates_count
+- if !dups.zero?
+  %p
+    There are
+    %span.red= "#{dups} duplicate emails"
+    in your lists!
+
 %p
   All your lists:
 
