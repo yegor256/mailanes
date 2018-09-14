@@ -103,6 +103,22 @@ class List
     )[0]['count'].to_i
   end
 
+  def absorb_counts
+    q = [
+      'SELECT * FROM',
+      '  (SELECT *, (SELECT COUNT(s.id) FROM recipient AS s',
+      '    JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
+      '    AND s.list = list.id AND t.list = $2) AS total FROM list WHERE owner = $1) AS x',
+      'WHERE total > 0'
+    ].join(' ')
+    @pgsql.exec(q, [owner, @id]).map do |r|
+      {
+        list: List.new(id: r['id'].to_i, pgsql: @pgsql, hash: r),
+        total: r['total'].to_i
+      }
+    end
+  end
+
   def absorb_candidates(list)
     q = [
       'SELECT s.id AS s_id, s.list AS s_list, s.email AS s_email,',

@@ -86,6 +86,19 @@
       %a{href: "/lane?id=#{c.lane.id}"}= "L##{c.lane.id}"
     &= "\"#{c.lane.title}\""
 
+- abs = list.absorb_counts
+- if !abs.empty?
+  %p
+    There are
+    %span.red duplicates
+    in the following lists:
+    - abs.each do |a|
+      = a[:total]
+      = '/'
+      %a{href: "/list?id=#{a[:list].id}"}= "##{a[:list].id}"
+      &= a[:list].title
+
+
 %p
   Delivered
   = list.deliveries_count
