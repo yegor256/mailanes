@@ -321,8 +321,9 @@ end
 get '/delete-delivery' do
   delivery = owner.deliveries.delivery(params[:id].to_i)
   recipient = delivery.recipient
+  id = delivery.id
   delivery.delete
-  redirect "/recipient?id=#{recipient.id}"
+  flash("/recipient?id=#{recipient.id}", "Delivery ##{id} has been deleted")
 end
 
 get '/lanes' do
@@ -333,8 +334,8 @@ get '/lanes' do
 end
 
 post '/add-lane' do
-  owner.lanes.add(params[:title])
-  redirect '/lanes'
+  lane = owner.lanes.add(params[:title])
+  flash('/lanes', "Lane ##{lane.id} has been created")
 end
 
 get '/lane' do
@@ -348,13 +349,13 @@ end
 post '/save-lane' do
   lane = owner.lanes.lane(params[:id].to_i)
   lane.save_yaml(params[:yaml])
-  redirect "/lane?id=#{lane.id}"
+  flash("/lane?id=#{lane.id}", "The YAML config of the lane ##{lane.id} has been saved")
 end
 
 post '/add-letter' do
   lane = owner.lanes.lane(params[:id].to_i)
-  lane.letters.add(params[:title])
-  redirect "/lane?id=#{lane.id}"
+  letter = lane.letters.add(params[:title])
+  flash("/lane?id=#{lane.id}", "The letter ##{letter.id} has been created")
 end
 
 get '/letter' do
@@ -370,20 +371,20 @@ end
 get '/letter-up' do
   letter = owner.lanes.letter(params[:id].to_i)
   letter.move(+1)
-  redirect "/lane?id=#{letter.lane.id}"
+  flash("/lane?id=#{letter.lane.id}", "The letter ##{letter.id} has been UP-moved to the place ##{letter.place}")
 end
 
 get '/letter-down' do
   letter = owner.lanes.letter(params[:id].to_i)
   letter.move(-1)
-  redirect "/lane?id=#{letter.lane.id}"
+  flash("/lane?id=#{letter.lane.id}", "The letter ##{letter.id} has been DOWN-moved to the place ##{letter.place}")
 end
 
 post '/save-letter' do
   letter = owner.lanes.letter(params[:id].to_i)
   letter.save_liquid(params[:liquid])
   letter.save_yaml(params[:yaml])
-  redirect "/letter?id=#{letter.id}"
+  flash("/letter?id=#{letter.id}", "YAML and Liquid have been saved for the letter ##{letter.id}")
 end
 
 post '/test-letter' do
@@ -392,7 +393,7 @@ post '/test-letter' do
   recipient = list.recipients.all(active_only: true).sample(1)[0]
   raise "There are no recipients in the list ##{list.id}" if recipient.nil?
   letter.deliver(recipient, settings.codec)
-  redirect "/letter?id=#{letter.id}"
+  flash("/letter?id=#{letter.id}", "Test email has been sent to #{recipient.email}")
 end
 
 post '/copy-letter' do
@@ -401,13 +402,13 @@ post '/copy-letter' do
   copy = lane.letters.add(letter.title)
   copy.save_yaml(letter.yaml.to_yaml)
   copy.save_liquid(letter.liquid)
-  redirect "/letter?id=#{copy.id}"
+  flash("/letter?id=#{copy.id}", "The letter ##{letter.id} has been copied to the letter ##{copy.id}")
 end
 
 get '/toggle-letter' do
   letter = owner.lanes.letter(params[:id].to_i)
   letter.toggle
-  redirect "/letter?id=#{letter.id}"
+  redirect("/letter?id=#{letter.id}", "The letter ##{letter.id} has been toggled")
 end
 
 get '/campaigns' do
@@ -422,8 +423,8 @@ end
 post '/add-campaign' do
   list = owner.lists.list(params[:list].to_i)
   lane = owner.lanes.lane(params[:lane].to_i)
-  owner.campaigns.add(list, lane, params[:title])
-  redirect '/campaigns'
+  campaign = owner.campaigns.add(list, lane, params[:title])
+  flash('/campaigns', "The campaign ##{campaign.id} has been created")
 end
 
 get '/pipeline' do
@@ -448,26 +449,26 @@ post '/add-source' do
   campaign = owner.campaigns.campaign(params[:id].to_i)
   list = owner.lists.list(params[:list].to_i)
   campaign.add(list)
-  redirect "/campaign?id=#{campaign.id}"
+  flash("/campaign?id=#{campaign.id}", "The list ##{list.id} has been added to the campaign ##{campaign.id}")
 end
 
 post '/merge-campaign' do
   campaign = owner.campaigns.campaign(params[:id].to_i)
   target = owner.campaigns.campaign(params[:target].to_i)
   campaign.merge_into(target)
-  redirect "/campaign?id=#{target.id}"
+  flash("/campaign?id=#{target.id}", "The campaign ##{params[:id]} has been merged into the campaign ##{target.id}")
 end
 
 post '/save-campaign' do
   campaign = owner.campaigns.campaign(params[:id].to_i)
   campaign.save_yaml(params[:yaml])
-  redirect "/campaign?id=#{campaign.id}"
+  flash("/campaign?id=#{campaign.id}", "YAML has been saved for the campaign ##{campaign.id}")
 end
 
 get '/toggle-campaign' do
   campaign = owner.campaigns.campaign(params[:id].to_i)
   campaign.toggle
-  redirect "/campaign?id=#{campaign.id}"
+  flash("/campaign?id=#{campaign.id}", "The campaign ##{campaign.id} has been toggled")
 end
 
 get '/add' do
@@ -480,7 +481,7 @@ end
 
 post '/do-add' do
   list = shared_list(params[:id].to_i)
-  list.recipients.add(
+  recipient = list.recipients.add(
     params[:email],
     first: params[:first] || '',
     last: params[:last] || '',
@@ -495,7 +496,7 @@ post '/do-add' do
       "There are #{list.recipients.per_day.round(2)} emails joining daily."
     ].join(' ')
   )
-  redirect "/add?list=#{list.id}"
+  flash("/add?list=#{list.id}", "The recipient ##{recipient.id} has been added to the list ##{list.id}")
 end
 
 get '/download-list' do
