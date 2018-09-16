@@ -90,9 +90,8 @@
 - if !abs.empty?
   %p
     There are
-    %span.red
-      = abs.map { |a| a[:total] }.inject(&:+)
-      duplicates
+    %span.red= abs.map { |a| a[:total] }.inject(&:+)
+    duplicates
     in the following lists:
   %ul
     - abs.each do |a|
@@ -101,7 +100,6 @@
         in
         %a{href: "/list?id=#{a[:list].id}"}= "##{a[:list].id}"
         &= a[:list].title
-
 
 %p
   Delivered
