@@ -37,28 +37,41 @@ class Bounces
   end
 
   def fetch(tbot: Tbot.new)
-    pop = Net::POP3.new(@host)
-    pop.start(@login, @password)
-    pop.each_mail do |m|
+    action = lambda do |m|
       body = m.pop
       match(body, %r{X-Mailanes-Recipient: ([0-9]+):([a-zA-Z0-9=+/]+)}, tbot)
       match(body, %r{Subject: MAILANES:([0-9]+):([a-zA-Z0-9=+/]+)}, tbot)
       puts "Message #{m.unique_id} processed and deleted"
       m.delete
     end
-    pop.finish
+    @host.is_a?(String) ? fetch_pop(action) : fetch_array(action)
   end
 
   private
+
+  def fetch_pop(action)
+    pop = Net::POP3.new(@host)
+    pop.start(@login, @password)
+    pop.each_mail do |m|
+      action.call(m)
+    end
+    pop.finish
+  end
+
+  def fetch_array(action)
+    @host.each do |m|
+      action.call(m)
+    end
+  end
 
   def match(body, regex, tbot)
     match = body.match(regex)
     return if match.nil?
     begin
       plain = match[1].to_i
-      decoded = @codec.decrypt(match[2]).to_i
-      raise "#{plain} != #{decoded}" if plain != decoded
-      recipient = Recipient.new(id: decoded, pgsql: @pgsql)
+      expected = @codec.encrypt(plain.to_s)
+      raise "Broken signature \"#{match}\" for #{plain}" unless match[2][0..32] == expected[0..32]
+      recipient = Recipient.new(id: plain, pgsql: @pgsql)
       recipient.toggle if recipient.active?
       recipient.bounce
       recipient.post_event(body[0..1024])

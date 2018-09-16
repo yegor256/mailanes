@@ -37,4 +37,34 @@ class BouncesTest < Minitest::Test
       GLogin::Codec.new('--')
     ).fetch
   end
+
+  def test_deactives_recipients_with_fake_pop
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    recipient = list.recipients.add('test@mailanes.com')
+    msg = FakeMsg.new(recipient)
+    Bounces.new([msg], '', '', GLogin::Codec.new).fetch
+    assert(recipient.bounced?)
+  end
+
+  class FakeMsg
+    def initialize(recipient)
+      @recipient = recipient
+    end
+
+    def pop
+      [
+        "X-Mailanes-Recipient: #{@recipient.id}:#{@recipient.id}",
+        'How are you doing?'
+      ].join("\n")
+    end
+
+    def delete
+      # nothing
+    end
+
+    def unique_id
+      '1'
+    end
+  end
 end

@@ -506,13 +506,14 @@ post '/do-add' do
     last: params[:last] || '',
     source: "@#{current_user}"
   )
+  days = 10
   settings.tbot.notify(
     'add',
     list.yaml,
     [
       "New recipient `#{params[:email]}` has been added",
       "by #{current_user} to your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
-      "There are #{list.recipients.per_day.round(2)} emails joining daily."
+      "There are #{list.recipients.per_day(10).round(2)} emails joining daily (last #{days} days statistics)."
     ].join(' ')
   )
   flash("/add?list=#{list.id}", "The recipient ##{recipient.id} has been added to the list ##{list.id}")
