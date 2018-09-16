@@ -23,7 +23,7 @@
     - found.each do |r|
       - list = r.list
       %li
-        %a{href: "/recipient?id=#{r.id}"}= r.email
+        %a{href: "/recipient?id=#{r.id}", class: (r.active? ? '' : 'cross')}= r.email
         in
         = succeed ':' do
           %a{href: url("/list?id=#{list.id}")}= "List ##{list.id}"
