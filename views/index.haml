@@ -20,19 +20,23 @@
   = succeed '.' do
     %a{href: 'https://github.com/yegor256/mailanes/blob/master/README.md'} README
 
-%p
-  Total recipients in all lists:
-  = succeed '.' do
-    %a{href: '/lists'}= lists.total_recipients
+- total = lists.total_recipients
+- if !total.zero?
+  %p
+    Total recipients in all lists:
+    = succeed '.' do
+      %a{href: '/lists'}= total
 
-%p
-  - delivered = campaigns.total_deliveries(1)
-  %a{href: '/campaigns'}= delivered
-  letters delivered over the last 24 hours.
-  - bounced = campaigns.total_bounced(1)
-  = bounced
-  of them bounced back, which is
-  - rate = (delivered.zero? ? 0 : bounced.to_f / delivered)
-  = succeed '.' do
-    %span{class: (rate > 0.05 ? 'red' : '')}= "#{(rate * 100).round(2)}%"
+- delivered = campaigns.total_deliveries(1)
+- if !delivered.zero?
+  %p
+    %a{href: '/campaigns'}= delivered
+    letters delivered over the last 24 hours.
+    - bounced = campaigns.total_bounced(1)
+    - if !bounced.zero?
+      = bounced
+      of them bounced back, which is
+      - rate = bounced.to_f / delivered
+      = succeed '.' do
+        %span{class: (rate > 0.05 ? 'red' : '')}= "#{(rate * 100).round(2)}%"
 
