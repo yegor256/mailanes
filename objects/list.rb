@@ -108,7 +108,9 @@ class List
       'SELECT * FROM',
       '  (SELECT *, (SELECT COUNT(s.id) FROM recipient AS s',
       '    JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
-      '    AND s.list = list.id AND t.list = $2) AS total FROM list WHERE owner = $1) AS x',
+      '    AND s.list = list.id AND t.list = $2) AS total',
+      '    FROM list',
+      '    WHERE owner = $1 AND list.stop = false) AS x',
       'WHERE total > 0'
     ].join(' ')
     @pgsql.exec(q, [owner, @id]).map do |r|
