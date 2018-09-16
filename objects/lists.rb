@@ -71,7 +71,7 @@ class Lists
         'SELECT COUNT(*) FROM',
         '(SELECT COUNT(recipient.id) AS dups FROM recipient',
         'JOIN list ON recipient.list = list.id',
-        'WHERE list.owner = $1',
+        'WHERE list.owner = $1 AND list.stop = false',
         'GROUP BY recipient.email) x',
         'WHERE x.dups > 1'
       ].join(' '),
