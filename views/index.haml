@@ -26,8 +26,13 @@
     %a{href: '/lists'}= lists.total_recipients
 
 %p
-  %a{href: '/campaigns'}= campaigns.total_deliveries(1)
+  - delivered = campaigns.total_deliveries(1)
+  %a{href: '/campaigns'}= delivered
   letters delivered over the last 24 hours.
-  campaigns.total_bounced(1)
-  of them bounced back.
+  - bounced = campaigns.total_bounced(1)
+  = bounced
+  of them bounced back, which is
+  - rate = (delivered.zero? ? 0 : bounced / delivered)
+  = succeed '.' do
+    %span{class: (rate > 0.05 ? 'red' : '')}= "#{(rate * 100).round(2)}%"
 
