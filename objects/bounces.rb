@@ -52,10 +52,13 @@ class Bounces
   def fetch_pop(action)
     pop = Net::POP3.new(@host)
     pop.start(@login, @password)
+    total = o
     pop.each_mail do |m|
       action.call(m)
+      total += 1
     end
     pop.finish
+    puts "#{total} bounce emails processed"
   end
 
   def fetch_array(action)
