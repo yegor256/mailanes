@@ -70,7 +70,7 @@ class Bounces
     begin
       plain = match[1].to_i
       expected = @codec.encrypt(plain.to_s)
-      raise "Broken signature \"#{match}\" for #{plain}" unless match[2][0..32] == expected[0..32]
+      raise "Broken signature \"#{match}\" for #{plain}" unless match[2][0..16] == expected[0..16]
       recipient = Recipient.new(id: plain, pgsql: @pgsql)
       recipient.toggle if recipient.active?
       recipient.bounce
