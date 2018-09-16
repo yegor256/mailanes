@@ -15,7 +15,7 @@
       .logo { width: 64px; height: 64px; }
       .small { font-size: .8em; line-height: 1.4em; }
       .gray { color: gray; }
-      .red { background-color: #A22522; color: white; padding-left: .3em; padding-right: .3em; }
+      .red { background-color: #A22522; color: white; padding-left: .3em; padding-right: .3em; border-radius: 2px; }
       .green { color: green; }
       .cross { text-decoration: line-through; color: gray; }
       .hidden { display: none; }
@@ -51,7 +51,7 @@
                 %a{href: '/logout'}
                   Logout
         - if defined? flash_msg
-          %p{style: 'background-color:darkgreen;color:white;padding:.1em .5em;border-radius:3px;width:100%;'}
+          %p{style: 'background-color:darkgreen;color:white;padding:.1em .5em;border-radius:4px;width:100%;'}
             = flash_msg
       %article
         = yield

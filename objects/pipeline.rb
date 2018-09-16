@@ -35,7 +35,7 @@ class Pipeline
     @tbot = tbot
   end
 
-  def fetch(postman, cycles: 100)
+  def fetch(postman, cycles: 64)
     @pgsql.exec(
       'DELETE FROM delivery WHERE created < $1 AND details = $2',
       [(Time.now - 60 * 60).strftime('%Y-%m-%d %H:%M:%S'), '']

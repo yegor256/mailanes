@@ -213,7 +213,7 @@ class Letter
     start = Time.now
     Timeout.timeout(5) do
       mail.deliver
-      puts "Email sent to #{to}"
+      puts "Letter ##{@id} SMTP-sent to #{to} from \"#{recipient.list.title}\""
     end
     [
       "Sent #{html.length} chars in HTML (#{text.length} in plain text)",

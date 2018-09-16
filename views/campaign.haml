@@ -28,6 +28,7 @@
         %a{href: "/list?id=#{list.id}"}= "List ##{list.id}"
       = succeed ';' do
         &= "\"#{list.title}\""
+      %a.item{href: "/delete-source?campaign=#{campaign.id}&list=#{list.id}"}
 
 %p
   Created:

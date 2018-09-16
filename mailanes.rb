@@ -321,7 +321,12 @@ get '/download-recipients' do
   content_type 'text/csv'
   CSV.generate do |csv|
     list.recipients.all(limit: -1).each do |r|
-      csv << [r.email, r.first, r.last, r.source, r.created.utc.iso8601]
+      csv << [
+        r.email, r.first, r.last, r.source,
+        r.created.utc.iso8601,
+        r.active? ? '' : 'unsubscribed',
+        r.bounced? ? '' : 'bounced'
+      ]
     end
   end
 end
@@ -533,7 +538,12 @@ get '/download-list' do
   content_type 'text/csv'
   CSV.generate do |csv|
     list.recipients.all(query: "=@#{current_user}", limit: -1).each do |r|
-      csv << [r.email, r.first, r.last, r.source, r.created.utc.iso8601]
+      csv << [
+        r.email, r.first, r.last, r.source,
+        r.created.utc.iso8601,
+        r.active? ? '' : 'unsubscribed',
+        r.bounced? ? '' : 'bounced'
+      ]
     end
   end
 end
