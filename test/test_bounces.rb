@@ -42,19 +42,21 @@ class BouncesTest < Minitest::Test
     owner = random_owner
     list = Lists.new(owner: owner).add
     recipient = list.recipients.add('test@mailanes.com')
-    msg = FakeMsg.new(recipient)
-    Bounces.new([msg], '', '', GLogin::Codec.new).fetch
+    codec = GLogin::Codec.new('some key')
+    msg = FakeMsg.new(recipient, codec)
+    Bounces.new([msg], '', '', codec).fetch
     assert(recipient.bounced?)
   end
 
   class FakeMsg
-    def initialize(recipient)
+    def initialize(recipient, codec)
       @recipient = recipient
+      @codec = codec
     end
 
     def pop
       [
-        "X-Mailanes-Recipient: #{@recipient.id}:#{@recipient.id}",
+        "X-Mailanes-Recipient: #{@recipient.id}:#{@codec.encrypt(@recipient.id.to_s)}",
         'How are you doing?'
       ].join("\n")
     end
