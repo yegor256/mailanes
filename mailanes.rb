@@ -630,7 +630,7 @@ get '/unsubscribe' do
         "with the email #{email} has been unsubscribed from your list",
         "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
         @locals[:user] ? "It was done by #{current_user}." : '',
-        params[:d] ? "It was the reaction to [this](http://www.mailaines.com/delivery?id=#{params[:d]})." : '',
+        params[:d] ? "It was the reaction to [this](http://www.mailanes.com/delivery?id=#{params[:d]})." : '',
         "There are #{list.recipients.active_count} active subscribers in the list still,",
         "out of #{list.recipients.count} total."
       ].join(' ')
