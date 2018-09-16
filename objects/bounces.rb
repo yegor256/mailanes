@@ -39,7 +39,7 @@ class Bounces
   def fetch(tbot: Tbot.new)
     action = lambda do |m|
       body = m.pop
-      match(body, %r{X-Mailanes-Recipient: ([0-9]+)-([a-zA-Z0-9=+/]+)-}, tbot)
+      match(body, %r{X-Mailanes-Recipient: ([0-9]+):([a-zA-Z0-9=+/]+)}, tbot)
       match(body, %r{Subject: MAILANES:([0-9]+):([a-zA-Z0-9=+/]+)}, tbot)
       puts "Message #{m.unique_id} processed and deleted"
       m.delete
@@ -68,32 +68,33 @@ class Bounces
   end
 
   def match(body, regex, tbot)
-    match = body.match(regex)
-    return if match.nil?
-    begin
-      plain = match[1].to_i
-      decoded = @codec.decrypt(match[2]).to_i
-      raise "Invalid signature #{match[2]} for recipient ID ##{plain}" unless plain == decoded
-      recipient = Recipient.new(id: plain, pgsql: @pgsql)
-      recipient.toggle if recipient.active?
-      recipient.bounce
-      recipient.post_event(body[0..1024])
-      list = recipient.list
-      rate = list.recipients.bounce_rate
-      tbot.notify(
-        'bounce',
-        recipient.list.yaml,
-        [
-          "The email #{recipient.email} to recipient",
-          "[##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
-          'bounced back, that\'s why we deactivated it in the list',
-          "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
-          "Bounce rate of the list is #{(rate * 100).round(2)}% (#{rate > 0.05 ? 'too high!' : 'it is OK'})."
-        ].join(' ')
-      )
-      puts "Recipient ##{recipient.id}/#{recipient.email} from \"#{recipient.list.title}\" bounced :("
-    rescue StandardError => e
-      puts "Unclear message from ##{plain} in the inbox\n#{e.message}\n\t#{e.backtrace.join("\n\t")}:\n#{body}"
+    body.scan(regex).each do |match|
+      next if match[0].nil? || match[1].nil?
+      begin
+        plain = match[0].to_i
+        decoded = @codec.decrypt(match[1]).to_i
+        raise "Invalid signature #{match[1]} for recipient ID ##{plain}" unless plain == decoded
+        recipient = Recipient.new(id: plain, pgsql: @pgsql)
+        recipient.toggle if recipient.active?
+        recipient.bounce
+        recipient.post_event(body[0..1024])
+        list = recipient.list
+        rate = list.recipients.bounce_rate
+        tbot.notify(
+          'bounce',
+          recipient.list.yaml,
+          [
+            "The email #{recipient.email} to recipient",
+            "[##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
+            'bounced back, that\'s why we deactivated it in the list',
+            "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
+            "Bounce rate of the list is #{(rate * 100).round(2)}% (#{rate > 0.05 ? 'too high!' : 'it is OK'})."
+          ].join(' ')
+        )
+        puts "Recipient ##{recipient.id}/#{recipient.email} from \"#{recipient.list.title}\" bounced :("
+      rescue StandardError => e
+        puts "Unclear message from ##{plain} in the inbox\n#{e.message}\n\t#{e.backtrace.join("\n\t")}:\n#{body}"
+      end
     end
   end
 end

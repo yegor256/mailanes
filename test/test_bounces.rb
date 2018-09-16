@@ -56,7 +56,8 @@ class BouncesTest < Minitest::Test
 
     def pop
       [
-        "X-Mailanes-Recipient: #{@recipient.id}-#{@codec.encrypt(@recipient.id.to_s)}-",
+        "X-Mailanes-Recipient: #{@recipient.id}:there+is+some+garbage",
+        "X-Mailanes-Recipient: #{@recipient.id}:#{@codec.encrypt(@recipient.id.to_s)}",
         'How are you doing?'
       ].join("\n")
     end

@@ -199,7 +199,7 @@ class Letter
     mail.header['List-Id'] = recipient.id.to_s
     mail.header['Return-Path'] = 'reply@mailanes.com'
     mail.header['X-Complaints-To'] = 'reply@mailanes.com'
-    mail.header['X-Mailanes-Recipient'] = "#{recipient.id}-#{codec.encrypt(recipient.id.to_s)}-"
+    mail.header['X-Mailanes-Recipient'] = "#{recipient.id}:#{codec.encrypt(recipient.id.to_s)}"
     mail.delivery_method(
       :smtp,
       address: cfg(nil, 'smtp', 'host'),
