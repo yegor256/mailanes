@@ -80,7 +80,7 @@ class Lists
   end
 
   def total_recipients
-    row = @pgsql.exec(
+    @pgsql.exec(
       [
         'SELECT COUNT(*) FROM',
         '(SELECT recipient.email FROM recipient',
@@ -89,7 +89,6 @@ class Lists
         'GROUP BY recipient.email) AS x'
       ].join(' '),
       [@owner]
-    )[0]
-    row.nil? ? 0 : row['count'].to_i
+    )[0]['count'].to_i
   end
 end

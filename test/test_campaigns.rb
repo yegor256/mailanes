@@ -38,4 +38,23 @@ class CampaignsTest < Minitest::Test
     assert(campaign.id > 0)
     assert_equal(1, campaigns.all.count)
   end
+
+  def test_counts_deliveries
+    owner = random_owner
+    lists = Lists.new(owner: owner)
+    list = lists.add
+    recipient = list.recipients.add('zz8d9s@mailanes.com')
+    lanes = Lanes.new(owner: owner)
+    lane = lanes.add
+    letter = lane.letters.add
+    campaigns = Campaigns.new(owner: owner)
+    campaign = campaigns.add(list, lane)
+    assert_equal(0, campaigns.total_deliveries)
+    deliveries = Deliveries.new
+    deliveries.add(campaign, letter, recipient)
+    assert_equal(1, campaigns.total_deliveries)
+    deliveries.add(campaign, letter, list.recipients.add('zz8dffs@mailanes.com'))
+    assert_equal(2, campaigns.total_deliveries)
+    assert_equal(0, campaigns.total_bounced)
+  end
 end

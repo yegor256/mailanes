@@ -61,4 +61,26 @@ class Campaigns
       hash: hash
     )
   end
+
+  def total_deliveries(days = 7)
+    @pgsql.exec(
+      [
+        'SELECT COUNT(delivery.id) FROM delivery',
+        'JOIN campaign ON delivery.campaign = campaign.id',
+        "WHERE campaign.owner = $1 AND delivery.created > NOW() - INTERVAL \'#{days} DAYS\'"
+      ].join(' '),
+      [@owner]
+    )[0]['count'].to_i
+  end
+
+  def total_bounced(days = 7)
+    @pgsql.exec(
+      [
+        'SELECT COUNT(recipient.id) FROM recipient',
+        'JOIN list ON recipient.list = list.id',
+        "WHERE list.owner = $1 AND recipient.bounced > NOW() - INTERVAL \'#{days} DAYS\'"
+      ].join(' '),
+      [@owner]
+    )[0]['count'].to_i
+  end
 end

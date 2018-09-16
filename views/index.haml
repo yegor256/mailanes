@@ -24,3 +24,10 @@
   Total recipients in all lists:
   = succeed '.' do
     %a{href: '/lists'}= lists.total_recipients
+
+%p
+  %a{href: '/campaigns'}= campaigns.total_deliveries(1)
+  letters delivered over the last 24 hours.
+  campaigns.total_bounced(1)
+  of them bounced back.
+
