@@ -91,7 +91,7 @@ class Bounces
           "Bounce rate of the list is #{(rate * 100).round(2)}% (#{rate > 0.05 ? 'too high!' : 'it is OK'})."
         ].join(' ')
       )
-      puts "Recipient ##{recipient.id}/#{recipient.email} bounced :("
+      puts "Recipient ##{recipient.id}/#{recipient.email} from \"#{recipient.list.title}\" bounced :("
     rescue StandardError => e
       puts "Unclear message from ##{plain} in the inbox\n#{e.message}\n\t#{e.backtrace.join("\n\t")}:\n#{body}"
     end
