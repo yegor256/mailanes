@@ -47,6 +47,9 @@ class ListsTest < Minitest::Test
     assert_equal(0, lists.total_recipients)
     lists.add.recipients.add('xx1@mailanes.com')
     assert_equal(1, lists.total_recipients)
+    lists.add.recipients.add('xx33@mailanes.com')
+    lists.add.recipients.add('xx43@mailanes.com')
+    assert_equal(3, lists.total_recipients)
   end
 
   def test_counts_duplicates

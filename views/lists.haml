@@ -36,15 +36,21 @@
     %span.red= "#{dups} duplicate emails"
     in your lists!
 
-%p
-  All your lists:
-
-- lists.all.each do |list|
+- if lists.all.empty?
   %p
-    = succeed ':' do
-      %a{href: url("/list?id=#{list.id}")}= "##{list.id}"
-    = list.title
-    = "(#{list.recipients.count} recipients)"
-    - if list.stop?
-      %strong.red STOP
+    There are no lists yet
+- else
+  %p
+    All your lists, with
+    = lists.total_recipients
+    recipients total:
+
+  - lists.all.each do |list|
+    %p
+      = succeed ':' do
+        %a{href: url("/list?id=#{list.id}")}= "##{list.id}"
+      = list.title
+      = "(#{list.recipients.count} recipients)"
+      - if list.stop?
+        %strong.red STOP
 
