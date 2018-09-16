@@ -39,7 +39,7 @@ class Bounces
   def fetch(tbot: Tbot.new)
     action = lambda do |m|
       body = m.pop
-      match(body, %r{X-Mailanes-Recipient: ([0-9]+):([a-zA-Z0-9=+/]+)}, tbot)
+      match(body, %r{X-Mailanes-Recipient: ([0-9]+)-([a-zA-Z0-9=+/]+)-}, tbot)
       match(body, %r{Subject: MAILANES:([0-9]+):([a-zA-Z0-9=+/]+)}, tbot)
       puts "Message #{m.unique_id} processed and deleted"
       m.delete
