@@ -78,4 +78,17 @@ class Lists
       [@owner]
     )[0]['count'].to_i
   end
+
+  def total_recipients
+    row = @pgsql.exec(
+      [
+        'SELECT COUNT(recipient.email) FROM recipient',
+        'JOIN list ON recipient.list = list.id',
+        'WHERE list.owner = $1 AND list.stop = false',
+        'GROUP BY recipient.email'
+      ].join(' '),
+      [@owner]
+    )[0]
+    row.nil? ? 0 : row['count'].to_i
+  end
 end

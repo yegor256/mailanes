@@ -171,7 +171,10 @@ end
 
 get '/' do
   haml :index, layout: :layout, locals: merged(
-    title: '/'
+    title: '/',
+    lists: owner.lists,
+    lanes: owner.lanes,
+    campaigns: owner.campaigns
   )
 end
 

@@ -42,6 +42,13 @@ class ListsTest < Minitest::Test
     assert_equal(title, list.title)
   end
 
+  def test_counts_total_recipients
+    lists = Lists.new(owner: random_owner)
+    assert_equal(0, lists.total_recipients)
+    lists.add.recipients.add('xx1@mailanes.com')
+    assert_equal(1, lists.total_recipients)
+  end
+
   def test_counts_duplicates
     lists = Lists.new(owner: random_owner)
     first = lists.add
