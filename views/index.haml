@@ -32,7 +32,7 @@
   - bounced = campaigns.total_bounced(1)
   = bounced
   of them bounced back, which is
-  - rate = (delivered.zero? ? 0 : bounced / delivered)
+  - rate = (delivered.zero? ? 0 : bounced.to_f / delivered)
   = succeed '.' do
     %span{class: (rate > 0.05 ? 'red' : '')}= "#{(rate * 100).round(2)}%"
 
