@@ -145,3 +145,13 @@ To remove your email ({{email}}) from the list, [click here]({{unsubscribe}}).
 ### Recipient
 
 Not implemented yet...
+
+## API
+
+You can retrieve the data from the system via the API. First, you have
+to get the authorization code from the [API page](https://www.mailaines.com/api).
+Then, add it to each HTTP request you make, as `auth` URI parameter. For example,
+to see the total count of all active subscribers of your list:
+
+`/stats/lists/123/active.json?auth=74fa8672...`
+

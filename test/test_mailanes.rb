@@ -135,7 +135,7 @@ class AppTest < Minitest::Test
     get("/api?auth=#{auth}")
     assert_equal(200, last_response.status, last_response.body)
     list = Lists.new(owner: owner).add
-    get("/stats/list/active.json?id=#{list.id}&auth=#{auth}")
+    get("/stats/lists/#{list.id}/active.json?auth=#{auth}")
     assert_equal(200, last_response.status, last_response.body)
   end
 

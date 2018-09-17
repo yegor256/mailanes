@@ -646,7 +646,7 @@ get '/api' do
   )
 end
 
-get '/stats/list/active.json' do
+get '/stats/lists/:id/active.json' do
   list = owner.lists.list(params[:id].to_i)
   content_type 'application/json'
   JSON.pretty_generate(
