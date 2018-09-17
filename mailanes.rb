@@ -640,6 +640,12 @@ get '/unsubscribe' do
   )
 end
 
+get '/api' do
+  haml :api, layout: :layout, locals: merged(
+    title: '/api'
+  )
+end
+
 get '/stats/list/active.json' do
   list = owner.lists.list(params[:id].to_i)
   content_type 'application/json'
