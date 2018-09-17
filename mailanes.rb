@@ -224,8 +224,10 @@ end
 
 post '/add-recipient' do
   list = owner.lists.list(params[:id].to_i)
+  email = params[:email].downcase.strip
+  flash("/list?id=#{list.id}", "Recipient with email #{email} already exists") if list.recipients.exists?(email)
   recipient = list.recipients.add(
-    params[:email].downcase.strip,
+    email,
     first: params[:first].strip,
     last: params[:last].strip,
     source: "@#{current_user}"
