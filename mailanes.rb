@@ -328,7 +328,7 @@ get '/download-recipients' do
         r.email, r.first, r.last, r.source,
         r.created.utc.iso8601,
         r.active? ? '' : 'unsubscribed',
-        r.bounced? ? '' : 'bounced'
+        r.bounced? ? 'bounced' : ''
       ]
     end
   end
@@ -545,7 +545,7 @@ get '/download-list' do
         r.email, r.first, r.last, r.source,
         r.created.utc.iso8601,
         r.active? ? '' : 'unsubscribed',
-        r.bounced? ? '' : 'bounced'
+        r.bounced? ? 'bounced' : ''
       ]
     end
   end
