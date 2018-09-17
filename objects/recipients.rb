@@ -157,12 +157,21 @@ class Recipients
 
   def csv
     CSV.generate(headers: true) do |csv|
+      csv << [
+        'Email',
+        'First name',
+        'Last name',
+        'Source',
+        'Created',
+        'Active',
+        'Bounced'
+      ]
       yield().each do |r|
         csv << [
           r.email, r.first, r.last, r.source,
           r.created.utc.iso8601,
-          r.active? ? '' : 'unsubscribed',
-          r.bounced? ? 'bounced' : ''
+          r.active? ? 'yes' : 'no',
+          r.bounced? ? 'yes' : 'no'
         ]
       end
     end
