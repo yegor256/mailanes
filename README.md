@@ -153,5 +153,10 @@ to get the authorization code from the [API page](https://www.mailaines.com/api)
 Then, add it to each HTTP request you make, as `auth` URI parameter. For example,
 to see the total count of all active subscribers of your list:
 
-`/stats/lists/123/active.json?auth=74fa8672...`
+`/api/lists/123/active_count.json?auth=74fa8672...`
 
+All URIs:
+
+  * `/api/lists/:id/active_count.json`
+  * `/api/campaigns/:id/deliveries_count.json`
+  * more coming...
