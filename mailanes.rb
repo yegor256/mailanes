@@ -22,6 +22,7 @@ STDOUT.sync = true
 
 require 'time'
 require 'haml'
+require 'json'
 require 'geocoder'
 require 'sinatra'
 require 'sinatra/cookies'
@@ -145,6 +146,11 @@ before '/*' do
     rescue OpenSSL::Cipher::CipherError => _
       cookies.delete(:glogin)
     end
+  end
+  if params[:auth]
+    @locals[:user] = {
+      login: settings.codec.decrypt(params[:auth])
+    }
   end
 end
 
@@ -634,6 +640,18 @@ get '/unsubscribe' do
   )
 end
 
+get '/stats/list/active.json' do
+  list = owner.lists.list(params[:id].to_i)
+  content_type 'application/json'
+  JSON.pretty_generate(
+    "list_#{list.id}": {
+      'type': 'integer',
+      'value': list.recipients.active_count,
+      'label': list.title
+    }
+  )
+end
+
 get '/robots.txt' do
   content_type 'text/plain'
   "User-agent: *\nDisallow: /"
@@ -690,6 +708,10 @@ end
 def current_user
   redirect '/hello' unless @locals[:user]
   @locals[:user][:login].downcase
+end
+
+def auth_code
+  settings.codec.encrypt(current_user)
 end
 
 def owner

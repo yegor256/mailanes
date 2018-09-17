@@ -128,6 +128,13 @@ class AppTest < Minitest::Test
     assert_equal(200, last_response.status, last_response.body)
   end
 
+  def test_api_pages
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    get("/stats/list/active.json?id=#{list.id}&auth=#{owner}")
+    assert_equal(200, last_response.status, last_response.body)
+  end
+
   private
 
   def login(name = 'tester')
