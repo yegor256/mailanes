@@ -23,6 +23,7 @@ require 'rack/test'
 require 'yaml'
 require 'tmpdir'
 require 'gserver'
+require 'json'
 require 'fakesmtpd'
 require 'timeout'
 require_relative 'test__helper'
@@ -117,11 +118,24 @@ class LetterTest < Minitest::Test
           '  password: test'
         ].join("\n")
       )
+      codec = GLogin::Codec.new('some secret')
       begin
         smtpd.start
-        letter.deliver(recipient)
+        letter.deliver(recipient, codec)
       ensure
         smtpd.stop
+      end
+      Dir[File.join(dir, 'messages/**/*.json')].each do |f|
+        body = JSON.parse(File.read(f))['body'].join("\n")
+        assert(body.include?('X-Complaints-To: reply@mailanes.com'))
+        assert(body.include?('List-Unsubscribe: '))
+        assert(body.include?('Return-Path: <reply@mailanes.com>'))
+        assert(body.include?("List-Id: #{recipient.id}"))
+        assert(body.include?("X-Mailanes-Recipient: #{recipient.id}:"))
+        match = body.match(/#{recipient.id}:([a-f0-9]{20,})\n/)
+        assert(!match.nil?)
+        sign = [match[1]].pack('H*')
+        assert_equal(recipient.id, codec.decrypt(sign).to_i)
       end
     end
   end

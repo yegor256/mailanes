@@ -55,9 +55,12 @@ class BouncesTest < Minitest::Test
     end
 
     def pop
+      sign = @codec.encrypt(@recipient.id.to_s)
+      sign = sign.unpack('U' * sign.length).collect { |x| x.to_s(16) }.join
       [
         "X-Mailanes-Recipient: #{@recipient.id}:there+is+some+garbage",
-        "X-Mailanes-Recipient: #{@recipient.id}:#{@codec.encrypt(@recipient.id.to_s)}",
+        "X-Mailanes-Recipient: #{@recipient.id}:#{sign[0..31]}=",
+        "#{sign[32..250]}=3D=3D",
         'How are you doing?'
       ].join("\n")
     end

@@ -39,8 +39,8 @@ class Bounces
   def fetch(tbot: Tbot.new)
     action = lambda do |m|
       body = m.pop
-      match(body, %r{X-Mailanes-Recipient: ([0-9]+):([a-zA-Z0-9=+/]+)}, tbot)
-      match(body, %r{Subject: MAILANES:([0-9]+):([a-zA-Z0-9=+/]+)}, tbot)
+      match(body, /X-Mailanes-Recipient: ([0-9]+):([a-f0-9=\n]+)/, tbot)
+      match(body, /Subject: MAILANES:([0-9]+):([a-f0-9=\n]+)/, tbot)
       puts "Message #{m.unique_id} processed and deleted"
       m.delete
     end
@@ -72,7 +72,8 @@ class Bounces
       next if match[0].nil? || match[1].nil?
       begin
         plain = match[0].to_i
-        decoded = @codec.decrypt(match[1]).to_i
+        sign = [match[1].gsub("=\n", '').gsub(/\=.+/, '')].pack('H*')
+        decoded = @codec.decrypt(sign).to_i
         raise "Invalid signature #{match[1]} for recipient ID ##{plain}" unless plain == decoded
         recipient = Recipient.new(id: plain, pgsql: @pgsql)
         recipient.toggle if recipient.active?
@@ -93,7 +94,7 @@ class Bounces
         )
         puts "Recipient ##{recipient.id}/#{recipient.email} from \"#{recipient.list.title}\" bounced :("
       rescue StandardError => e
-        puts "Unclear message from ##{plain} in the inbox\n#{e.message}\n\t#{e.backtrace.join("\n\t")}:\n#{body}"
+        puts "Unclear message from ##{plain} in the inbox:\n#{e.message}\n\t#{e.backtrace.join("\n\t")}:\n#{body}"
       end
     end
   end

@@ -199,7 +199,9 @@ class Letter
     mail.header['List-Id'] = recipient.id.to_s
     mail.header['Return-Path'] = 'reply@mailanes.com'
     mail.header['X-Complaints-To'] = 'reply@mailanes.com'
-    mail.header['X-Mailanes-Recipient'] = "#{recipient.id}:#{codec.encrypt(recipient.id.to_s)}"
+    sign = codec.encrypt(recipient.id.to_s)
+    sign = sign.unpack('U' * sign.length).collect { |x| x.to_s(16) }.join
+    mail.header['X-Mailanes-Recipient'] = "#{recipient.id}:#{sign}"
     mail.delivery_method(
       :smtp,
       address: cfg(nil, 'smtp', 'host'),
