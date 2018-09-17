@@ -70,7 +70,7 @@ class List
   def friend?(login)
     friends = yaml['friends']
     return false unless friends.is_a?(Array)
-    friends.include?(login)
+    friends.map(&:downcase).include?(login)
   end
 
   def created

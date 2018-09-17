@@ -154,4 +154,17 @@ class Recipients
       end
     end
   end
+
+  def csv
+    CSV.generate(headers: true) do |csv|
+      yield().each do |r|
+        csv << [
+          r.email, r.first, r.last, r.source,
+          r.created.utc.iso8601,
+          r.active? ? '' : 'unsubscribed',
+          r.bounced? ? 'bounced' : ''
+        ]
+      end
+    end
+  end
 end

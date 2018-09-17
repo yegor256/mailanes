@@ -39,6 +39,15 @@ class ListTest < Minitest::Test
     assert_equal(title, list.title)
   end
 
+  def test_finds_friends
+    owner = random_owner
+    lists = Lists.new(owner: owner)
+    list = lists.add
+    list.save_yaml("friends:\n- Jeff\n- john10")
+    assert(list.friend?('jeff'))
+    assert(!list.friend?('john'))
+  end
+
   def test_sets_stop_status
     owner = random_owner
     list = Lists.new(owner: owner).add

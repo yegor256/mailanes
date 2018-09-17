@@ -324,15 +324,8 @@ end
 get '/download-recipients' do
   list = owner.lists.list(params[:id].to_i)
   content_type 'text/csv'
-  CSV.generate do |csv|
-    list.recipients.all(limit: -1).each do |r|
-      csv << [
-        r.email, r.first, r.last, r.source,
-        r.created.utc.iso8601,
-        r.active? ? '' : 'unsubscribed',
-        r.bounced? ? 'bounced' : ''
-      ]
-    end
+  list.recipients.csv do
+    list.recipients.all(limit: -1)
   end
 end
 
@@ -530,8 +523,7 @@ post '/do-add' do
 end
 
 get '/download-list' do
-  list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
-  raise "You don't have access to the list ##{list.id}" unless list.friend?(current_user)
+  list = shared_list(params[:list].to_i)
   settings.tbot.notify(
     'download',
     list.yaml,
@@ -541,15 +533,8 @@ get '/download-list' do
     ].join(' ')
   )
   content_type 'text/csv'
-  CSV.generate do |csv|
-    list.recipients.all(query: "=@#{current_user}", limit: -1).each do |r|
-      csv << [
-        r.email, r.first, r.last, r.source,
-        r.created.utc.iso8601,
-        r.active? ? '' : 'unsubscribed',
-        r.bounced? ? 'bounced' : ''
-      ]
-    end
+  list.recipients.csv do
+    list.recipients.all(query: "=@#{current_user}", limit: -1)
   end
 end
 
