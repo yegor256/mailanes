@@ -124,8 +124,15 @@ class Campaign
     end
   end
 
-  def deliveries_count
-    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE campaign=$1', [@id])[0]['count'].to_i
+  def deliveries_count(days: -1)
+    @pgsql.exec(
+      [
+        'SELECT COUNT(*) FROM delivery',
+        'WHERE campaign=$1',
+        days > 0 ? "AND delivery.created > NOW() - INTERVAL '#{days} DAYS'" : ''
+      ].join(' '),
+      [@id]
+    )[0]['count'].to_i
   end
 
   def recipients_count

@@ -646,7 +646,7 @@ get '/api' do
   )
 end
 
-get '/stats/lists/:id/active.json' do
+get '/api/lists/:id/active_count.json' do
   list = owner.lists.list(params[:id].to_i)
   content_type 'application/json'
   JSON.pretty_generate(
@@ -654,6 +654,18 @@ get '/stats/lists/:id/active.json' do
       'type': 'integer',
       'value': list.recipients.active_count,
       'label': list.title
+    }
+  )
+end
+
+get '/api/campaigns/:id/deliveries_count.json' do
+  campaign = owner.campaigns.campaign(params[:id].to_i)
+  content_type 'application/json'
+  JSON.pretty_generate(
+    "campaign_#{campaign.id}": {
+      'type': 'integer',
+      'value': campaign.deliveries_count(days: params[:days] ? params[:id].to_i : 1),
+      'label': campaign.title
     }
   )
 end
