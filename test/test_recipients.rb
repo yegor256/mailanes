@@ -25,6 +25,9 @@ require 'tempfile'
 require_relative 'test__helper'
 require_relative '../objects/lists'
 require_relative '../objects/recipients'
+require_relative '../objects/lanes'
+require_relative '../objects/campaigns'
+require_relative '../objects/deliveries'
 
 class RecipientsTest < Minitest::Test
   def test_creates_recipients
@@ -91,9 +94,9 @@ class RecipientsTest < Minitest::Test
       File.write(
         f.path,
         [
-          'test@example.com,Jeff,Lebowski',
-          'test@example.com,Jeff,Lebowski',
-          'test2@example.com,Walter,Sobchak',
+          'test@mailanes.com,Jeff,Lebowski',
+          'test@mailanes.com,Jeff,Lebowski',
+          'test2@mailanes.com,Walter,Sobchak',
           'broken-email,Walter,Sobchak',
           ',Walter,Sobchak'
         ].join("\n")
@@ -101,5 +104,23 @@ class RecipientsTest < Minitest::Test
       recipients.upload(f.path)
     end
     assert_equal(2, recipients.all.count)
+  end
+
+  def test_catches_invalid_encoding
+    owner = random_owner
+    lists = Lists.new(owner: owner)
+    list = lists.add
+    recipients = Recipients.new(list: list)
+    assert_raises StandardError do
+      Tempfile.open do |f|
+        File.write(
+          f.path,
+          [
+            "test@mailanes.com,Dude \xAD"
+          ].join("\n")
+        )
+        recipients.upload(f.path)
+      end
+    end
   end
 end

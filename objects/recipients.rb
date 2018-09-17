@@ -128,6 +128,15 @@ class Recipients
 
   def upload(file, source: '')
     deliveries = Deliveries.new(pgsql: @pgsql)
+    line = 1
+    File.readlines(file).each do |t|
+      begin
+        t =~ //
+      rescue StandardError => e
+        raise "Encoding error in line ##{line} (#{e.message}): \"#{t}\""
+      end
+      line += 1
+    end
     CSV.foreach(file) do |row|
       next if row[0].nil?
       next if exists?(row[0])
