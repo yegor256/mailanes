@@ -28,6 +28,7 @@ require 'fakesmtpd'
 require 'timeout'
 require_relative 'test__helper'
 require_relative '../objects/lanes'
+require_relative '../objects/hex'
 require_relative '../objects/letters'
 require_relative '../objects/lists'
 require_relative '../objects/campaigns'
@@ -134,7 +135,7 @@ class LetterTest < Minitest::Test
         assert(body.include?("X-Mailanes-Recipient: #{recipient.id}:"))
         match = body.match(/#{recipient.id}:([a-f0-9]{20,})\n/)
         assert(!match.nil?)
-        sign = [match[1]].pack('H*')
+        sign = Hex::ToText.new(match[1]).to_s
         assert_equal(recipient.id, codec.decrypt(sign).to_i)
       end
     end

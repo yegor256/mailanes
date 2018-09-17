@@ -29,7 +29,6 @@ require 'sinatra/cookies'
 require 'raven'
 require 'glogin'
 require 'glogin/codec'
-
 require_relative 'version'
 require_relative 'objects/owner'
 require_relative 'objects/pipeline'
@@ -37,6 +36,7 @@ require_relative 'objects/postman'
 require_relative 'objects/tbot'
 require_relative 'objects/ago'
 require_relative 'objects/bounces'
+require_relative 'objects/hex'
 
 if ENV['RACK_ENV'] != 'test'
   require 'rack/ssl'
@@ -149,7 +149,7 @@ before '/*' do
   end
   if params[:auth]
     @locals[:user] = {
-      login: settings.codec.decrypt(params[:auth])
+      login: settings.codec.decrypt(Hex::ToText.new(params[:auth]).to_s)
     }
   end
 end
@@ -717,7 +717,7 @@ def current_user
 end
 
 def auth_code
-  settings.codec.encrypt(current_user)
+  Hex::FromText.new(settings.codec.encrypt(current_user)).to_s
 end
 
 def owner

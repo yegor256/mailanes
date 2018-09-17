@@ -22,6 +22,7 @@ require 'minitest/autorun'
 require 'glogin/codec'
 require_relative 'test__helper'
 require_relative '../objects/bounces'
+require_relative '../objects/hex'
 require_relative '../objects/lists'
 
 class BouncesTest < Minitest::Test
@@ -55,8 +56,7 @@ class BouncesTest < Minitest::Test
     end
 
     def pop
-      sign = @codec.encrypt(@recipient.id.to_s)
-      sign = sign.unpack('U' * sign.length).collect { |x| x.to_s(16) }.join
+      sign = Hex::FromText.new(@codec.encrypt(@recipient.id.to_s)).to_s
       [
         "X-Mailanes-Recipient: #{@recipient.id}:there+is+some+garbage",
         "X-Mailanes-Recipient: #{@recipient.id}:#{sign[0..31]}=",

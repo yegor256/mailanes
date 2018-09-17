@@ -22,6 +22,7 @@ require 'net/pop'
 require_relative 'pgsql'
 require_relative 'recipient'
 require_relative 'tbot'
+require_relative 'hex'
 
 # Fetch all bounces and deactivate recipients.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -72,7 +73,7 @@ class Bounces
       next if match[0].nil? || match[1].nil?
       begin
         plain = match[0].to_i
-        sign = [match[1].gsub("=\n", '').gsub(/\=.+/, '')].pack('H*')
+        sign = Hex::ToText.new(match[1].gsub("=\n", '').gsub(/\=.+/, '')).to_s
         decoded = @codec.decrypt(sign).to_i
         raise "Invalid signature #{match[1]} for recipient ID ##{plain}" unless plain == decoded
         recipient = Recipient.new(id: plain, pgsql: @pgsql)

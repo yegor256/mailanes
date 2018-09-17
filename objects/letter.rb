@@ -27,6 +27,7 @@ require 'redcarpet'
 require 'redcarpet/render_strip'
 require 'glogin/codec'
 require_relative 'pgsql'
+require_relative 'hex'
 require_relative 'campaign'
 
 # Letter.
@@ -199,8 +200,7 @@ class Letter
     mail.header['List-Id'] = recipient.id.to_s
     mail.header['Return-Path'] = 'reply@mailanes.com'
     mail.header['X-Complaints-To'] = 'reply@mailanes.com'
-    sign = codec.encrypt(recipient.id.to_s)
-    sign = sign.unpack('U' * sign.length).collect { |x| x.to_s(16) }.join
+    sign = Hex::FromText.new(codec.encrypt(recipient.id.to_s)).to_s
     mail.header['X-Mailanes-Recipient'] = "#{recipient.id}:#{sign}"
     mail.delivery_method(
       :smtp,

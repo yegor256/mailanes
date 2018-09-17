@@ -23,6 +23,7 @@ require 'rack/test'
 require 'glogin/codec'
 require_relative 'test__helper'
 require_relative '../mailanes'
+require_relative '../objects/hex'
 
 module Rack
   module Test
@@ -130,10 +131,11 @@ class AppTest < Minitest::Test
 
   def test_api_pages
     owner = random_owner
-    get("/api?auth=#{owner}")
+    auth = Hex::FromText.new(owner).to_s
+    get("/api?auth=#{auth}")
     assert_equal(200, last_response.status, last_response.body)
     list = Lists.new(owner: owner).add
-    get("/stats/list/active.json?id=#{list.id}&auth=#{owner}")
+    get("/stats/list/active.json?id=#{list.id}&auth=#{auth}")
     assert_equal(200, last_response.status, last_response.body)
   end
 
