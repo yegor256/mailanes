@@ -137,6 +137,8 @@ class AppTest < Minitest::Test
     list = Lists.new(owner: owner).add
     get("/api/lists/#{list.id}/active_count.json?auth=#{auth}")
     assert_equal(200, last_response.status, last_response.body)
+    get("/api/lists/#{list.id}/per_day.json?auth=#{auth}")
+    assert_equal(200, last_response.status, last_response.body)
     lane = Lanes.new(owner: owner).add
     campaign = Campaigns.new(owner: owner).add(list, lane)
     get("/api/campaigns/#{campaign.id}/deliveries_count.json?auth=#{auth}")
