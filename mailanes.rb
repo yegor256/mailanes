@@ -675,7 +675,7 @@ get '/api/campaigns/:id/deliveries_count.json' do
   content_type 'application/json'
   JSON.pretty_generate(
     "campaign_#{campaign.id}": {
-      'type': 'integer',
+      'type': 'float',
       'value': campaign.deliveries_count(days: params[:days] ? params[:id].to_i : 1),
       'label': campaign.title
     }
