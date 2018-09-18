@@ -653,7 +653,8 @@ get '/api/lists/:id/active_count.json' do
     "list_#{list.id}": {
       'type': 'integer',
       'value': list.recipients.active_count,
-      'label': list.title
+      'label': list.title,
+      'strategy': 'continuous'
     }
   )
 end
@@ -665,7 +666,8 @@ get '/api/lists/:id/per_day.json' do
     "list_#{list.id}": {
       'type': 'integer',
       'value': list.recipients.per_day.round(2),
-      'label': list.title
+      'label': list.title,
+      'strategy': 'interval'
     }
   )
 end
@@ -677,7 +679,8 @@ get '/api/campaigns/:id/deliveries_count.json' do
     "campaign_#{campaign.id}": {
       'type': 'float',
       'value': campaign.deliveries_count(days: params[:days] ? params[:id].to_i : 1),
-      'label': campaign.title
+      'label': campaign.title,
+      'strategy': 'interval'
     }
   )
 end
