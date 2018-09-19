@@ -12,7 +12,7 @@
 %p
   - letter = delivery.letter
   = succeed ':' do
-    %a{href: "/list?id=#{letter.id}"}= "Letter ##{letter.id}"
+    %a{href: "/letter?id=#{letter.id}"}= "Letter ##{letter.id}"
   = "\"#{letter.title}\""
 
 %p
