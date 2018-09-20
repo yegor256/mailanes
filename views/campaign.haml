@@ -26,9 +26,8 @@
     %li
       = succeed ':' do
         %a{href: "/list?id=#{list.id}"}= "List ##{list.id}"
-      = succeed ';' do
-        &= "\"#{list.title}\""
-      %a.item{href: "/delete-source?campaign=#{campaign.id}&list=#{list.id}"}
+      &= "\"#{list.title}\""
+      %a.item{href: "/delete-source?campaign=#{campaign.id}&list=#{list.id}", onclick: "return confirm('Are you sure?');"} delete
 
 %p
   Created:
