@@ -14,32 +14,8 @@
     Test Email
   %a.item{onclick: '$("#copy").show();'}
     Copy
-
-%p
-  It belongs to the lane
-  - lane = letter.lane
-  = succeed ':' do
-    %a{href: "/lane?id=#{lane.id}"}= "##{lane.id}"
-  = "\"#{lane.title}\""
-
-%p
-  It is
-  %strong
-    - if letter.active?
-      %span.green active
-    - else
-      %span.red not active
-  = '/'
-  %a{href: "/toggle-letter?id=#{letter.id}", onclick: (letter.liquid.include?('{{unsubscribe}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')")}
-    - if letter.active?
-      deactivate
-    - else
-      activate
-
-%p
-  Delivered
-  = letter.deliveries_count
-  times.
+  %a.item{onclick: '$("#add").show();'}
+    Add Attachment
 
 %form.hidden{method: 'POST', action: '/save-letter', id: 'save'}
   %fieldset
@@ -71,3 +47,45 @@
   %input{type: 'submit', value: 'Copy'}
   %label.small.gray
     A duplicate letter will be created in this lane.
+
+%form.hidden{method: 'POST', action: '/add-attachment', id: 'add', enctype: 'multipart/form-data'}
+  %input{type: 'hidden', name: 'id', value: letter.id}
+  %input{name: 'file', type: 'file', accept: 'text/plain'}
+  %input{type: 'submit', value: 'Add'}
+
+%p
+  It belongs to the lane
+  - lane = letter.lane
+  = succeed ':' do
+    %a{href: "/lane?id=#{lane.id}"}= "##{lane.id}"
+  = "\"#{lane.title}\""
+
+%p
+  It is
+  %strong
+    - if letter.active?
+      %span.green active
+    - else
+      %span.red not active
+  = '/'
+  %a{href: "/toggle-letter?id=#{letter.id}", onclick: (letter.liquid.include?('{{unsubscribe}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')")}
+    - if letter.active?
+      deactivate
+    - else
+      activate
+
+- attachments = letter.attachments
+- if !attachments.empty?
+  %p
+    With attachments:
+  - attachments.each do |a|
+    %a{href: "/download-attachment?letter=#{letter.id}&name=#{CGI.escape(a)}"}
+      &= a
+    = succeed ';' do
+      %a{href: "/detach?letter=#{letter.id}&name=#{CGI.escape(a)}", onclick: "return confirm('Are you sure?');"} delete
+
+%p
+  Delivered
+  = letter.deliveries_count
+  times.
+

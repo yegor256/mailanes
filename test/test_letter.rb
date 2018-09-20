@@ -43,6 +43,24 @@ class LetterTest < Minitest::Test
     assert_equal(false, letter.active?)
   end
 
+  def test_attach_and_detach
+    owner = random_owner
+    letters = Letters.new(lane: Lanes.new(owner: owner).add)
+    letter = letters.add
+    name = 'hey-123.pdf'
+    body = "hey \xAD"
+    Tempfile.open do |f|
+      File.write(f, body)
+      letter.attach(name, f.path)
+      assert_equal(1, letter.attachments.count)
+      assert_equal(name, letter.attachments[0])
+      letter.download(name, f.path)
+      assert_equal(body, File.read(f.path))
+      letter.detach(name)
+      assert(letter.attachments.empty?)
+    end
+  end
+
   def test_toggles_active_status
     owner = random_owner
     lanes = Lanes.new(owner: owner)

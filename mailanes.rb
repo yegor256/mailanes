@@ -412,6 +412,33 @@ post '/save-letter' do
   flash("/letter?id=#{letter.id}", "YAML and Liquid have been saved for the letter ##{letter.id}")
 end
 
+post '/attach' do
+  letter = owner.lanes.letter(params[:id].to_i)
+  name = File.basename(params[:file][:filename])
+  Tempfile.open do |f|
+    FileUtils.copy(params[:file][:tempfile], f.path)
+    File.delete(params[:file][:tempfile])
+    letter.attach(name, f.path)
+  end
+  flash("/letter?id=#{letter.id}", "The attachment \"#{name}\" has been added to the letter ##{letter.id}")
+end
+
+get '/detach' do
+  letter = owner.lanes.letter(params[:id].to_i)
+  name = params[:name]
+  letter.detach(name)
+  flash("/letter?id=#{letter.id}", "The attachment \"#{name}\" has been removed from the letter ##{letter.id}")
+end
+
+get '/download-attachment' do
+  letter = owner.lanes.letter(params[:id].to_i)
+  name = params[:name]
+  Tempfile.open do |f|
+    letter.download(name, f.path)
+    File.read(f.path)
+  end
+end
+
 post '/test-letter' do
   letter = owner.lanes.letter(params[:id].to_i, tbot: settings.tbot)
   list = owner.lists.list(params[:list].to_i)

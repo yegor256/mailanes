@@ -12,6 +12,29 @@
   %a.item{onclick: '$("#merge").show();'}
     Merge Into
 
+%form.hidden{method: 'POST', action: '/save-campaign', id: 'save'}
+  %fieldset
+    %input{type: 'hidden', name: 'id', value: campaign.id}
+    %label
+      %a{href: 'https://github.com/yegor256/mailanes#campaign'} YAML
+      config:
+    %textarea{name: 'yaml', style: 'width:100%;height:8em;', required: 'true'}= campaign.yaml.to_yaml
+    %input{type: 'submit', value: 'Save'}
+
+%form.hidden{method: 'POST', action: '/add-source', id: 'add'}
+  %input{type: 'hidden', name: 'id', value: campaign.id}
+  %select{name: 'list'}
+    - lists.all.each do |list|
+      %option{value: list.id}= "##{list.id}: #{list.title}"
+  %input{type: 'submit', value: 'Add'}
+
+%form.hidden{method: 'POST', action: '/merge-campaign', id: 'merge'}
+  %input{type: 'hidden', name: 'id', value: campaign.id}
+  %select{name: 'target'}
+    - campaigns.all.each do |c|
+      %option{value: c.id}= "##{c.id}: #{c.title}"
+  %input{type: 'submit', value: 'Merge Into', onclick: "return confirm('Are you sure? This campaign will be deleted.');"}
+
 %p
   - lane = campaign.lane
   = succeed ':' do
@@ -58,29 +81,6 @@
       deactivate
     - else
       activate
-
-%form.hidden{method: 'POST', action: '/save-campaign', id: 'save'}
-  %fieldset
-    %input{type: 'hidden', name: 'id', value: campaign.id}
-    %label
-      %a{href: 'https://github.com/yegor256/mailanes#campaign'} YAML
-      config:
-    %textarea{name: 'yaml', style: 'width:100%;height:8em;', required: 'true'}= campaign.yaml.to_yaml
-    %input{type: 'submit', value: 'Save'}
-
-%form.hidden{method: 'POST', action: '/add-source', id: 'add'}
-  %input{type: 'hidden', name: 'id', value: campaign.id}
-  %select{name: 'list'}
-    - lists.all.each do |list|
-      %option{value: list.id}= "##{list.id}: #{list.title}"
-  %input{type: 'submit', value: 'Add'}
-
-%form.hidden{method: 'POST', action: '/merge-campaign', id: 'merge'}
-  %input{type: 'hidden', name: 'id', value: campaign.id}
-  %select{name: 'target'}
-    - campaigns.all.each do |c|
-      %option{value: c.id}= "##{c.id}: #{c.title}"
-  %input{type: 'submit', value: 'Merge Into', onclick: "return confirm('Are you sure? This campaign will be deleted.');"}
 
 %p
   Delivered

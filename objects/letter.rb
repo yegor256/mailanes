@@ -22,6 +22,7 @@ require 'yaml'
 require 'mail'
 require 'uuidtools'
 require 'timeout'
+require 'pg'
 require 'liquid'
 require 'redcarpet'
 require 'redcarpet/render_strip'
@@ -121,6 +122,30 @@ class Letter
       deliver_telegram(content)
     else
       raise "Unknown transport \"#{yaml['transport']}\" for the letter ##{@id}"
+    end
+  end
+
+  def attach(name, file)
+    body = File.binread(file)
+    @pgsql.exec(
+      'INSERT INTO attachment (letter, name, body) VALUES ($1, $2, $3)',
+      [@id, name, { value: body, type: 0, format: 1 }]
+    )
+  end
+
+  def detach(name)
+    @pgsql.exec('DELETE FROM attachment WHERE letter = $1 AND name = $2', [@id, name])
+  end
+
+  def attachments
+    @pgsql.exec('SELECT name FROM attachment WHERE letter = $1', [@id]).map do |r|
+      r['name']
+    end
+  end
+
+  def download(name, file)
+    @pgsql.exec('SELECT body FROM attachment WHERE letter = $1 and name = $2', [@id, name], 1).map do |r|
+      File.binwrite(file, r['body'])
     end
   end
 

@@ -39,10 +39,10 @@ class Pgsql
   # Test connection
   TEST = Pgsql.new
 
-  def exec(query, args = [])
+  def exec(query, args = [], result = 0)
     connect do |c|
       start = Time.now
-      c.exec_params(query, args) do |res|
+      c.exec_params(query, args, result) do |res|
         elapsed = Time.now - start
         if elapsed > 5
           puts "#{query} in #{elapsed.round(2)}s"
