@@ -477,6 +477,13 @@ post '/add-source' do
   flash("/campaign?id=#{campaign.id}", "The list ##{list.id} has been added to the campaign ##{campaign.id}")
 end
 
+get '/delete-source' do
+  campaign = owner.campaigns.campaign(params[:campaign].to_i)
+  list = owner.lists.list(params[:list].to_i)
+  campaign.delete(list)
+  flash("/campaign?id=#{campaign.id}", "The list ##{list.id} has been removed from the campaign ##{campaign.id}")
+end
+
 post '/merge-campaign' do
   campaign = owner.campaigns.campaign(params[:id].to_i)
   target = owner.campaigns.campaign(params[:target].to_i)

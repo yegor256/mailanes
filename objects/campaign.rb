@@ -45,6 +45,13 @@ class Campaign
     )[0]
   end
 
+  def delete(list)
+    @pgsql.exec(
+      'DELETE FROM source WHERE list = $1 AND campaign = $2',
+      [list.id, @id]
+    )[0]
+  end
+
   def lists
     q = 'SELECT list.* FROM list JOIN source ON source.list = list.id WHERE source.campaign = $1'
     @pgsql.exec(q, [@id]).map do |r|
