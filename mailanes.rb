@@ -329,7 +329,8 @@ end
 
 get '/download-recipients' do
   list = owner.lists.list(params[:id].to_i)
-  content_type 'text/csv'
+  response.headers['Content-Type'] = 'text/csv'
+  response.headers['Content-Disposition'] = "attachment; filename='#{list.title.gsub(/[^a-zA-Z0-9]/, '-')}.csv'"
   list.recipients.csv do
     list.recipients.all(limit: -1)
   end
@@ -433,6 +434,8 @@ end
 get '/download-attachment' do
   letter = owner.lanes.letter(params[:id].to_i)
   name = params[:name]
+  response.headers['Content-Type'] = 'octet/binary'
+  response.headers['Content-Disposition'] = "attachment; filename='#{name}'"
   Tempfile.open do |f|
     letter.download(name, f.path)
     File.read(f.path)
@@ -572,7 +575,8 @@ get '/download-list' do
       "has been downloaded by #{current_user}."
     ].join(' ')
   )
-  content_type 'text/csv'
+  response.headers['Content-Type'] = 'text/csv'
+  response.headers['Content-Disposition'] = "attachment; filename='#{list.title.gsub(/[^a-zA-Z0-9]/, '-')}.csv'"
   list.recipients.csv do
     list.recipients.all(query: "=@#{current_user}", limit: -1)
   end
