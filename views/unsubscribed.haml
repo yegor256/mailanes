@@ -6,6 +6,8 @@
   %code
     = email
   has been removed from the list.
+
+%p
   We are sorry to see you leaving.
 
 - if defined? user
@@ -15,9 +17,9 @@
       %a{href: "/recipient?id=#{recipient.id}"}
         = "##{recipient.id}"
       from the list
-      = succeed '.' do
-        %a{href: "/list?id=#{list.id}"}
-          = "##{list.id}"
+      = succeed ':' do
+        %a{href: "/list?id=#{list.id}"}= "##{list.id}"
+      &= "\"#{list.title}\"."
 
   - if current_user == list.owner
     %p
