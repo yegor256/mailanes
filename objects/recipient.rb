@@ -66,6 +66,11 @@ class Recipient
     @hash = {}
   end
 
+  def delete
+    @pgsql.exec('DELETE FROM recipient WHERE id=$1', [@id])
+    @hash = {}
+  end
+
   def active?
     (@hash['active'] || @pgsql.exec('SELECT active FROM recipient WHERE id=$1', [@id])[0]['active']) == 't'
   end

@@ -261,6 +261,13 @@ get '/toggle-recipient' do
   flash("/recipient?id=#{recipient.id}", "The recipient ##{recipient.id} has been toggled")
 end
 
+get '/delete-recipient' do
+  list = shared_list(params[:list].to_i)
+  recipient = list.recipients.recipient(params[:id].to_i)
+  recipient.delete
+  flash("/list?id=#{list.id}", "The recipient has been deleted from the list ##{list.id}")
+end
+
 post '/comment-recipient' do
   list = shared_list(params[:list].to_i)
   recipient = list.recipients.recipient(params[:id].to_i)

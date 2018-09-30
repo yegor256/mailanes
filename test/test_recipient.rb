@@ -40,6 +40,14 @@ class RecipientTest < Minitest::Test
     assert(recipient.active?)
   end
 
+  def test_deletes_recipient
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    recipient = Recipients.new(list: list).add('test@mailanes.com')
+    recipient.delete
+    assert(list.recipients.count.zero?)
+  end
+
   def test_toggles_fetched_recipient
     owner = random_owner
     list = Lists.new(owner: owner).add
