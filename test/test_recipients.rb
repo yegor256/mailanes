@@ -35,7 +35,7 @@ class RecipientsTest < Minitest::Test
     lists = Lists.new(owner: owner)
     list = lists.add
     recipients = Recipients.new(list: list)
-    recipient = recipients.add('test@mailanes.com')
+    recipient = recipients.add('tes.met@mailanes.com')
     assert(recipient.id > 0)
     assert_equal(1, recipients.all.count)
   end
@@ -45,7 +45,7 @@ class RecipientsTest < Minitest::Test
     lists = Lists.new(owner: owner)
     list = lists.add
     recipients = Recipients.new(list: list)
-    recipients.add('test00@mailanes.com', source: "@#{owner}")
+    recipients.add('tes-t.0_0@mailanes.com', source: "@#{owner}")
     assert_equal(1, recipients.all(query: "=@#{owner}", limit: -1).count)
   end
 
