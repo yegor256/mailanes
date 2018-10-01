@@ -79,7 +79,7 @@ class Bounces
         recipient = Recipient.new(id: plain, pgsql: @pgsql)
         recipient.toggle if recipient.active?
         recipient.bounce
-        recipient.post_event(body[0..1024])
+        recipient.post_event("SMTP delivery bounced back:\n#{body[0..1024]}")
         list = recipient.list
         rate = list.recipients.bounce_rate
         tbot.notify(
