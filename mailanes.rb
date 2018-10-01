@@ -563,8 +563,10 @@ end
 
 post '/do-add' do
   list = shared_list(params[:id].to_i)
+  email = params[:email]
+  flash("/add?list=#{list.id}", "Recipient with email #{email} already exists!") if list.recipients.exists?(email)
   recipient = list.recipients.add(
-    params[:email],
+    email,
     first: params[:first] || '',
     last: params[:last] || '',
     source: "@#{current_user}"
@@ -574,7 +576,7 @@ post '/do-add' do
     'add',
     list.yaml,
     [
-      "New recipient `#{params[:email]}` has been added",
+      "New recipient `#{email}` has been added",
       "by #{current_user} to your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
       "There are #{list.recipients.per_day(10).round(2)} emails joining daily (last #{days} days statistics)."
     ].join(' ')
