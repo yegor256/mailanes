@@ -65,7 +65,7 @@ task :pgsql do
   dir = File.expand_path(File.join(Dir.pwd, 'target/pgsql'))
   FileUtils.rm_rf(dir)
   File.write('target/pwfile', 'test')
-  system("initdb --auth=trust -D #{dir} --username=test --pwfile=target/pwfile")
+  system("initdb --auth=trust -D #{dir} --username=test --pwfile=target/pwfile 2>&1")
   raise unless $CHILD_STATUS.exitstatus.zero?
   port = `python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()'`.to_i
   pid = Process.spawn('postgres', '-k', dir, '-D', dir, "--port=#{port}")
@@ -76,7 +76,7 @@ task :pgsql do
   sleep 1
   attempt = 0
   begin
-    system("createdb -h localhost -p #{port} --username=test test")
+    system("createdb -h localhost -p #{port} --username=test test 2>&1")
     raise unless $CHILD_STATUS.exitstatus.zero?
   rescue StandardError => e
     puts e.message
@@ -104,7 +104,7 @@ end
 desc 'Update the database via Liquibase'
 task :liquibase do
   yml = YAML.safe_load(File.open(File.exist?('config.yml') ? 'config.yml' : 'target/config.yml'))
-  system("mvn -f liquibase verify \"-Durl=#{yml['pgsql']['url']}\" --errors")
+  system("mvn -f liquibase verify \"-Durl=#{yml['pgsql']['url']}\" --errors 2>&1")
   raise unless $CHILD_STATUS.exitstatus.zero?
 end
 
@@ -112,7 +112,7 @@ desc 'Sleep endlessly after the start of DynamoDB Local server'
 task :sleep do
   port = File.read('target/pgsql.port').to_i
   loop do
-    system("psql -h localhost -p #{port} --username=test --command='\\x'")
+    system("psql -h localhost -p #{port} --username=test --command='\\x' 2>&1")
     raise unless $CHILD_STATUS.exitstatus.zero?
     puts 'PostgreSQL is still alive, will ping again in a while...'
     sleep(30)
