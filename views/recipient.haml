@@ -28,6 +28,13 @@
   Email:
   %code
     = recipient.email
+  %a.item{onclick: '$("#change").show();$("email").focus();'} Change
+
+%form.hidden{method: 'POST', action: '/change-email', id: 'change'}
+  %input{type: 'hidden', name: 'list', value: list.id}
+  %input{type: 'hidden', name: 'id', value: recipient.id}
+  %input{type: 'email', name: 'email', size: 50, required: 'true', value: recipient.email}
+  %input{type: 'submit', value: 'Change'}
 
 - if !recipient.first.empty?
   %p

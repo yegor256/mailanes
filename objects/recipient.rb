@@ -61,6 +61,11 @@ class Recipient
     @hash = {}
   end
 
+  def change_email(email)
+    @pgsql.exec('UPDATE recipient SET email=$1 WHERE id=$2', [email, @id])
+    @hash = {}
+  end
+
   def toggle
     @pgsql.exec('UPDATE recipient SET active=NOT(active) WHERE id=$1', [@id])
     @hash = {}

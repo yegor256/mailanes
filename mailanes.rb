@@ -238,7 +238,7 @@ post '/add-recipient' do
     last: params[:last].strip,
     source: "@#{current_user}"
   )
-  recipient.post_event("Added to the list by @#{current_user}")
+  recipient.post_event("Added to the list ##{list.id} by @#{current_user}")
   flash("/list?id=#{list.id}", "The recipient ##{recipient.id} has been added to the list ##{list.id}")
 end
 
@@ -266,6 +266,16 @@ get '/delete-recipient' do
   recipient = list.recipients.recipient(params[:id].to_i)
   recipient.delete
   flash("/list?id=#{list.id}", "The recipient has been deleted from the list ##{list.id}")
+end
+
+post '/change-email' do
+  list = shared_list(params[:list].to_i)
+  recipient = list.recipients.recipient(params[:id].to_i)
+  before = recipient.email
+  after = params[:email]
+  recipient.change_email(after)
+  recipient.post_event("Email changed from #{before} to #{after} by @#{current_user}")
+  flash("/recipient?id=#{recipient.id}", "The email has been changed for the recipient ##{recipient.id}")
 end
 
 post '/comment-recipient' do
@@ -308,7 +318,7 @@ post '/move-recipient' do
   recipient = list.recipients.recipient(params[:id].to_i)
   target = owner.lists.list(params[:target].to_i)
   recipient.move_to(target)
-  recipient.post_event("Moved to the list ##{target.id} by @#{current_user}")
+  recipient.post_event("Moved from the list ##{list.id} to the list ##{target.id} by @#{current_user}")
   flash(
     "/recipient?id=#{recipient.id}",
     "The recipient ##{recipient.id} has been moved to the list ##{target.id}"

@@ -40,6 +40,15 @@ class RecipientTest < Minitest::Test
     assert(recipient.active?)
   end
 
+  def test_changes_email
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    recipient = Recipients.new(list: list).add('x76@mailanes.com')
+    after = '467hsh@mailanes.com'
+    recipient.change_email(after)
+    assert_equal(after, recipient.email)
+  end
+
   def test_deletes_recipient
     owner = random_owner
     list = Lists.new(owner: owner).add
