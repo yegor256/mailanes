@@ -563,7 +563,7 @@ end
 
 post '/do-add' do
   list = shared_list(params[:id].to_i)
-  email = params[:email]
+  email = params[:email].downcase.strip
   flash("/add?list=#{list.id}", "Recipient with email #{email} already exists!") if list.recipients.exists?(email)
   recipient = list.recipients.add(
     email,
