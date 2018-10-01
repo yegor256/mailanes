@@ -36,6 +36,20 @@
   %input{type: 'submit', value: 'Merge Into', onclick: "return confirm('Are you sure? This campaign will be deleted.');"}
 
 %p
+  It is
+  %strong
+    - if campaign.active?
+      %span.green active
+    - else
+      %span.red not active
+  = '/'
+  %a{href: "/toggle-campaign?id=#{campaign.id}"}
+    - if campaign.active?
+      deactivate
+    - else
+      activate
+
+%p
   - lane = campaign.lane
   = succeed ':' do
     %a{href: "/lane?id=#{lane.id}"}= "Lane ##{lane.id}"
@@ -67,20 +81,6 @@
   In all lists:
   = campaign.recipients_count
   recipient(s).
-
-%p
-  It is
-  %strong
-    - if campaign.active?
-      %span.green active
-    - else
-      %span.red not active
-  = '/'
-  %a{href: "/toggle-campaign?id=#{campaign.id}"}
-    - if campaign.active?
-      deactivate
-    - else
-      activate
 
 %p
   Delivered
