@@ -14,7 +14,6 @@ release:
     pdd -f /dev/null
     export GEM_HOME=~/.ruby
     export GEM_PATH=$GEM_HOME:$GEM_PATH
-    export PATH=$PATH:/usr/lib/postgresql/10/bin
     sudo apt-get install libpq-dev
     bundle install
     ruby -v

@@ -25,6 +25,8 @@ require 'rake/clean'
 require 'English'
 require 'yaml'
 
+raise "Invalid encoding \"#{Encoding.default_external}\"" unless Encoding.default_external.to_s == 'UTF-8'
+
 ENV['RACK_ENV'] = 'test'
 
 task default: %i[check_outdated_gems clean test rubocop xcop copyright]
