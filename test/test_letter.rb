@@ -55,7 +55,7 @@ class LetterTest < Minitest::Test
       assert_equal(1, letter.attachments.count)
       assert_equal(name, letter.attachments[0])
       letter.download(name, f.path)
-      assert_equal(body, File.read(f.path))
+      assert_equal(body, File.read(f.path).force_encoding('UTF-8'))
       letter.detach(name)
       assert(letter.attachments.empty?)
     end

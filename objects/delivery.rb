@@ -72,7 +72,9 @@ class Delivery
   end
 
   def details
-    @hash['details'] || @pgsql.exec('SELECT details FROM delivery WHERE id=$1', [@id])[0]['details']
+    @hash['details'] || @pgsql.exec(
+      'SELECT details FROM delivery WHERE id=$1', [@id]
+    )[0]['details'].force_encoding('UTF-8')
   end
 
   def close(details)
