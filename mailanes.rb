@@ -577,7 +577,8 @@ post '/do-add' do
     list.yaml,
     [
       "New recipient `#{email}` has been added",
-      "by #{current_user} to your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
+      "by #{current_user} to your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
+      "(#{list.recipients.count} emails are there).",
       "There are #{list.recipients.per_day(10).round(2)} emails joining daily (last #{days} days statistics)."
     ].join(' ')
   )
