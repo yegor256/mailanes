@@ -22,9 +22,9 @@
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Hex
+class Transaction
   # From text to hex
-  class FromText
+  class FromJSON < Transaction
     def initialize(text)
       @text = text
     end
@@ -35,7 +35,7 @@ class Hex
   end
 
   # From hex to text
-  class ToText
+  class ToJSON < JSON
     def initialize(hex)
       @hex = hex
     end

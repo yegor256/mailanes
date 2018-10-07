@@ -51,11 +51,6 @@ configure do
       'client_secret' => '?',
       'encryption_secret' => ''
     },
-    's3' => {
-      'key' => '?',
-      'secret' => '?',
-      'bucket' => '?'
-    },
     'pop3' => {
       'host' => '',
       'login' => '',
@@ -165,7 +160,6 @@ end
 
 get '/logout' do
   cookies.delete(:glogin)
-  cookies.delete(:passcode)
   redirect to('/')
 end
 
@@ -778,7 +772,7 @@ end
 private
 
 def context
-  "#{request.ip} #{request.user_agent} #{VERSION} #{Time.now.strftime('%Y/%m/%d')}"
+  "#{request.ip} #{request.user_agent} #{VERSION} #{Time.now.strftime('%Y/%m')}"
 end
 
 def merged(hash)
