@@ -34,6 +34,7 @@ gem 'rack', '~>2.0'
 gem 'rack-ssl', '~>1.4'
 gem 'rack-test', '~>1.0'
 gem 'rake', '~>12.3', require: false
+gem 'random-port', '~>0.2', require: false
 gem 'redcarpet', '~>3.4'
 gem 'rerun', '~>0.11', require: false
 gem 'rspec-rails', '~>3.7', require: false

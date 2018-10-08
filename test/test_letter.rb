@@ -20,6 +20,7 @@
 
 require 'minitest/autorun'
 require 'rack/test'
+require 'random-port'
 require 'yaml'
 require 'tmpdir'
 require 'gserver'
@@ -119,42 +120,43 @@ class LetterTest < Minitest::Test
     recipient = list.recipients.add('test11@mailanes.com')
     lane = Lanes.new(owner: owner).add
     letter = lane.letters.add
-    port = random_port
-    Dir.mktmpdir do |dir|
-      smtpd = FakeSMTPd::Runner.new(
-        dir: File.join(dir, 'messages'),
-        port: port,
-        logfile: File.join(dir, 'smtpd.log'),
-        pidfile: File.join(dir, 'smtpd.pid')
-      )
-      letter.save_yaml(
-        [
-          'from: test@mailanes.com',
-          'smtp:',
-          '  host: localhost',
-          "  port: #{port}",
-          '  user: test',
-          '  password: test'
-        ].join("\n")
-      )
-      codec = GLogin::Codec.new('some secret')
-      begin
-        smtpd.start
-        letter.deliver(recipient, codec)
-      ensure
-        smtpd.stop
-      end
-      Dir[File.join(dir, 'messages/**/*.json')].each do |f|
-        body = JSON.parse(File.read(f))['body'].join("\n")
-        assert(body.include?('X-Complaints-To: reply@mailanes.com'))
-        assert(body.include?('List-Unsubscribe: '))
-        assert(body.include?('Return-Path: <reply@mailanes.com>'))
-        assert(body.include?("List-Id: #{recipient.id}"))
-        assert(body.include?("X-Mailanes-Recipient: #{recipient.id}:"))
-        match = body.match(/#{recipient.id}:([a-f0-9]{20,})\n/)
-        assert(!match.nil?)
-        sign = Hex::ToText.new(match[1]).to_s
-        assert_equal(recipient.id, codec.decrypt(sign).to_i)
+    RandomPort::Pool::SINGLETON.acquire do |port|
+      Dir.mktmpdir do |dir|
+        smtpd = FakeSMTPd::Runner.new(
+          dir: File.join(dir, 'messages'),
+          port: port,
+          logfile: File.join(dir, 'smtpd.log'),
+          pidfile: File.join(dir, 'smtpd.pid')
+        )
+        letter.save_yaml(
+          [
+            'from: test@mailanes.com',
+            'smtp:',
+            '  host: localhost',
+            "  port: #{port}",
+            '  user: test',
+            '  password: test'
+          ].join("\n")
+        )
+        codec = GLogin::Codec.new('some secret')
+        begin
+          smtpd.start
+          letter.deliver(recipient, codec)
+        ensure
+          smtpd.stop
+        end
+        Dir[File.join(dir, 'messages/**/*.json')].each do |f|
+          body = JSON.parse(File.read(f))['body'].join("\n")
+          assert(body.include?('X-Complaints-To: reply@mailanes.com'))
+          assert(body.include?('List-Unsubscribe: '))
+          assert(body.include?('Return-Path: <reply@mailanes.com>'))
+          assert(body.include?("List-Id: #{recipient.id}"))
+          assert(body.include?("X-Mailanes-Recipient: #{recipient.id}:"))
+          match = body.match(/#{recipient.id}:([a-f0-9]{20,})\n/)
+          assert(!match.nil?)
+          sign = Hex::ToText.new(match[1]).to_s
+          assert_equal(recipient.id, codec.decrypt(sign).to_i)
+        end
       end
     end
   end

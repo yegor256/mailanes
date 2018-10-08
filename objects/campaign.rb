@@ -40,7 +40,7 @@ class Campaign
 
   def add(list)
     @pgsql.exec(
-      'INSERT INTO source (list, campaign) VALUES ($1, $2)',
+      'INSERT INTO source (list, campaign) VALUES ($1, $2) RETURNING id',
       [list.id, @id]
     )[0]
   end
