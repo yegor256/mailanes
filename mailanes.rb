@@ -555,6 +555,14 @@ get '/add' do
   )
 end
 
+get '/weeks' do
+  list = shared_list(params[:id].to_i)
+  haml :weekly, layout: :layout, locals: merged(
+    title: '/add',
+    weeks: list.recipients.weeks(params[:user] || current_user)
+  )
+end
+
 post '/do-add' do
   list = shared_list(params[:id].to_i)
   email = params[:email].downcase.strip

@@ -40,6 +40,19 @@ class RecipientsTest < Minitest::Test
     assert_equal(1, recipients.all.count)
   end
 
+  def test_groups_recipients_by_weeks
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    recipients = Recipients.new(list: list)
+    recipients.add('tiu-1@mailanes.com', source: owner)
+    recipients.add('tiu-2@mailanes.com', source: owner)
+    recipients.add('tiu-3@mailanes.com').bounce
+    assert(1, recipients.weeks(owner).count)
+    assert(recipients.weeks(owner)[0][:week])
+    assert(recipients.weeks(owner)[0][:total])
+    assert(recipients.weeks(owner)[0][:bad])
+  end
+
   def test_fetches_recipients
     owner = random_owner
     lists = Lists.new(owner: owner)

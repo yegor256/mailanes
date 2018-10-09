@@ -1,0 +1,24 @@
+%h2
+  Weekly
+
+%p
+  This is your weekly contribution to the list
+  = succeed ':' do
+    = "##{list.id}"
+  = list.title
+
+%table
+  %thead
+    %tr
+      %th Week
+      %th Added
+      %th Bounced
+      %th Valid
+  %tbody
+  - weeks.each do |w|
+    %tr
+      %th= w[:name]
+      %th{style: 'text-align:right'}= sprintf('%+d', w[:total])
+      %th{style: 'text-align:right'}= sprintf('%+d', w[:bad])
+      %th{style: 'text-align:right'}= sprintf('%+d', w[:total] - w[:bad])
+

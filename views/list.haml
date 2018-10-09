@@ -78,6 +78,11 @@
   per day (last 10 days statistics).
 
 %p
+  The link to share:
+  %a{href: "https://www.mailanes.com/add?list=#{list.id}"}
+    = "https://www.mailanes.com/add?list=#{list.id}"
+
+%p
   Participates in:
   - list.campaigns.each do |c|
     = succeed ':' do

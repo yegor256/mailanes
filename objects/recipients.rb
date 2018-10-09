@@ -118,6 +118,21 @@ class Recipients
     Recipient.new(id: id, pgsql: @pgsql, hash: hash)
   end
 
+  def weeks(source)
+    @pgsql.exec(
+      [
+        'SELECT CONCAT(DATE_PART(\'year\', created), \'/\', DATE_PART(\'week\', created)) AS week,',
+        'COUNT(*) AS total,',
+        'COUNT(*) FILTER (WHERE bounced IS NOT NULL) as bad',
+        'FROM recipient',
+        'WHERE list = $1 AND source = $2',
+        'GROUP BY week',
+        'ORDER BY week DESC'
+      ].join(' '),
+      [@list.id, source.downcase.strip]
+    ).map { |r| { week: r['week'], total: r['total'].to_i, bad: r['bad'].to_i } }
+  end
+
   def per_day(days = 10)
     total = @pgsql.exec(
       "SELECT COUNT(*) FROM recipient WHERE list=$1 AND created > NOW() - INTERVAL \'#{days} DAYS\'",
