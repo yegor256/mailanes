@@ -4,8 +4,7 @@
 %p
   This is your weekly contribution to the
   = succeed ':' do
-    %a{href: "/add?list=#{list.id}"}
-      = "List ##{list.id}"
+    %a{href: "/add?list=#{list.id}"}= "List ##{list.id}"
   = list.title
 
 %table
@@ -18,8 +17,8 @@
   %tbody
   - weeks.each do |w|
     %tr
-      %th= w[:name]
-      %th{style: 'text-align:right'}= sprintf('%+d', w[:total])
-      %th{style: 'text-align:right'}= sprintf('%+d', w[:bad])
-      %th{style: 'text-align:right'}= sprintf('%+d', w[:total] - w[:bad])
+      %td= w[:week]
+      %td{style: 'text-align:right'}= sprintf('%+d', w[:total])
+      %td{style: 'text-align:right'}= sprintf('%+d', w[:bad])
+      %td{style: 'text-align:right'}= sprintf('%+d', w[:total] - w[:bad])
 
