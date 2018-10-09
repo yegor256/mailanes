@@ -560,7 +560,7 @@ get '/weeks' do
   haml :weeks, layout: :layout, locals: merged(
     title: '/add',
     list: list,
-    weeks: list.recipients.weeks(params[:user] || current_user)
+    weeks: list.recipients.weeks('@' + (params[:user] || current_user))
   )
 end
 

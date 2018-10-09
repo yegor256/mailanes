@@ -2,9 +2,10 @@
   Weekly
 
 %p
-  This is your weekly contribution to the list
+  This is your weekly contribution to the
   = succeed ':' do
-    = "##{list.id}"
+    %a{href: "/add?list=#{list.id}"}
+      = "List ##{list.id}"
   = list.title
 
 %table
