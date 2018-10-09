@@ -61,7 +61,7 @@ class Owner
         'GROUP BY month',
         'ORDER BY month DESC'
       ].join(' '),
-      [@list.id, source.downcase.strip]
+      [source.downcase.strip]
     ).map { |r| { week: r['month'], total: r['total'].to_i, bad: r['bad'].to_i } }
   end
 end
