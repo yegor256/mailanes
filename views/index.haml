@@ -40,3 +40,7 @@
       = succeed '.' do
         %span{class: (rate > 0.05 ? 'red' : '')}= "#{(rate * 100).round(2)}%"
 
+%p
+  Your
+  %a{href: '/months'} monthly contribution
+  summary.

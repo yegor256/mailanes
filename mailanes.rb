@@ -559,10 +559,19 @@ get '/weeks' do
   list = shared_list(params[:id].to_i)
   source = '@' + (params[:user] || current_user)
   haml :weeks, layout: :layout, locals: merged(
-    title: '/add',
+    title: '/weekly',
     list: list,
     source: source,
     weeks: list.recipients.weeks(source)
+  )
+end
+
+get '/months' do
+  source = '@' + (params[:user] || current_user)
+  haml :months, layout: :layout, locals: merged(
+    title: '/monthly',
+    source: source,
+    months: owner.months(source)
   )
 end
 

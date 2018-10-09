@@ -1,0 +1,21 @@
+%h2
+  Monthly
+
+%p
+  This is monthly contribution of
+  %code= source
+
+%table
+  %thead
+    %tr
+      %th Month
+      %th Added
+      %th Bounced
+      %th Valid
+  %tbody
+  - months.each do |m|
+    %tr
+      %td= m[:month]
+      %td{style: 'text-align:right'}= sprintf('%+d', m[:total])
+      %td{style: 'text-align:right'}= sprintf('%+d', m[:bad])
+      %td{style: 'text-align:right'}= sprintf('%+d', m[:total] - m[:bad])

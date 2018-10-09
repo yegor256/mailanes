@@ -49,4 +49,19 @@ class Owner
   def deliveries
     Deliveries.new(pgsql: @pgsql)
   end
+
+  def months(source)
+    @pgsql.exec(
+      [
+        'SELECT CONCAT(DATE_PART(\'year\', created), \'/\', DATE_PART(\'month\', created)) AS month,',
+        'COUNT(*) AS total,',
+        'COUNT(*) FILTER (WHERE bounced IS NOT NULL) as bad',
+        'FROM recipient',
+        'WHERE source = $2',
+        'GROUP BY month',
+        'ORDER BY month DESC'
+      ].join(' '),
+      [@list.id, source.downcase.strip]
+    ).map { |r| { week: r['month'], total: r['total'].to_i, bad: r['bad'].to_i } }
+  end
 end
