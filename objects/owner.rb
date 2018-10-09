@@ -57,7 +57,7 @@ class Owner
         'COUNT(*) AS total,',
         'COUNT(*) FILTER (WHERE bounced IS NOT NULL) as bad',
         'FROM recipient',
-        'WHERE source = $2',
+        'WHERE source = $1',
         'GROUP BY month',
         'ORDER BY month DESC'
       ].join(' '),
