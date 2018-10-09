@@ -9,6 +9,10 @@
     %a{href: "/add?list=#{list.id}"}= "List ##{list.id}"
   = list.title
 
+%p
+  Total:
+  %strong= list.recipients.count_by_source(source)
+
 %table
   %thead
     %tr
@@ -23,4 +27,3 @@
       %td{style: 'text-align:right'}= sprintf('%+d', w[:total])
       %td{style: 'text-align:right'}= sprintf('%+d', w[:bad])
       %td{style: 'text-align:right'}= sprintf('%+d', w[:total] - w[:bad])
-
