@@ -87,12 +87,16 @@
 
 %p
   Participates in:
-  - list.campaigns.each do |c|
-    = succeed ':' do
-      %a{href: "/campaign?id=#{c.id}"}= "C##{c.id}"
-      = '/'
-      %a{href: "/lane?id=#{c.lane.id}"}= "L##{c.lane.id}"
-    &= "\"#{c.lane.title}\""
+  - campaigns = list.campaigns
+  - if campaigns.empty?
+    %span.red no campaigns
+  - else
+    - campaigns.each do |c|
+      = succeed ':' do
+        %a{href: "/campaign?id=#{c.id}"}= "C##{c.id}"
+        = '/'
+        %a{href: "/lane?id=#{c.lane.id}"}= "L##{c.lane.id}"
+      &= "\"#{c.lane.title}\""
 
 - abs = list.absorb_counts
 - if !abs.empty?
