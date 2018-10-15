@@ -31,6 +31,7 @@ require 'raven'
 require 'glogin'
 require 'glogin/codec'
 require_relative 'version'
+require_relative 'objects/user_error'
 require_relative 'objects/owner'
 require_relative 'objects/pipeline'
 require_relative 'objects/postman'
@@ -683,8 +684,12 @@ end
 
 get '/unsubscribe' do
   token = params[:token]
-  return 'Token is required in order to unsubscribe you' if token.nil?
-  id = settings.codec.decrypt(token).to_i
+  raise UserError, 'Token is required in order to unsubscribe you' if token.nil?
+  id = begin
+    settings.codec.decrypt(token).to_i
+  rescue OpenSSL::Cipher::CipherError => ex
+    raise UserError, "Token is invalid, can\'t unsubscribe: #{ex.message}"
+  end
   recipient = Recipient.new(id: id, pgsql: settings.pgsql)
   list = recipient.list
   email = recipient.email
@@ -781,15 +786,19 @@ end
 error do
   status 503
   e = env['sinatra.error']
-  Raven.capture_exception(e)
-  haml(
-    :error,
-    layout: :layout,
-    locals: merged(
-      title: 'error',
-      error: "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
+  if e.is_a?(UserError)
+    flash('/', e.message)
+  else
+    Raven.capture_exception(e)
+    haml(
+      :error,
+      layout: :layout,
+      locals: merged(
+        title: 'error',
+        error: "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
+      )
     )
-  )
+  end
 end
 
 private

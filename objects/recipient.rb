@@ -20,6 +20,7 @@
 
 require_relative 'pgsql'
 require_relative 'list'
+require_relative 'user_error'
 
 # Recipient.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -41,7 +42,7 @@ class Recipient
       'SELECT list.* FROM list JOIN recipient ON recipient.list=list.id WHERE recipient.id=$1',
       [@id]
     )[0]
-    raise "Recipient #{@id} is outside of the list?" if hash.nil?
+    raise UserError, "Recipient #{@id} is outside of the list?" if hash.nil?
     List.new(
       id: hash['id'].to_i,
       pgsql: @pgsql,

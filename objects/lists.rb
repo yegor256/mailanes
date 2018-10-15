@@ -20,6 +20,7 @@
 
 require_relative 'pgsql'
 require_relative 'list'
+require_relative 'user_error'
 
 # Lists.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -57,7 +58,7 @@ class Lists
       'SELECT * FROM list WHERE owner=$1 AND id=$2',
       [@owner, id]
     )[0]
-    raise "List ##{id} not found in @#{@owner} account" if hash.nil?
+    raise UserError, "List ##{id} not found in @#{@owner} account" if hash.nil?
     List.new(
       id: hash['id'].to_i,
       pgsql: @pgsql,

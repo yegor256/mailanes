@@ -22,6 +22,7 @@ require 'csv'
 require_relative 'pgsql'
 require_relative 'recipient'
 require_relative 'deliveries'
+require_relative 'user_error'
 
 # Recipients.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -88,7 +89,7 @@ class Recipients
   end
 
   def add(email, first: '', last: '', source: '')
-    raise "Invalid email #{email.inspect}" unless email =~ Recipients::REGEX
+    raise UserError, "Invalid email #{email.inspect}" unless email =~ Recipients::REGEX
     recipient = Recipient.new(
       id: @pgsql.exec(
         'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
@@ -114,7 +115,7 @@ class Recipients
       'SELECT * FROM recipient WHERE list=$1 AND id=$2',
       [@list.id, id]
     )[0]
-    raise "Recipient ##{id} not found in the list ##{@list.id}" if hash.nil?
+    raise UserError, "Recipient ##{id} not found in the list ##{@list.id}" if hash.nil?
     Recipient.new(id: id, pgsql: @pgsql, hash: hash)
   end
 
@@ -148,7 +149,7 @@ class Recipients
       begin
         t =~ //
       rescue StandardError => e
-        raise "Encoding error in line ##{line} (#{e.message}): \"#{t}\""
+        raise UserError, "Encoding error in line ##{line} (#{e.message}): \"#{t}\""
       end
       line += 1
     end

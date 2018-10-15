@@ -21,6 +21,7 @@
 require_relative 'pgsql'
 require_relative 'letter'
 require_relative 'tbot'
+require_relative 'user_error'
 
 # Letters.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -56,7 +57,7 @@ class Letters
 
   def letter(id, tbot: Tbot.new)
     hash = @pgsql.exec('SELECT * FROM letter WHERE lane=$1 AND id=$2', [@lane.id, id])[0]
-    raise "Letter ##{id} not found in the lane ##{@lane.id}" if hash.nil?
+    raise UserError, "Letter ##{id} not found in the lane ##{@lane.id}" if hash.nil?
     Letter.new(
       id: hash['id'].to_i,
       pgsql: @pgsql,

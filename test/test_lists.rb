@@ -42,6 +42,13 @@ class ListsTest < Minitest::Test
     assert_equal(title, list.title)
   end
 
+  def test_raises_if_list_not_found
+    lists = Lists.new(owner: random_owner)
+    assert_raises(UserError) do
+      lists.list(7584)
+    end
+  end
+
   def test_counts_total_recipients
     lists = Lists.new(owner: random_owner)
     assert_equal(0, lists.total_recipients)
