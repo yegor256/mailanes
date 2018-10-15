@@ -22,6 +22,7 @@ STDOUT.sync = true
 
 require 'time'
 require 'haml'
+require 'yaml'
 require 'json'
 require 'geocoder'
 require 'sinatra'
@@ -647,12 +648,12 @@ post '/subscribe' do
     )
     country = Geocoder.search(request.ip).first.country
     recipient.save_yaml(
-      params.merge(
-        request_ip: request.ip,
-        country: country,
-        referrer: request.referer,
-        user_agent: request.user_agent
-      ).map { |k, v| "#{k}: #{v}" }.join("\n")
+      {
+        'request_ip' => request.ip.to_s,
+        'country' => country.to_s,
+        'referrer' => request.referer.to_s,
+        'user_agent' => request.user_agent.to_s
+      }.merge(params).to_yaml
     )
     recipient.post_event('Subscribed.')
     notify += [
