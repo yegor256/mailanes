@@ -66,7 +66,7 @@ class AppTest < Minitest::Test
   def test_subscribes_and_unsubscribes
     list = Lists.new(owner: random_owner).add
     email = "#{SecureRandom.hex[0..8]}@mailanes.com"
-    post("/subscribe?list=#{list.id}&email=#{email}&reason=Just+love+you")
+    post("/subscribe?list=#{list.id}&email=#{email}&reason=Just+%3A%0Alove+you")
     assert_equal(200, last_response.status, last_response.body)
     assert_equal(1, list.recipients.count)
     recipient = list.recipients.all[0]
