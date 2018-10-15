@@ -838,7 +838,7 @@ end
 def shared_list(id)
   list = List.new(id: id, pgsql: settings.pgsql)
   if list.owner != current_user && !list.friend?(current_user)
-    raise "@#{current_user} doesn't have access to the list ##{list.id}"
+    raise UserError, "@#{current_user} doesn't have access to the list ##{list.id}"
   end
   list
 end
