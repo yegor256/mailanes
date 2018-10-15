@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,7 +38,7 @@ class RecipientsTest < Minitest::Test
     list = lists.add
     recipients = Recipients.new(list: list)
     recipient = recipients.add('tes.met@mailanes.com')
-    assert(recipient.id > 0)
+    assert(recipient.id.positive?)
     assert_equal(1, recipients.all.count)
   end
 

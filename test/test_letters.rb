@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,7 +34,7 @@ class LettersTest < Minitest::Test
     lane = lanes.add
     letters = Letters.new(lane: lane)
     letter = letters.add('Hi, dude!')
-    assert(letter.id > 0)
+    assert(letter.id.positive?)
     assert_equal(1, letters.all.count)
   end
 end

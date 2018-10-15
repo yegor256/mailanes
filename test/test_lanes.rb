@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,7 +32,7 @@ class LanesTest < Minitest::Test
     lanes = Lanes.new(owner: owner)
     title = 'To celebrate, друг!'
     lane = lanes.add(title)
-    assert(lane.id > 0)
+    assert(lane.id.positive?)
     assert_equal(1, lanes.all.count)
     assert_equal(title, lanes.all[0].title)
   end

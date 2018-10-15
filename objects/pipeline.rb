@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -165,10 +167,10 @@ class Pipeline
       delivery = deliveries.add(campaign, letter, recipient)
       if letter.yaml['relax']
         time = Time.now
-        if letter.yaml['relax'] =~ /^[0-9]+:[0-9]+:[0-9]+$/
+        if /^[0-9]+:[0-9]+:[0-9]+$/.match?(letter.yaml['relax'])
           days, hours, minutes = letter.yaml['relax'].split(':')
           time += (days.to_i * 24 * 60 + hours.to_i * 60 + minutes.to_i) * 60
-        elsif letter.yaml['relax'] =~ /^[0-9]{2}-[0-9]{2}-[0-9]{4}$/
+        elsif /^[0-9]{2}-[0-9]{2}-[0-9]{4}$/.match?(letter.yaml['relax'])
           time = Time.parse(letter.yaml['relax'])
         end
         delivery.save_relax(time)

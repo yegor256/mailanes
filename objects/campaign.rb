@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -136,7 +138,7 @@ class Campaign
       [
         'SELECT COUNT(*) FROM delivery',
         'WHERE campaign=$1',
-        days > 0 ? "AND delivery.created > NOW() - INTERVAL '#{days} DAYS'" : ''
+        days.positive? ? "AND delivery.created > NOW() - INTERVAL '#{days} DAYS'" : ''
       ].join(' '),
       [@id]
     )[0]['count'].to_i

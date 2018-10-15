@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -42,7 +44,7 @@ class Recipients
       'SELECT recipient.* FROM recipient',
       'JOIN list ON list.id = recipient.list AND list.owner = $1',
       'WHERE',
-      query =~ /^=\d+$/ ? 'recipient.id = $2 :: INTEGER' : '(' + [
+      /^=\d+$/.match?(query) ? 'recipient.id = $2 :: INTEGER' : '(' + [
         'email LIKE $2',
         'OR first LIKE $2',
         'OR last LIKE $2',
@@ -52,11 +54,11 @@ class Recipients
       in_list_only ? "AND recipient.list = #{@list.id}" : '',
       active_only ? 'AND recipient.active = true' : '',
       'ORDER BY recipient.created DESC',
-      limit > 0 ? 'LIMIT $3' : ''
+      limit.positive? ? 'LIMIT $3' : ''
     ].join(' ')
     like = "%#{query}%"
     like = query[1..-1] if query.start_with?('=')
-    @pgsql.exec(q, [@list.owner, like] + (limit > 0 ? [limit] : [])).map do |r|
+    @pgsql.exec(q, [@list.owner, like] + (limit.positive? ? [limit] : [])).map do |r|
       Recipient.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end

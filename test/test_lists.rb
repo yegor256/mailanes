@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,7 +31,7 @@ class ListsTest < Minitest::Test
     lists = Lists.new(owner: random_owner)
     title = 'My friends'
     list = lists.add(title)
-    assert(list.id > 0)
+    assert(list.id.positive?)
     assert_equal(1, lists.all.count)
     assert_equal(title, lists.all[0].title)
   end

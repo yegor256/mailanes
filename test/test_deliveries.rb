@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,7 +40,7 @@ class DeliveriesTest < Minitest::Test
     deliveries = Deliveries.new
     delivery = deliveries.add(campaign, letter, recipient)
     delivery.save_relax(Time.now)
-    assert(delivery.id > 0)
+    assert(delivery.id.positive?)
     assert_equal(letter.id, delivery.letter.id)
     assert_equal(recipient.id, delivery.recipient.id)
     assert_equal(campaign.id, delivery.campaign.id)

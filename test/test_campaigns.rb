@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,7 +37,7 @@ class CampaignsTest < Minitest::Test
     lane = lanes.add
     campaigns = Campaigns.new(owner: owner)
     campaign = campaigns.add(list, lane)
-    assert(campaign.id > 0)
+    assert(campaign.id.positive?)
     assert_equal(1, campaigns.all.count)
   end
 
