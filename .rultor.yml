@@ -17,7 +17,7 @@ release:
     sudo apt-get install libpq-dev
     bundle install --no-color
     ruby -v
-    rake
+    LC_ALL=en_US.UTF-8 rake
     git remote add heroku git@heroku.com:mailanes.git
     rm -rf ~/.ssh
     mkdir ~/.ssh
