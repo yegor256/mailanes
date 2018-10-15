@@ -682,7 +682,9 @@ post '/subscribe' do
 end
 
 get '/unsubscribe' do
-  id = settings.codec.decrypt(params[:token]).to_i
+  token = params[:token]
+  return 'Token is required in order to unsubscribe you' if token.nil?
+  id = settings.codec.decrypt(token).to_i
   recipient = Recipient.new(id: id, pgsql: settings.pgsql)
   list = recipient.list
   email = recipient.email
