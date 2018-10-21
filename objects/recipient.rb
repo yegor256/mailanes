@@ -123,7 +123,7 @@ class Recipient
   end
 
   def post_event(msg)
-    @pgsql.exec('INSERT INTO delivery (recipient, details) VALUES ($1, $2)', [@id, msg])
+    @pgsql.exec('INSERT INTO delivery (recipient, details) VALUES ($1, $2)', [@id, msg.strip])
   end
 
   def move_to(list)

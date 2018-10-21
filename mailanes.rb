@@ -626,7 +626,12 @@ post '/subscribe' do
   if list.recipients.exists?(params[:email])
     recipient = list.recipients.all(query: '=' + params[:email])[0]
     if recipient.active?
-      recipient.post_event('Attempted to subscribe again, but failed.')
+      recipient.post_event(
+        [
+          'Attempted to subscribe again, but failed.',
+          @locals[:user] ? "It was done by #{current_user}." : ''
+        ].join(' ')
+      )
       return haml :already, layout: :layout, locals: merged(
         title: '/already',
         recipient: recipient,
@@ -636,7 +641,12 @@ post '/subscribe' do
       )
     end
     recipient.toggle
-    recipient.post_event('Re-subscribed.')
+    recipient.post_event(
+      [
+        'Re-subscribed.',
+        @locals[:user] ? "It was done by #{current_user}." : ''
+      ].join(' ')
+    )
     notify += [
       "A subscriber #{params[:email]}",
       "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
@@ -658,7 +668,12 @@ post '/subscribe' do
         'user_agent' => request.user_agent.to_s
       }.merge(params).to_yaml
     )
-    recipient.post_event('Subscribed.')
+    recipient.post_event(
+      [
+        'Subscribed.',
+        @locals[:user] ? "It was done by #{current_user}." : ''
+      ].join(' ')
+    )
     notify += [
       "A new subscriber #{params[:email]} from #{country}",
       "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
@@ -712,7 +727,12 @@ get '/unsubscribe' do
     )
     recipient.post_event('Unsubscribed' + (@locals[:user] ? " by @#{current_user}" : '') + '.')
   else
-    recipient.post_event('Attempted to unsubscribe, while already unsubscribed.')
+    recipient.post_event(
+      [
+        'Attempted to unsubscribe, while already unsubscribed.',
+        @locals[:user] ? "It was done by #{current_user}." : ''
+      ].join(' ')
+    )
   end
   haml :unsubscribed, layout: :layout, locals: merged(
     title: '/unsubscribed',
