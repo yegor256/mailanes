@@ -440,7 +440,7 @@ post '/attach' do
 end
 
 get '/detach' do
-  letter = owner.lanes.letter(params[:id].to_i)
+  letter = owner.lanes.letter(params[:letter].to_i)
   name = params[:name]
   letter.detach(name)
   flash("/letter?id=#{letter.id}", "The attachment \"#{name}\" has been removed from the letter ##{letter.id}")
