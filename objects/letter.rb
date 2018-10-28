@@ -229,6 +229,12 @@ class Letter
     mail.header['X-Complaints-To'] = 'reply@mailanes.com'
     sign = Hex::FromText.new(codec.encrypt(recipient.id.to_s)).to_s
     mail.header['X-Mailanes-Recipient'] = "#{recipient.id}:#{sign}"
+    attachments.each do |a|
+      Tempfile.open do |f|
+        download(a, f.path)
+        mail.add_file(filename: a, content: IO.read(f.path))
+      end
+    end
     mail.delivery_method(
       :smtp,
       address: cfg(nil, 'smtp', 'host'),
