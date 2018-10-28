@@ -78,11 +78,11 @@
 - if !attachments.empty?
   %p
     With attachments:
-  - attachments.each do |a|
-    %a{href: "/download-attachment?letter=#{letter.id}&name=#{CGI.escape(a)}"}<
-      &= a
-    = succeed ';' do
-      %a{href: "/detach?letter=#{letter.id}&name=#{CGI.escape(a)}", onclick: "return confirm('Are you sure?');"} delete
+    - attachments.each do |a|
+      %a{href: "/download-attachment?letter=#{letter.id}&name=#{CGI.escape(a)}"}<
+        &= a
+      = succeed ';' do
+        %a{href: "/detach?letter=#{letter.id}&name=#{CGI.escape(a)}", onclick: "return confirm('Are you sure?');"} delete
 
 %p
   Delivered
