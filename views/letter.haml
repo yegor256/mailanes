@@ -50,7 +50,7 @@
 
 %form.hidden{method: 'POST', action: '/add-attachment', id: 'add', enctype: 'multipart/form-data'}
   %input{type: 'hidden', name: 'id', value: letter.id}
-  %input{name: 'file', type: 'file', accept: 'text/plain'}
+  %input{name: 'file', type: 'file', accept: '*/*'}
   %input{type: 'submit', value: 'Add'}
 
 %p
