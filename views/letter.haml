@@ -48,7 +48,7 @@
   %label.small.gray
     A duplicate letter will be created in this lane.
 
-%form.hidden{method: 'POST', action: '/add-attachment', id: 'add', enctype: 'multipart/form-data'}
+%form.hidden{method: 'POST', action: '/attach', id: 'add', enctype: 'multipart/form-data'}
   %input{type: 'hidden', name: 'id', value: letter.id}
   %input{name: 'file', type: 'file', accept: '*/*'}
   %input{type: 'submit', value: 'Add'}
