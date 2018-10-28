@@ -68,7 +68,7 @@
     - else
       %span.red not active
   = '/'
-  %a{href: "/toggle-letter?id=#{letter.id}", onclick: (letter.liquid.include?('{{unsubscribe}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')")}
+  %a{href: "/toggle-letter?id=#{letter.id}", onclick: (letter.liquid.include?('{{unsubscribe}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')")}<
     - if letter.active?
       deactivate
     - else
@@ -79,7 +79,7 @@
   %p
     With attachments:
   - attachments.each do |a|
-    %a{href: "/download-attachment?letter=#{letter.id}&name=#{CGI.escape(a)}"}
+    %a{href: "/download-attachment?letter=#{letter.id}&name=#{CGI.escape(a)}"}<
       &= a
     = succeed ';' do
       %a{href: "/detach?letter=#{letter.id}&name=#{CGI.escape(a)}", onclick: "return confirm('Are you sure?');"} delete

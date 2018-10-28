@@ -59,6 +59,7 @@ class Lanes
       'SELECT * FROM lane WHERE owner=$1 AND id=$2',
       [@owner, id]
     )[0]
+    raise "Lane ##{id} not found @#{@owner} account" if hash.nil?
     Lane.new(
       id: hash['id'].to_i,
       pgsql: @pgsql,
@@ -68,9 +69,14 @@ class Lanes
 
   def letter(id, tbot: Tbot.new)
     hash = @pgsql.exec(
-      'SELECT letter.* FROM letter JOIN lane ON letter.lane=lane.id WHERE lane.owner=$1 AND letter.id=$2',
+      [
+        'SELECT letter.* FROM letter',
+        'JOIN lane ON letter.lane = lane.id',
+        'WHERE lane.owner=$1 AND letter.id=$2'
+      ].join(' '),
       [@owner, id]
     )[0]
+    raise "Letter ##{id} not found in any lanes owned by @#{@owner}" if hash.nil?
     Letter.new(
       id: hash['id'].to_i,
       pgsql: @pgsql,

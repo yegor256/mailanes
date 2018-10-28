@@ -447,7 +447,7 @@ get '/detach' do
 end
 
 get '/download-attachment' do
-  letter = owner.lanes.letter(params[:id].to_i)
+  letter = owner.lanes.letter(params[:letter].to_i)
   name = params[:name]
   response.headers['Content-Type'] = 'octet/binary'
   response.headers['Content-Disposition'] = "attachment; filename='#{name}'"
