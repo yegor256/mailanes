@@ -45,4 +45,20 @@ class LanesTest < Minitest::Test
     letter = lanes.letter(id)
     assert_equal(id, letter.id)
   end
+
+  def test_fetches_absent_letter
+    owner = random_owner
+    lanes = Lanes.new(owner: owner)
+    assert_raises(UserError) do
+      lanes.letter(1000)
+    end
+  end
+
+  def test_fetches_absent_lane
+    owner = random_owner
+    lanes = Lanes.new(owner: owner)
+    assert_raises(UserError) do
+      lanes.lane(1000)
+    end
+  end
 end

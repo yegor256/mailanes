@@ -67,11 +67,15 @@ class Tbot
 
   def post(chat, msg, c: @client)
     return if @token.empty?
-    c.send_message(
-      chat_id: chat,
-      parse_mode: 'Markdown',
-      disable_web_page_preview: true,
-      text: msg
-    )
+    begin
+      c.send_message(
+        chat_id: chat,
+        parse_mode: 'Markdown',
+        disable_web_page_preview: true,
+        text: msg
+      )
+    rescue Telebot::Error => e
+      raise "#{e.message}: \"#{msg}\""
+    end
   end
 end

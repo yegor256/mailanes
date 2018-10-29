@@ -22,6 +22,7 @@
 
 require_relative 'pgsql'
 require_relative 'lane'
+require_relative 'user_error'
 
 # Lanes.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -59,7 +60,7 @@ class Lanes
       'SELECT * FROM lane WHERE owner=$1 AND id=$2',
       [@owner, id]
     )[0]
-    raise "Lane ##{id} not found @#{@owner} account" if hash.nil?
+    raise UserError, "Lane ##{id} not found @#{@owner} account" if hash.nil?
     Lane.new(
       id: hash['id'].to_i,
       pgsql: @pgsql,
@@ -76,7 +77,7 @@ class Lanes
       ].join(' '),
       [@owner, id]
     )[0]
-    raise "Letter ##{id} not found in any lanes owned by @#{@owner}" if hash.nil?
+    raise UserError, "Letter ##{id} not found in any lanes owned by @#{@owner}" if hash.nil?
     Letter.new(
       id: hash['id'].to_i,
       pgsql: @pgsql,

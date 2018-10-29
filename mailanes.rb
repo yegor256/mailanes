@@ -622,9 +622,10 @@ end
 
 post '/subscribe' do
   list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
+  email = params[:email].downcase.strip
   notify = []
-  if list.recipients.exists?(params[:email])
-    recipient = list.recipients.all(query: '=' + params[:email])[0]
+  if list.recipients.exists?(email)
+    recipient = list.recipients.all(query: '=' + email)[0]
     if recipient.active?
       recipient.post_event(
         [
@@ -648,13 +649,13 @@ post '/subscribe' do
       ].join(' ')
     )
     notify += [
-      "A subscriber #{params[:email]}",
+      "A subscriber `#{email}`",
       "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
       "re-entered the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
     ]
   else
     recipient = list.recipients.add(
-      params[:email],
+      email,
       first: params[:first] || '',
       last: params[:last] || '',
       source: params[:source] || ''
@@ -675,7 +676,7 @@ post '/subscribe' do
       ].join(' ')
     )
     notify += [
-      "A new subscriber #{params[:email]} from #{country}",
+      "A new subscriber `#{email}` from #{country}",
       "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
       "just got into your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
     ]
@@ -683,12 +684,13 @@ post '/subscribe' do
   settings.tbot.notify(
     'subscribe',
     list.yaml,
-    (notify + [
+    [
+      notify,
       "There are #{list.recipients.active_count} active subscribers in the list now,",
       "out of #{list.recipients.count} total,",
       "#{list.recipients.per_day.round(2)} joining daily.",
       "More details are [here](https://www.mailanes.com/recipient?id=#{recipient.id})."
-    ]).join(' ')
+    ].flatten.join(' ')
   )
   redirect params[:redirect] if params[:redirect]
   haml :subscribed, layout: :layout, locals: merged(
