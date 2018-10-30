@@ -93,7 +93,7 @@ notify:
 
 ### Letter
 
-```
+```yaml
 # The title of the letter
 title: Aug 2018
 # The subject of all emails to be sent
