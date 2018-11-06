@@ -32,6 +32,7 @@ require 'glogin/codec'
 require_relative 'pgsql'
 require_relative 'hex'
 require_relative 'campaign'
+require_relative 'user_error'
 
 # Letter.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -302,7 +303,9 @@ class Letter
     end
     if result.nil?
       if default.nil?
-        raise "\"#{items.join('/')}\" not found in the YAML config of the letter ##{id} and of the lane ##{lane.id}"
+        raise UserError, "\"#{items.join('/')}\" not found in the YAML config \
+of the letter ##{id} and of the lane ##{lane.id}; make sure they are confired as explained here: \
+https://github.com/yegor256/mailanes"
       end
       result = default
     end
