@@ -157,8 +157,9 @@ to see the total count of all active subscribers of your list:
 
 All URIs:
 
-  * `/api/lists/:id/active_count.json`
-  * `/api/campaigns/:id/deliveries_count.json`
+  * `/api/lists/:id/active_count.json`: total active subscibers in the list
+  * `/api/lists/:id/per_day.json`: new subscribers per day (last 10 days stat, change with `days`)
+  * `/api/campaigns/:id/deliveries_count.json`: deliveries per day (last day, change with `days`)
   * more coming...
 
 # How to contribute

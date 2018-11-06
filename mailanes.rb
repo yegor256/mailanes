@@ -769,7 +769,7 @@ get '/api/lists/:id/per_day.json' do
   JSON.pretty_generate(
     "list_#{list.id}": {
       'type': 'integer',
-      'value': list.recipients.per_day.round(2),
+      'value': list.recipients.per_day(params[:days] ? params[:days].to_i : 10).round(2),
       'label': list.title,
       'strategy': 'interval'
     }
@@ -782,7 +782,7 @@ get '/api/campaigns/:id/deliveries_count.json' do
   JSON.pretty_generate(
     "campaign_#{campaign.id}": {
       'type': 'float',
-      'value': campaign.deliveries_count(days: params[:days] ? params[:id].to_i : 1),
+      'value': campaign.deliveries_count(days: params[:days] ? params[:days].to_i : 1),
       'label': campaign.title,
       'strategy': 'interval'
     }
