@@ -262,6 +262,9 @@ end
 get '/delete-recipient' do
   list = shared_list(params[:list].to_i)
   recipient = list.recipients.recipient(params[:id].to_i)
+  unless recipient.deliveries.empty?
+    flash("/recipient?id=#{recipient.id}", "Can't delete it, there were some deliveries")
+  end
   recipient.delete
   flash("/list?id=#{list.id}", "The recipient has been deleted from the list ##{list.id}")
 end
