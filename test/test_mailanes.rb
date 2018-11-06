@@ -124,6 +124,9 @@ class AppTest < Minitest::Test
     assert_equal(200, last_response.status, last_response.body)
     get("/lane?id=#{lane.id}")
     assert_equal(200, last_response.status, last_response.body)
+    letter = Letters.new(lane: lane).add
+    get("/letter?id=#{letter.id}")
+    assert_equal(200, last_response.status, last_response.body)
     campaign = Campaigns.new(owner: owner).add(list, lane)
     get('/campaigns')
     assert_equal(200, last_response.status, last_response.body)

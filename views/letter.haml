@@ -3,7 +3,7 @@
   = "##{letter.id}:"
   = letter.title
 
-- if !letter.liquid.include?('{{unsubscribe}}', '{{unsubscribe_query}}')
+- if !letter.liquid.include?('{{unsubscribe}}') && !letter.liquid.include?('{{unsubscribe_query}}')
   %p.red
     The Liquid template doesn't have the {{unsubsribe}} link!
 
@@ -68,7 +68,7 @@
     - else
       %span.red not active
   = '/'
-  %a{href: "/toggle-letter?id=#{letter.id}", onclick: (letter.liquid.include?('{{unsubscribe}}', '{{unsubscribe_query}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')")}<
+  %a{href: "/toggle-letter?id=#{letter.id}", onclick: (letter.liquid.include?('{{unsubscribe}}') && letter.liquid.include?('{{unsubscribe_query}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')")}<
     - if letter.active?
       deactivate
     - else
