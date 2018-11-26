@@ -45,8 +45,12 @@ class PgsqlTest < Minitest::Test
 
   def test_handles_many_threads
     db = Pgsql::TEST
+    lists = Lists.new(owner: random_owner)
+    list = lists.add
     Threads.new(25).assert(100) do
-      db.exec('SELECT * FROM list')
+      db.exec('SELECT * FROM list WHERE id=$1', [list.id]).each do |r|
+        r['id'].to_i
+      end
     end
   end
 end
