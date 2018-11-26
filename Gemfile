@@ -22,32 +22,32 @@
 source 'https://rubygems.org'
 ruby '2.5.1'
 
-gem 'codecov', '~>0'
-gem 'fakesmtpd', '~>0'
-gem 'geocoder', '~>1'
-gem 'glogin', '~>0'
-gem 'gserver', '~>0'
-gem 'haml', '~>5'
-gem 'liquid', '~>4'
-gem 'mail', '~>2'
-gem 'minitest', '~>5', require: false
-gem 'pg', '~>1'
-gem 'rack', '~>2'
-gem 'rack-ssl', '~>1'
-gem 'rack-test', '~>1'
-gem 'rake', '~>12', require: false
-gem 'random-port', '~>0', require: false
-gem 'redcarpet', '~>3'
-gem 'rerun', '~>0', require: false
-gem 'rspec-rails', '~>3', require: false
-gem 'rubocop', '~>0.55', require: false
-gem 'rubocop-rspec', '~>1', require: false
-gem 'sass', '~>3'
-gem 'sentry-raven', '~>2'
-gem 'sinatra', '~>2'
-gem 'sinatra-contrib', '~>2'
-gem 'sprockets', '~>3'
-gem 'telebot', '~>0'
-gem 'time_difference', '~>0'
-gem 'uuidtools', '~>2'
-gem 'xcop', '~>0'
+gem 'codecov', '0.1.14'
+gem 'fakesmtpd', '0.3.1'
+gem 'geocoder', '1.5.0'
+gem 'glogin', '0.4.7'
+gem 'gserver', '0.0.1'
+gem 'haml', '5.0.4'
+gem 'liquid', '4.0.1'
+gem 'mail', '2.7.1'
+gem 'minitest', '5.11.3', require: false
+gem 'pg', '1.1.3'
+gem 'rack', '2.0.6'
+gem 'rack-ssl', '1.4.1'
+gem 'rack-test', '1.1.0'
+gem 'rake', '12.3.1', require: false
+gem 'random-port', '0.3.1', require: false
+gem 'redcarpet', '3.4.0'
+gem 'rerun', '0.13.0', require: false
+gem 'rspec-rails', '3.8.1', require: false
+gem 'rubocop', '0.60.0', require: false
+gem 'rubocop-rspec', '1.30.1', require: false
+gem 'sass', '3.7.2'
+gem 'sentry-raven', '2.7.4'
+gem 'sinatra', '2.0.4'
+gem 'sinatra-contrib', '2.0.4'
+gem 'sprockets', '3.7.2'
+gem 'telebot', '0.1.2'
+gem 'time_difference', '0.7.0'
+gem 'uuidtools', '2.1.5'
+gem 'xcop', '0.6'
