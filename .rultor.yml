@@ -4,6 +4,8 @@ assets:
   id_rsa.pub: zerocracy/home#assets/heroku-key.pub
 install: |-
   export PATH=$PATH:/usr/lib/postgresql/10/bin
+  sudo apt-get -y update
+  sudo apt-get -y install libpq-dev
   sudo gem install pdd
   git config --global user.email "server@mailanes.com"
   git config --global user.name "mailanes.com"
@@ -14,7 +16,6 @@ release:
     pdd -f /dev/null
     export GEM_HOME=~/.ruby
     export GEM_PATH=$GEM_HOME:$GEM_PATH
-    sudo apt-get install libpq-dev
     bundle install --no-color
     ruby -v
     LC_ALL=en_US.UTF-8 rake
