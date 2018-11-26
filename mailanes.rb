@@ -855,7 +855,10 @@ def current_user
 end
 
 def auth_code
-  Hex::FromText.new(settings.codec.encrypt(current_user)).to_s
+  loop do
+    code = Hex::FromText.new(settings.codec.encrypt(current_user)).to_s
+    return code if code.length < 90
+  end
 end
 
 def owner
