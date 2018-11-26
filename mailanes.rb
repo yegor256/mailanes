@@ -663,11 +663,11 @@ post '/subscribe' do
       last: params[:last] || '',
       source: params[:source] || ''
     )
-    country = Geocoder.search(request.ip).first.country
+    country = Geocoder.search(request.ip).first
     recipient.save_yaml(
       {
         'request_ip' => request.ip.to_s,
-        'country' => country.to_s,
+        'country' => country.nil? ? '??' : country.country.to_s,
         'referrer' => request.referer.to_s,
         'user_agent' => request.user_agent.to_s
       }.merge(params).to_yaml
