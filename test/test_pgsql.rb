@@ -22,6 +22,7 @@
 
 require 'minitest/autorun'
 require 'rack/test'
+require 'threads'
 require_relative 'test__helper'
 require_relative '../objects/pgsql'
 
@@ -38,6 +39,13 @@ class PgsqlTest < Minitest::Test
   def test_handles_many_connections
     db = Pgsql::TEST
     1000.times do
+      db.exec('SELECT * FROM list')
+    end
+  end
+
+  def test_handles_many_threads
+    db = Pgsql::TEST
+    Threads.new(25).assert(100) do
       db.exec('SELECT * FROM list')
     end
   end
