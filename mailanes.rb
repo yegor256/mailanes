@@ -464,7 +464,7 @@ post '/test-letter' do
   letter = owner.lanes.letter(params[:id].to_i, tbot: settings.tbot)
   list = owner.lists.list(params[:list].to_i)
   recipient = list.recipients.all(active_only: true).sample(1)[0]
-  raise "There are no recipients in the list ##{list.id}" if recipient.nil?
+  raise UserError, "There are no recipients in the list ##{list.id}" if recipient.nil?
   letter.deliver(recipient, settings.codec)
   flash("/letter?id=#{letter.id}", "Test email has been sent to #{recipient.email}")
 end
