@@ -68,10 +68,10 @@ class Pgsql
     end
     begin
       yield conn
+    rescue PG::Error
+      conn = nil
     ensure
-      @mutex.synchronize do
-        @pool << conn
-      end
+      @mutex.synchronize { @pool << conn } unless conn.nil?
     end
   end
 
