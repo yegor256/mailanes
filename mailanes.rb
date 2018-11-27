@@ -664,10 +664,11 @@ post '/subscribe' do
       source: params[:source] || ''
     )
     country = Geocoder.search(request.ip).first
+    country = country.nil? ? '' : country.country.to_s
     recipient.save_yaml(
       {
         'request_ip' => request.ip.to_s,
-        'country' => country.nil? ? '??' : country.country.to_s,
+        'country' => country,
         'referrer' => request.referer.to_s,
         'user_agent' => request.user_agent.to_s
       }.merge(params).to_yaml
