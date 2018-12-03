@@ -30,6 +30,7 @@ require_relative '../objects/lanes'
 require_relative '../objects/campaigns'
 require_relative '../objects/postman'
 require_relative '../objects/pipeline'
+require_relative '../objects/user_error'
 
 class CampaignTest < Minitest::Test
   def test_iterates_lists
@@ -39,6 +40,35 @@ class CampaignTest < Minitest::Test
     campaign = Campaigns.new(owner: owner).add(list, lane)
     assert_equal(1, campaign.lists.count)
     assert_equal(list.id, campaign.lists[0].id)
+  end
+
+  def test_saves_and_reads_yaml
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    campaign.save_yaml('title: hello')
+    assert_equal('hello', campaign.title)
+  end
+
+  def test_rejects_broken_yaml
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    assert_raises(UserError) do
+      campaign.save_yaml('this is not yaml')
+    end
+  end
+
+  def test_rejects_broken_yaml_syntax
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    lane = Lanes.new(owner: owner).add
+    campaign = Campaigns.new(owner: owner).add(list, lane)
+    assert_raises(UserError) do
+      campaign.save_yaml('this is not yaml')
+    end
   end
 
   def test_adds_and_removes_sources

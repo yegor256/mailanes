@@ -14,58 +14,42 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'minitest/autorun'
 require 'yaml'
-require_relative 'pgsql'
-require_relative 'letters'
-require_relative 'yaml_doc'
+require_relative 'test__helper'
+require_relative '../objects/yaml_doc'
+require_relative '../objects/user_error'
 
-# Lane.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018 Yegor Bugayenko
-# License:: MIT
-class Lane
-  attr_reader :id
-
-  def initialize(id:, pgsql: Pgsql::TEST, hash: {})
-    raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
-    @id = id
-    @pgsql = pgsql
-    @hash = hash
+class YamlDocTest < Minitest::Test
+  def test_loads_valid_yaml
+    yaml = YamlDoc.new("title: \"Test\"\nage: 25").load
+    assert_equal(25, yaml['age'])
   end
 
-  def letters
-    Letters.new(lane: self, pgsql: @pgsql)
+  def test_saves_valid_yaml
+    text = YamlDoc.new("title: \"Test\"\nage: 25").save
+    assert(text.include?('title: Test'), text)
   end
 
-  def title
-    yaml['title'] || 'unknown'
+  def test_safely_loads_broken_yaml
+    assert(YamlDoc.new('\"oops...').load.is_a?(Hash))
   end
 
-  def yaml
-    YamlDoc.new(
-      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM lane WHERE id=$1', [@id])[0]['yaml']
-    ).load
+  def test_rejects_broken_yaml
+    assert_raises(UserError) do
+      YamlDoc.new('this is not yaml').save
+    end
   end
 
-  def save_yaml(yaml)
-    @pgsql.exec('UPDATE lane SET yaml=$1 WHERE id=$2', [YamlDoc.new(yaml).save, @id])
-    @hash = {}
-  end
-
-  def deliveries_count
-    @pgsql.exec(
-      [
-        'SELECT COUNT(*) FROM delivery',
-        'JOIN letter ON letter.id = delivery.letter',
-        'WHERE letter.lane = $1'
-      ].join(' '),
-      [@id]
-    )[0]['count'].to_i
+  def test_rejects_broken_yaml_syntax
+    assert_raises(UserError) do
+      YamlDoc.new('\"oops...').save
+    end
   end
 end

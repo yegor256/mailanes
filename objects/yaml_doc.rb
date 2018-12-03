@@ -21,51 +21,29 @@
 # SOFTWARE.
 
 require 'yaml'
-require_relative 'pgsql'
-require_relative 'letters'
-require_relative 'yaml_doc'
 
-# Lane.
+# Yaml Document.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Lane
-  attr_reader :id
-
-  def initialize(id:, pgsql: Pgsql::TEST, hash: {})
-    raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
-    @id = id
-    @pgsql = pgsql
-    @hash = hash
+class YamlDoc
+  def initialize(text)
+    @text = text
   end
 
-  def letters
-    Letters.new(lane: self, pgsql: @pgsql)
+  def load
+    hash = YAML.safe_load(@text)
+    hash = {} unless hash.is_a?(Hash)
+    hash
+  rescue StandardError
+    {}
   end
 
-  def title
-    yaml['title'] || 'unknown'
-  end
-
-  def yaml
-    YamlDoc.new(
-      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM lane WHERE id=$1', [@id])[0]['yaml']
-    ).load
-  end
-
-  def save_yaml(yaml)
-    @pgsql.exec('UPDATE lane SET yaml=$1 WHERE id=$2', [YamlDoc.new(yaml).save, @id])
-    @hash = {}
-  end
-
-  def deliveries_count
-    @pgsql.exec(
-      [
-        'SELECT COUNT(*) FROM delivery',
-        'JOIN letter ON letter.id = delivery.letter',
-        'WHERE letter.lane = $1'
-      ].join(' '),
-      [@id]
-    )[0]['count'].to_i
+  def save
+    hash = YAML.safe_load(@text)
+    raise 'Invalid YAML document' unless hash.is_a?(Hash)
+    hash.to_yaml
+  rescue StandardError => e
+    raise UserError, "Can\'t parse the provided YAML: #{e.message}"
   end
 end

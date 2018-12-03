@@ -170,12 +170,26 @@ your pull request. You will need to have [Ruby](https://www.ruby-lang.org/en/) 2
 Java 8+, Maven 3.2+, PostgreSQL 10+, and
 [Bundler](https://bundler.io/) installed. Then:
 
-```
+```bash
 $ bundle update
 $ rake
 ```
 
 If it's clean and you don't see any error messages, submit your pull request.
+
+To run a single unit test you should first do this:
+
+```bash
+$ rake pgsql liquibase sleep
+```
+
+And then, in another terminal (for example):
+
+```bash
+$ ruby test/test_campaign.rb -n test_iterates_lists
+```
+
+Should work.
 
 # License
 

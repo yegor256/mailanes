@@ -25,6 +25,7 @@ require_relative 'pgsql'
 require_relative 'lane'
 require_relative 'list'
 require_relative 'pipeline'
+require_relative 'yaml_doc'
 
 # Campaign.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -78,15 +79,15 @@ class Campaign
   end
 
   def yaml
-    YAML.safe_load(
+    YamlDoc.new(
       @hash['yaml'] || @pgsql.exec('SELECT yaml FROM campaign WHERE id=$1', [@id])[0]['yaml']
-    )
+    ).load
   end
 
   def save_yaml(yaml)
-    yml = YAML.safe_load(yaml)
-    @pgsql.exec('UPDATE campaign SET yaml=$1 WHERE id=$2', [yaml, @id])
-    speed = yml['speed'] ? yml['speed'].to_i : 65_536
+    @pgsql.exec('UPDATE campaign SET yaml=$1 WHERE id=$2', [YamlDoc.new(yaml).save, @id])
+    yml = YamlDoc.new(yaml).load
+    speed = yml['speed'] ? hash['speed'].to_i : 65_536
     @pgsql.exec('UPDATE campaign SET speed=$1 WHERE id=$2', [speed, @id])
     @hash = {}
   end

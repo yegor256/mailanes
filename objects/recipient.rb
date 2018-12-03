@@ -23,6 +23,7 @@
 require_relative 'pgsql'
 require_relative 'list'
 require_relative 'user_error'
+require_relative 'yaml_doc'
 
 # Recipient.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -53,14 +54,13 @@ class Recipient
   end
 
   def yaml
-    YAML.safe_load(
+    YamlDoc.new(
       @hash['yaml'] || @pgsql.exec('SELECT yaml FROM recipient WHERE id=$1', [@id])[0]['yaml']
-    )
+    ).load
   end
 
   def save_yaml(yaml)
-    YAML.safe_load(yaml)
-    @pgsql.exec('UPDATE recipient SET yaml=$1 WHERE id=$2', [yaml, @id])
+    @pgsql.exec('UPDATE recipient SET yaml=$1 WHERE id=$2', [YamlDoc.new(yaml).save, @id])
     @hash = {}
   end
 

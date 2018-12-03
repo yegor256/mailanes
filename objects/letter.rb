@@ -33,6 +33,7 @@ require_relative 'pgsql'
 require_relative 'hex'
 require_relative 'campaign'
 require_relative 'user_error'
+require_relative 'yaml_doc'
 
 # Letter.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -85,9 +86,9 @@ class Letter
   end
 
   def yaml
-    YAML.safe_load(
+    YamlDoc.new(
       @hash['yaml'] || @pgsql.exec('SELECT yaml FROM letter WHERE id=$1', [@id])[0]['yaml']
-    )
+    ).load
   end
 
   def toggle
@@ -110,8 +111,8 @@ class Letter
   end
 
   def save_yaml(yaml)
-    yml = YAML.safe_load(yaml)
-    @pgsql.exec('UPDATE letter SET yaml=$1 WHERE id=$2', [yaml, @id])
+    @pgsql.exec('UPDATE letter SET yaml=$1 WHERE id=$2', [YamlDoc.new(yaml).save, @id])
+    yml = YamlDoc.new(yaml).load
     speed = yml['speed'] ? yml['speed'].to_i : 65_536
     @pgsql.exec('UPDATE letter SET speed=$1 WHERE id=$2', [speed, @id])
     @hash = {}
