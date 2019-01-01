@@ -653,8 +653,8 @@ post '/subscribe' do
     )
     notify += [
       "A subscriber `#{email}`",
-      "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
-      "re-entered the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
+      " (recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
+      " re-entered the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}):"
     ]
   else
     recipient = list.recipients.add(
@@ -681,8 +681,8 @@ post '/subscribe' do
     )
     notify += [
       "A new subscriber `#{email}` from #{country}",
-      "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
-      "just got into your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
+      " (recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
+      " just got into your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}):"
     ]
   end
   settings.tbot.notify(
@@ -690,11 +690,12 @@ post '/subscribe' do
     list.yaml,
     [
       notify,
+      "\n\n```\n#{recipient.yaml}\n```\n\n",
       "There are #{list.recipients.active_count} active subscribers in the list now,",
-      "out of #{list.recipients.count} total,",
-      "#{list.recipients.per_day.round(2)} joining daily.",
-      "More details are [here](https://www.mailanes.com/recipient?id=#{recipient.id})."
-    ].flatten.join(' ')
+      " out of #{list.recipients.count} total,",
+      " #{list.recipients.per_day.round(2)} joining daily.",
+      " More details are [here](https://www.mailanes.com/recipient?id=#{recipient.id})."
+    ].flatten.join
   )
   redirect params[:redirect] if params[:redirect]
   haml :subscribed, layout: :layout, locals: merged(
