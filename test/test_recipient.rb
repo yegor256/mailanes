@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -105,5 +105,14 @@ class RecipientTest < Minitest::Test
     post = Postman::Fake.new
     Pipeline.new.fetch(post)
     assert_equal(1, recipient.relax)
+  end
+
+  def test_saves_and_prints_yaml
+    owner = random_owner
+    list = Lists.new(owner: owner).add
+    recipient = Recipients.new(list: list).add('te085@mailanes.com')
+    yaml = "---\nfoo: |\n  hello\n  world\n"
+    recipient.save_yaml(yaml)
+    assert_equal(yaml, recipient.yaml.to_yaml)
   end
 end
