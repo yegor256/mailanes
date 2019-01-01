@@ -80,7 +80,7 @@ telegram:
 
 ```yaml
 # The title of the campaign
-title: Monthlty
+title: Monthly
 # Stop the campaign at this date (it will be deactivated automatically)
 until: 03-09-2018
 # Maximum amount of emails to be sent per day
