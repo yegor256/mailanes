@@ -724,13 +724,14 @@ get '/unsubscribe' do
       list.yaml,
       [
         "The recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
-        "with the email `#{email}` has been unsubscribed from your list",
-        "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
-        @locals[:user] ? "It was done by #{current_user}." : '',
-        params[:d] ? "It was the reaction to [this](http://www.mailanes.com/delivery?id=#{params[:d]})." : '',
-        "There are #{list.recipients.active_count} active subscribers in the list still,",
-        "out of #{list.recipients.count} total."
-      ].join(' ')
+        " with the email `#{email}` has been unsubscribed from your list",
+        " [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
+        @locals[:user] ? " It was done by #{current_user}." : '',
+        params[:d] ? " It was the reaction to [this](http://www.mailanes.com/delivery?id=#{params[:d]})." : '',
+        " There are #{list.recipients.active_count} active subscribers in the list still,",
+        " out of #{list.recipients.count} total.",
+        "This is what we know about the recipient:\n\n```\n#{recipient.yaml}\n```"
+      ].join
     )
     recipient.post_event('Unsubscribed' + (@locals[:user] ? " by @#{current_user}" : '') + '.')
   else
