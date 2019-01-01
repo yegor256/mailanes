@@ -73,6 +73,8 @@ class AppTest < Minitest::Test
     assert_equal(1, list.recipients.count)
     recipient = list.recipients.all[0]
     assert(recipient.active?)
+    assert(recipient.yaml.to_yaml.include?("email: #{email}"), recipient.yaml.to_yaml)
+    assert(recipient.yaml.to_yaml.include?("reason: |-\n  Just :\n  love you"), recipient.yaml.to_yaml)
     token = GLogin::Codec.new.encrypt(recipient.id.to_s)
     get("/unsubscribe?token=#{CGI.escape(token)}")
     assert_equal(200, last_response.status, last_response.body)
