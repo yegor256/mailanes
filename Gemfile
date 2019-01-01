@@ -20,7 +20,7 @@
 # SOFTWARE.
 
 source 'https://rubygems.org'
-ruby '2.5.1'
+ruby '2.6.0'
 
 gem 'codecov', '0.1.14'
 gem 'fakesmtpd', '0.3.1'
@@ -40,7 +40,7 @@ gem 'random-port', '0.3.1', require: false
 gem 'redcarpet', '3.4.0'
 gem 'rerun', '0.13.0', require: false
 gem 'rspec-rails', '3.8.1', require: false
-gem 'rubocop', '0.60.0', require: false
+gem 'rubocop', '0.62.0', require: false
 gem 'rubocop-rspec', '1.30.1', require: false
 gem 'sass', '3.7.2'
 gem 'sentry-raven', '2.7.4'

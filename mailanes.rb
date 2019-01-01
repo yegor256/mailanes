@@ -121,6 +121,7 @@ configure do
           settings.bounces.fetch(tbot: settings.tbot)
         rescue StandardError => e
           puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
+          Raven.capture_exception(e)
         end
         puts "Pipeline done in #{(Time.now - start).round(2)}s"
       end
