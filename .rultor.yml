@@ -6,7 +6,7 @@ install: |-
   export PATH=$PATH:/usr/lib/postgresql/10/bin
   sudo apt-get -y update
   sudo apt-get -y install libpq-dev
-  rvm install ruby-2.6.0
+  sudo rvm install ruby-2.6.0
   rvm use 2.6.0
   sudo gem install pdd
   git config --global user.email "server@mailanes.com"
