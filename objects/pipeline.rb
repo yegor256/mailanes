@@ -58,7 +58,7 @@ class Pipeline
       letter.campaigns.each do |c|
         @tbot.notify(
           'deactivate',
-          campaign.yaml,
+          c.yaml,
           [
             "The letter ##{letter.id} \"#{letter.title}\" has been deactivated",
             "in the campaign ##{c.id} \"#{c.title}\" due to its UNTIL configuration."
