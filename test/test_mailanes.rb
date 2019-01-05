@@ -67,13 +67,13 @@ class AppTest < Minitest::Test
 
   def test_subscribes_and_unsubscribes
     list = Lists.new(owner: random_owner).add
-    email = "0#{SecureRandom.hex[0..8]}@mailanes.com"
+    email = "0-#{SecureRandom.hex[0..8]}@mailanes.com"
     post("/subscribe?list=#{list.id}&email=#{email}", 'reason=Just+%3A%0Alove+you')
     assert_equal(200, last_response.status, last_response.body)
     assert_equal(1, list.recipients.count)
     recipient = list.recipients.all[0]
     assert(recipient.active?)
-    assert(recipient.yaml.to_yaml.include?("email: '#{email}'"), recipient.yaml.to_yaml)
+    assert(recipient.yaml.to_yaml.include?("email: #{email}"), recipient.yaml.to_yaml)
     assert(recipient.yaml.to_yaml.include?("reason: |-\n  Just :\n  love you"), recipient.yaml.to_yaml)
     token = GLogin::Codec.new.encrypt(recipient.id.to_s)
     get("/unsubscribe?token=#{CGI.escape(token)}")
