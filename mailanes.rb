@@ -818,7 +818,7 @@ error do
   status 503
   e = env['sinatra.error']
   if e.is_a?(UserError)
-    flash('/', e.message)
+    flash('/', e.message, color: 'darkred')
   else
     Raven.capture_exception(e)
     haml(
@@ -845,11 +845,14 @@ def merged(hash)
     out[:flash_msg] = cookies[:flash_msg]
     cookies.delete(:flash_msg)
   end
+  out[:flash_color] = cookies[:flash_color] || 'darkgreen'
+  cookies.delete(:flash_color)
   out
 end
 
-def flash(uri, msg)
+def flash(uri, msg, color: 'darkgreen')
   cookies[:flash_msg] = msg
+  cookies[:flash_color] = color
   redirect uri
 end
 
