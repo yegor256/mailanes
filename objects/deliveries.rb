@@ -34,11 +34,13 @@ class Deliveries
   end
 
   def add(campaign, letter, recipient)
+    id = @pgsql.exec(
+      'INSERT INTO delivery (campaign, letter, recipient) VALUES ($1, $2, $3) RETURNING id',
+      [campaign.id, letter.id, recipient.id]
+    )
+    raise UserError, "Failed to add delivery for C:##{campaign}/L:#{letter}/R:#{recipient}" if id.empty?
     Delivery.new(
-      id: @pgsql.exec(
-        'INSERT INTO delivery (campaign, letter, recipient) VALUES ($1, $2, $3) RETURNING id',
-        [campaign.id, letter.id, recipient.id]
-      )[0]['id'].to_i,
+      id: id[0]['id'].to_i,
       pgsql: @pgsql
     )
   end

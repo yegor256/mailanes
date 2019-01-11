@@ -171,7 +171,7 @@ class Recipients
         end
       end
     rescue StandardError => e
-      raise UserError, "Can't upload line ##{line} (#{e.message}): \"#{t}\""
+      raise UserError, "Can't upload line ##{line}: #{e.message}"
     end
   end
 
