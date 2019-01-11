@@ -78,6 +78,10 @@ class Campaign
     yaml['title'] || 'unknown'
   end
 
+  def exists?
+    !@pgsql.exec('SELECT id FROM campaign WHERE id=$1', [@id]).empty?
+  end
+
   def yaml
     YamlDoc.new(
       @hash['yaml'] || @pgsql.exec('SELECT yaml FROM campaign WHERE id=$1', [@id])[0]['yaml']

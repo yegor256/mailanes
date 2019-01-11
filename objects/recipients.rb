@@ -163,13 +163,15 @@ class Recipients
       if row[3]
         row[3].strip.split(';').each do |dlv|
           c, l = dlv.strip.split('/')
-          deliveries.add(
-            Campaign.new(id: c.to_i, pgsql: @pgsql),
-            Letter.new(id: l.to_i, pgsql: @pgsql),
-            recipient
-          ).close('CSV upload')
+          campaign = Campaign.new(id: c.to_i, pgsql: @pgsql)
+          raise "Campaign ##{c} doesn't exist" unless campaign.exists?
+          letter = Letter.new(id: l.to_i, pgsql: @pgsql)
+          raise "Letter ##{l} doesn't exist" unless letter.exists?
+          deliveries.add(campaign, letter, recipient).close('CSV upload')
         end
       end
+    rescue StandardError => e
+      raise UserError, "Can't upload line ##{line} (#{e.message}): \"#{t}\""
     end
   end
 

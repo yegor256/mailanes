@@ -43,6 +43,7 @@ class LetterTest < Minitest::Test
     lane = lanes.add
     letters = Letters.new(lane: lane)
     letter = letters.add
+    assert(letter.exists?)
     assert_equal(false, letter.active?)
   end
 

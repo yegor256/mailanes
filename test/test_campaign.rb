@@ -38,6 +38,7 @@ class CampaignTest < Minitest::Test
     list = Lists.new(owner: owner).add
     lane = Lanes.new(owner: owner).add
     campaign = Campaigns.new(owner: owner).add(list, lane)
+    assert(campaign.exists?)
     assert_equal(1, campaign.lists.count)
     assert_equal(list.id, campaign.lists[0].id)
   end

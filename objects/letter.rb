@@ -77,6 +77,10 @@ class Letter
     @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1', [@id])[0]['count'].to_i
   end
 
+  def exists?
+    !@pgsql.exec('SELECT id FROM letter WHERE id=$1', [@id]).empty?
+  end
+
   def active?
     (@hash['active'] || @pgsql.exec('SELECT active FROM letter WHERE id=$1', [@id])[0]['active']) == 't'
   end
