@@ -230,7 +230,7 @@ end
 post '/add-recipient' do
   list = owner.lists.list(params[:id].to_i)
   email = params[:email].downcase.strip
-  flash("/list?id=#{list.id}", "Recipient with email #{email} already exists") if list.recipients.exists?(email)
+  raise UserError, "Recipient with email #{email} already exists" if list.recipients.exists?(email)
   recipient = list.recipients.add(
     email,
     first: params[:first].strip,
@@ -263,9 +263,7 @@ end
 get '/delete-recipient' do
   list = shared_list(params[:list].to_i)
   recipient = list.recipients.recipient(params[:id].to_i)
-  unless recipient.deliveries.empty?
-    flash("/recipient?id=#{recipient.id}", "Can't delete it, there were some deliveries")
-  end
+  raise UserError, "Can't delete it, there were some deliveries" unless recipient.deliveries.empty?
   recipient.delete
   flash("/list?id=#{list.id}", "The recipient has been deleted from the list ##{list.id}")
 end
