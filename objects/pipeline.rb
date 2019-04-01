@@ -167,7 +167,9 @@ class Pipeline
       delivery = deliveries.add(campaign, letter, recipient)
       if letter.yaml['relax']
         time = Time.now
-        if /^[0-9]+:[0-9]+:[0-9]+$/.match?(letter.yaml['relax'])
+        if letter.yaml['relax'].is_a?(Integer)
+          time += letter.yaml['relax']
+        elsif /^[0-9]+:[0-9]+:[0-9]+$/.match?(letter.yaml['relax'])
           days, hours, minutes = letter.yaml['relax'].split(':')
           time += (days.to_i * 24 * 60 + hours.to_i * 60 + minutes.to_i) * 60
         elsif /^[0-9]{2}-[0-9]{2}-[0-9]{4}$/.match?(letter.yaml['relax'])

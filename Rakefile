@@ -112,7 +112,7 @@ task :liquibase do
   raise unless $CHILD_STATUS.exitstatus.zero?
 end
 
-desc 'Sleep endlessly after the start of DynamoDB Local server'
+desc 'Sleep endlessly after the start of PostgreSQL Local server'
 task :sleep do
   port = File.read('target/pgsql.port').to_i
   loop do

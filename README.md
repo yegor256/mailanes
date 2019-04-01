@@ -114,7 +114,11 @@ to: Yegor Bugayenko <yegor256@gmail.com>
 # When this Letter has to be deactivated
 until: 03-09-2018
 # For how many days/hours/minutes the campaign should
-# not send out any letters after it sends this one.
+# not send out any letters after it sends this one. There
+# are three possible formats:
+#  hh:mm:ss    - exactly how much time it should relax
+#  dd-mm-yyyy  - when exactly it should relax
+#  sss         - in how many seconds
 relax: "20:0:0"
 # The ID of the letter to quote while sending this one
 quote: 12
