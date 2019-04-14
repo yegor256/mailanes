@@ -12,6 +12,10 @@
 
 It's an e-mail sending web app.
 
+Read this blog post, it explains how it works:
+[Mailanes.com Helps Manage Newsletters and Mailing Lists
+](https://www.yegor256.com/2018/10/30/mailanes.html).
+
 ## How to Configure?
 
 There are few entities you can configure via simple [YAML](http://yaml.org/)
@@ -176,7 +180,7 @@ Java 8+, Maven 3.2+, PostgreSQL 10+, and
 
 ```bash
 $ bundle update
-$ rake
+$ bundle exec rake
 ```
 
 If it's clean and you don't see any error messages, submit your pull request.
@@ -184,13 +188,13 @@ If it's clean and you don't see any error messages, submit your pull request.
 To run a single unit test you should first do this:
 
 ```bash
-$ rake pgsql liquibase sleep
+$ bundle exec rake pgsql liquibase sleep
 ```
 
 And then, in another terminal (for example):
 
 ```bash
-$ ruby test/test_campaign.rb -n test_iterates_lists
+$ bundle exec ruby test/test_campaign.rb -n test_iterates_lists
 ```
 
 Should work.
