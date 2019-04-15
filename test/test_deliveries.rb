@@ -32,12 +32,12 @@ require_relative '../objects/deliveries'
 class DeliveriesTest < Minitest::Test
   def test_creates_delivery
     owner = random_owner
-    list = Lists.new(owner: owner).add
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipient = list.recipients.add('test@mailanes.com')
-    lane = Lanes.new(owner: owner).add
-    campaign = Campaigns.new(owner: owner).add(list, lane)
+    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
     letter = lane.letters.add
-    deliveries = Deliveries.new
+    deliveries = Deliveries.new(pgsql: test_pgsql)
     delivery = deliveries.add(campaign, letter, recipient)
     delivery.save_relax(Time.now)
     assert(delivery.id.positive?)
@@ -48,12 +48,12 @@ class DeliveriesTest < Minitest::Test
 
   def test_closes_delivery
     owner = random_owner
-    list = Lists.new(owner: owner).add
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipient = list.recipients.add('test1@mailanes.com')
-    lane = Lanes.new(owner: owner).add
-    campaign = Campaigns.new(owner: owner).add(list, lane)
+    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
     letter = lane.letters.add
-    deliveries = Deliveries.new
+    deliveries = Deliveries.new(pgsql: test_pgsql)
     delivery = deliveries.add(campaign, letter, recipient)
     assert(delivery.details.empty?)
     msg = 'DONE with it, друг'
@@ -63,12 +63,12 @@ class DeliveriesTest < Minitest::Test
 
   def test_deletes_delivery
     owner = random_owner
-    list = Lists.new(owner: owner).add
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipient = list.recipients.add('test1@mailanes.com')
-    lane = Lanes.new(owner: owner).add
-    campaign = Campaigns.new(owner: owner).add(list, lane)
+    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
     letter = lane.letters.add
-    deliveries = Deliveries.new
+    deliveries = Deliveries.new(pgsql: test_pgsql)
     delivery = deliveries.add(campaign, letter, recipient)
     delivery.delete
   end

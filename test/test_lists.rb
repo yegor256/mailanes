@@ -28,7 +28,7 @@ require_relative '../objects/lists'
 
 class ListsTest < Minitest::Test
   def test_create_a_list
-    lists = Lists.new(owner: random_owner)
+    lists = Lists.new(owner: random_owner, pgsql: test_pgsql)
     title = 'My friends'
     list = lists.add(title)
     assert(list.id.positive?)
@@ -37,7 +37,7 @@ class ListsTest < Minitest::Test
   end
 
   def test_find_a_list
-    lists = Lists.new(owner: random_owner)
+    lists = Lists.new(owner: random_owner, pgsql: test_pgsql)
     title = 'test me'
     id = lists.add(title).id
     list = lists.list(id)
@@ -45,14 +45,14 @@ class ListsTest < Minitest::Test
   end
 
   def test_raises_if_list_not_found
-    lists = Lists.new(owner: random_owner)
+    lists = Lists.new(owner: random_owner, pgsql: test_pgsql)
     assert_raises(UserError) do
       lists.list(7584)
     end
   end
 
   def test_counts_total_recipients
-    lists = Lists.new(owner: random_owner)
+    lists = Lists.new(owner: random_owner, pgsql: test_pgsql)
     assert_equal(0, lists.total_recipients)
     lists.add.recipients.add('xx1@mailanes.com')
     assert_equal(1, lists.total_recipients)
@@ -62,7 +62,7 @@ class ListsTest < Minitest::Test
   end
 
   def test_counts_duplicates
-    lists = Lists.new(owner: random_owner)
+    lists = Lists.new(owner: random_owner, pgsql: test_pgsql)
     first = lists.add
     first.recipients.add('first-11@mailanes.com')
     second = lists.add

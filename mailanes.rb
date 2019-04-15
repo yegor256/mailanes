@@ -22,25 +22,26 @@
 
 STDOUT.sync = true
 
-require 'time'
-require 'haml'
-require 'yaml'
-require 'json'
 require 'geocoder'
-require 'sinatra'
-require 'sinatra/cookies'
-require 'raven'
 require 'glogin'
 require 'glogin/codec'
-require_relative 'version'
-require_relative 'objects/user_error'
+require 'haml'
+require 'json'
+require 'pgtk/pool'
+require 'raven'
+require 'sinatra'
+require 'sinatra/cookies'
+require 'time'
+require 'yaml'
+require_relative 'objects/ago'
+require_relative 'objects/bounces'
+require_relative 'objects/hex'
 require_relative 'objects/owner'
 require_relative 'objects/pipeline'
 require_relative 'objects/postman'
 require_relative 'objects/tbot'
-require_relative 'objects/ago'
-require_relative 'objects/bounces'
-require_relative 'objects/hex'
+require_relative 'objects/user_error'
+require_relative 'version'
 
 if ENV['RACK_ENV'] != 'test'
   require 'rack/ssl'
@@ -89,13 +90,14 @@ configure do
     'https://www.mailanes.com/github-callback'
   )
   set :codec, GLogin::Codec.new(config['token_secret'])
-  set :pgsql, Pgsql.new(
-    host: config['pgsql']['host'],
-    port: config['pgsql']['port'].to_i,
-    dbname: config['pgsql']['dbname'],
-    user: config['pgsql']['user'],
-    password: config['pgsql']['password']
-  )
+  cfg = File.exist?('target/pgsql-config.yml') ? YAML.load_file('target/pgsql-config.yml') : config
+  set :pgsql, Pgtk::Pool.new(
+    host: cfg['pgsql']['host'],
+    port: cfg['pgsql']['port'],
+    dbname: cfg['pgsql']['dbname'],
+    user: cfg['pgsql']['user'],
+    password: cfg['pgsql']['password']
+  ).start(4)
   set :postman, Postman.new(settings.codec)
   set :tbot, Tbot.new(config['telegram_token'])
   set :bounces, Bounces.new(

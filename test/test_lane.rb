@@ -30,24 +30,24 @@ require_relative '../objects/lanes'
 class LaneTest < Minitest::Test
   def test_reads_yaml
     owner = random_owner
-    lanes = Lanes.new(owner: owner)
+    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
     id = lanes.add.id
-    lane = Lane.new(id: id)
+    lane = Lane.new(id: id, pgsql: test_pgsql)
     assert(lane.yaml['title'])
   end
 
   def test_reads_lane
     owner = random_owner
-    lanes = Lanes.new(owner: owner)
+    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
     title = 'How are you?'
     id = lanes.add(title).id
-    lane = Lane.new(id: id)
+    lane = Lane.new(id: id, pgsql: test_pgsql)
     assert_equal(title, lane.title)
   end
 
   def test_reads_deliveries_count
     owner = random_owner
-    lane = Lanes.new(owner: owner).add
+    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
     assert_equal(0, lane.deliveries_count)
   end
 end

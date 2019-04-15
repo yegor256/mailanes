@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 require 'net/pop'
-require_relative 'pgsql'
 require_relative 'recipient'
 require_relative 'tbot'
 require_relative 'hex'
@@ -31,7 +30,7 @@ require_relative 'hex'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Bounces
-  def initialize(host, login, password, codec, pgsql: Pgsql::TEST)
+  def initialize(host, login, password, codec, pgsql:)
     @host = host
     @login = login
     @password = password

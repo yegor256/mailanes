@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'pgsql'
 require_relative 'campaign'
 require_relative 'letter'
 require_relative 'recipient'
@@ -33,7 +32,7 @@ require_relative 'tbot'
 class Delivery
   attr_reader :id
 
-  def initialize(id:, pgsql: Pgsql::TEST, hash: {})
+  def initialize(id:, pgsql:, hash: {})
     raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
     @id = id
     @pgsql = pgsql

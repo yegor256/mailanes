@@ -31,23 +31,24 @@ class BouncesTest < Minitest::Test
   def test_deactives_recipients
     skip
     owner = random_owner
-    list = Lists.new(owner: owner).add
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
     list.recipients.add('test@mailanes.com')
     Bounces.new(
       'pop.secureserver.net',
       'reply@mailanes.com',
       '--',
-      GLogin::Codec.new('--')
+      GLogin::Codec.new('--'),
+      pgsql: test_pgsql
     ).fetch
   end
 
   def test_deactives_recipients_with_fake_pop
     owner = random_owner
-    list = Lists.new(owner: owner).add
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipient = list.recipients.add('test@mailanes.com')
     codec = GLogin::Codec.new('some key')
     msg = FakeMsg.new(recipient, codec)
-    Bounces.new([msg], '', '', codec).fetch
+    Bounces.new([msg], '', '', codec, pgsql: test_pgsql).fetch
     assert(recipient.bounced?)
   end
 

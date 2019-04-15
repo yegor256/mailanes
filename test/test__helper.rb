@@ -29,12 +29,25 @@ if ENV['CI'] == 'true'
   SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end
 
+require 'yaml'
 require 'minitest/autorun'
+require 'pgtk/pool'
 module Minitest
   class Test
     def random_owner
       require 'securerandom'
       'u' + SecureRandom.hex[0..8]
+    end
+
+    def test_pgsql
+      config = YAML.load_file('target/pgsql-config.yml')
+      @test_pgsql ||= Pgtk::Pool.new(
+        host: config['pgsql']['host'],
+        port: config['pgsql']['port'],
+        dbname: config['pgsql']['dbname'],
+        user: config['pgsql']['user'],
+        password: config['pgsql']['password']
+      ).start
     end
   end
 end

@@ -29,7 +29,6 @@ require 'liquid'
 require 'redcarpet'
 require 'redcarpet/render_strip'
 require 'glogin/codec'
-require_relative 'pgsql'
 require_relative 'hex'
 require_relative 'campaign'
 require_relative 'user_error'
@@ -42,7 +41,7 @@ require_relative 'yaml_doc'
 class Letter
   attr_reader :id
 
-  def initialize(id:, pgsql: Pgsql::TEST, hash: {}, tbot: Tbot.new)
+  def initialize(id:, pgsql:, hash: {}, tbot: Tbot.new)
     raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
     @id = id
     @pgsql = pgsql

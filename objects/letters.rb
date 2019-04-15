@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'pgsql'
 require_relative 'letter'
 require_relative 'tbot'
 require_relative 'user_error'
@@ -30,7 +29,7 @@ require_relative 'user_error'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Letters
-  def initialize(lane:, pgsql: Pgsql::TEST)
+  def initialize(lane:, pgsql:)
     @lane = lane
     @pgsql = pgsql
   end

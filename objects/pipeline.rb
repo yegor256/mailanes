@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'pgsql'
 require_relative 'campaign'
 require_relative 'letter'
 require_relative 'recipient'
@@ -32,7 +31,7 @@ require_relative 'tbot'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Pipeline
-  def initialize(pgsql: Pgsql::TEST, tbot: Tbot.new)
+  def initialize(pgsql:, tbot: Tbot.new)
     @pgsql = pgsql
     @tbot = tbot
   end

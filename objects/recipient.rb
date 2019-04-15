@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'pgsql'
 require_relative 'list'
 require_relative 'user_error'
 require_relative 'yaml_doc'
@@ -32,7 +31,7 @@ require_relative 'yaml_doc'
 class Recipient
   attr_reader :id
 
-  def initialize(id:, pgsql: Pgsql::TEST, hash: {})
+  def initialize(id:, pgsql:, hash: {})
     raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
     raise 'ID has to be larger than zero' if id.zero?
     @id = id

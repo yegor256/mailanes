@@ -33,8 +33,8 @@ require_relative '../objects/postman'
 class RecipientTest < Minitest::Test
   def test_toggles_recipient
     owner = random_owner
-    list = Lists.new(owner: owner).add
-    recipient = Recipients.new(list: list).add('test@mailanes.com')
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    recipient = Recipients.new(list: list, pgsql: test_pgsql).add('test@mailanes.com')
     assert(recipient.active?)
     recipient.toggle
     assert(!recipient.active?)
@@ -44,8 +44,8 @@ class RecipientTest < Minitest::Test
 
   def test_changes_email
     owner = random_owner
-    list = Lists.new(owner: owner).add
-    recipient = Recipients.new(list: list).add('x76@mailanes.com')
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    recipient = Recipients.new(list: list, pgsql: test_pgsql).add('x76@mailanes.com')
     after = '467hsh@mailanes.com'
     recipient.change_email(after)
     assert_equal(after, recipient.email)
@@ -53,17 +53,17 @@ class RecipientTest < Minitest::Test
 
   def test_deletes_recipient
     owner = random_owner
-    list = Lists.new(owner: owner).add
-    recipient = Recipients.new(list: list).add('test@mailanes.com')
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    recipient = Recipients.new(list: list, pgsql: test_pgsql).add('test@mailanes.com')
     recipient.delete
     assert(list.recipients.count.zero?)
   end
 
   def test_toggles_fetched_recipient
     owner = random_owner
-    list = Lists.new(owner: owner).add
-    id = Recipients.new(list: list).add('test98@mailanes.com').id
-    recipient = Recipients.new(list: list).recipient(id)
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    id = Recipients.new(list: list, pgsql: test_pgsql).add('test98@mailanes.com').id
+    recipient = Recipients.new(list: list, pgsql: test_pgsql).recipient(id)
     assert(recipient.active?)
     recipient.toggle
     assert(!recipient.active?)
@@ -73,8 +73,8 @@ class RecipientTest < Minitest::Test
 
   def test_posts_event
     owner = random_owner
-    list = Lists.new(owner: owner).add
-    recipient = Recipients.new(list: list).add('te99st@mailanes.com')
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    recipient = Recipients.new(list: list, pgsql: test_pgsql).add('te99st@mailanes.com')
     assert_equal(0, recipient.deliveries.count)
     recipient.post_event('he is a good guy')
     assert_equal(1, recipient.deliveries.count)
@@ -82,9 +82,9 @@ class RecipientTest < Minitest::Test
 
   def test_moves
     owner = random_owner
-    list = Lists.new(owner: owner).add
-    target = Lists.new(owner: owner).add
-    recipient = Recipients.new(list: list).add('te77st@mailanes.com')
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    target = Lists.new(owner: owner, pgsql: test_pgsql).add
+    recipient = Recipients.new(list: list, pgsql: test_pgsql).add('te77st@mailanes.com')
     assert_equal(1, list.recipients.count)
     recipient.move_to(target)
     assert_equal(0, list.recipients.count)
@@ -93,24 +93,24 @@ class RecipientTest < Minitest::Test
 
   def test_reads_relax
     owner = random_owner
-    list = Lists.new(owner: owner).add
-    recipient = Recipients.new(list: list).add('te89t@mailanes.com')
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    recipient = Recipients.new(list: list, pgsql: test_pgsql).add('te89t@mailanes.com')
     assert_equal(0, recipient.relax)
-    lane = Lanes.new(owner: owner).add
-    campaign = Campaigns.new(owner: owner).add(list, lane)
+    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
     campaign.toggle
     first = lane.letters.add
     first.toggle
     first.save_yaml('relax: "1:0:0"')
     post = Postman::Fake.new
-    Pipeline.new.fetch(post)
+    Pipeline.new(pgsql: test_pgsql).fetch(post)
     assert_equal(1, recipient.relax)
   end
 
   def test_saves_and_prints_yaml
     owner = random_owner
-    list = Lists.new(owner: owner).add
-    recipient = Recipients.new(list: list).add('te085@mailanes.com')
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    recipient = Recipients.new(list: list, pgsql: test_pgsql).add('te085@mailanes.com')
     yaml = "---\nfoo: |\n  hello\n  world\n"
     recipient.save_yaml(yaml)
     assert_equal(yaml, recipient.yaml.to_yaml)

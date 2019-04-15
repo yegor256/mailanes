@@ -30,9 +30,9 @@ require_relative '../objects/letters'
 class LettersTest < Minitest::Test
   def test_creates_letters
     owner = random_owner
-    lanes = Lanes.new(owner: owner)
+    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
     lane = lanes.add
-    letters = Letters.new(lane: lane)
+    letters = Letters.new(lane: lane, pgsql: test_pgsql)
     letter = letters.add('Hi, dude!')
     assert(letter.id.positive?)
     assert_equal(1, letters.all.count)

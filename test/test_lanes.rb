@@ -29,7 +29,7 @@ require_relative '../objects/lanes'
 class LanesTest < Minitest::Test
   def test_creates_lanes
     owner = random_owner
-    lanes = Lanes.new(owner: owner)
+    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
     title = 'To celebrate, друг!'
     lane = lanes.add(title)
     assert(lane.id.positive?)
@@ -39,7 +39,7 @@ class LanesTest < Minitest::Test
 
   def test_fetches_letter
     owner = random_owner
-    lanes = Lanes.new(owner: owner)
+    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
     lane = lanes.add
     id = lane.letters.add.id
     letter = lanes.letter(id)
@@ -48,7 +48,7 @@ class LanesTest < Minitest::Test
 
   def test_fetches_absent_letter
     owner = random_owner
-    lanes = Lanes.new(owner: owner)
+    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
     assert_raises(UserError) do
       lanes.letter(1000)
     end
@@ -56,7 +56,7 @@ class LanesTest < Minitest::Test
 
   def test_fetches_absent_lane
     owner = random_owner
-    lanes = Lanes.new(owner: owner)
+    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
     assert_raises(UserError) do
       lanes.lane(1000)
     end

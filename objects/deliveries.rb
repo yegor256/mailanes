@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'pgsql'
 require_relative 'delivery'
 require_relative 'user_error'
 
@@ -29,7 +28,7 @@ require_relative 'user_error'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Deliveries
-  def initialize(pgsql: Pgsql::TEST)
+  def initialize(pgsql:)
     @pgsql = pgsql
   end
 

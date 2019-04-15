@@ -31,11 +31,11 @@ require_relative '../objects/campaigns'
 class CampaignsTest < Minitest::Test
   def test_creates_campaigns
     owner = random_owner
-    lists = Lists.new(owner: owner)
+    lists = Lists.new(owner: owner, pgsql: test_pgsql)
     list = lists.add
-    lanes = Lanes.new(owner: owner)
+    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
     lane = lanes.add
-    campaigns = Campaigns.new(owner: owner)
+    campaigns = Campaigns.new(owner: owner, pgsql: test_pgsql)
     campaign = campaigns.add(list, lane)
     assert(campaign.id.positive?)
     assert_equal(1, campaigns.all.count)
@@ -43,16 +43,16 @@ class CampaignsTest < Minitest::Test
 
   def test_counts_deliveries
     owner = random_owner
-    lists = Lists.new(owner: owner)
+    lists = Lists.new(owner: owner, pgsql: test_pgsql)
     list = lists.add
     recipient = list.recipients.add('zz8d9s@mailanes.com')
-    lanes = Lanes.new(owner: owner)
+    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
     lane = lanes.add
     letter = lane.letters.add
-    campaigns = Campaigns.new(owner: owner)
+    campaigns = Campaigns.new(owner: owner, pgsql: test_pgsql)
     campaign = campaigns.add(list, lane)
     assert_equal(0, campaigns.total_deliveries)
-    deliveries = Deliveries.new
+    deliveries = Deliveries.new(pgsql: test_pgsql)
     deliveries.add(campaign, letter, recipient)
     assert_equal(1, campaigns.total_deliveries)
     deliveries.add(campaign, letter, list.recipients.add('zz8dffs@mailanes.com'))

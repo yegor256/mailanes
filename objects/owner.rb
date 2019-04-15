@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'pgsql'
 require_relative 'lists'
 require_relative 'lanes'
 require_relative 'campaigns'
@@ -31,7 +30,7 @@ require_relative 'deliveries'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Owner
-  def initialize(login:, pgsql: Pgsql::TEST)
+  def initialize(login:, pgsql:)
     @login = login
     @pgsql = pgsql
   end

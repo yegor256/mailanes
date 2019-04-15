@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 require 'yaml'
-require_relative 'pgsql'
 require_relative 'letters'
 require_relative 'yaml_doc'
 
@@ -32,7 +31,7 @@ require_relative 'yaml_doc'
 class Lane
   attr_reader :id
 
-  def initialize(id:, pgsql: Pgsql::TEST, hash: {})
+  def initialize(id:, pgsql:, hash: {})
     raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
     @id = id
     @pgsql = pgsql

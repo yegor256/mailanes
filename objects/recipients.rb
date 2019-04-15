@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 require 'csv'
-require_relative 'pgsql'
 require_relative 'recipient'
 require_relative 'deliveries'
 require_relative 'user_error'
@@ -34,7 +33,7 @@ class Recipients
   # All emails have to match this
   REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i.freeze
 
-  def initialize(list:, pgsql: Pgsql::TEST)
+  def initialize(list:, pgsql:)
     @list = list
     @pgsql = pgsql
   end
