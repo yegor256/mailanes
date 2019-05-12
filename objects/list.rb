@@ -154,43 +154,41 @@ class List
   # Take duplicate recipients from this list and merge them
   # into itself
   def absorb(list)
-    @pgsql.connect do |c|
-      c.transaction do |con|
-        con.exec_params(
-          [
-            'DELETE FROM delivery WHERE id IN',
-            '(SELECT id FROM delivery',
-            '  JOIN (SELECT s.id AS from, t.id AS to FROM recipient AS s',
-            '      JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
-            '      AND s.list = $1 AND t.list = $2) AS r',
-            '    ON r.to = delivery.recipient',
-            '  WHERE (SELECT COUNT(*) FROM delivery AS d',
-            '    WHERE d.campaign = delivery.campaign',
-            '    AND d.letter = delivery.letter',
-            '    AND d.recipient = r.from) > 0)'
-          ].join(' '),
-          [list.id, @id]
-        )
-        con.exec_params(
-          [
-            'UPDATE delivery SET recipient = alt.to FROM',
-            '(SELECT s.id AS from, t.id AS to FROM recipient AS s',
-            '  JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
-            '  AND s.list = $1 AND t.list = $2) AS alt',
-            'WHERE recipient = alt.from'
-          ].join(' '),
-          [list.id, @id]
-        )
-        con.exec_params(
-          [
-            'DELETE FROM recipient WHERE id IN',
-            '(SELECT s.id FROM recipient AS s',
-            '  JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
-            '  AND s.list = $1 AND t.list = $2)'
-          ].join(' '),
-          [list.id, @id]
-        )
-      end
+    @pgsql.transaction do |t|
+      t.exec(
+        [
+          'DELETE FROM delivery WHERE id IN',
+          '(SELECT id FROM delivery',
+          '  JOIN (SELECT s.id AS from, t.id AS to FROM recipient AS s',
+          '      JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
+          '      AND s.list = $1 AND t.list = $2) AS r',
+          '    ON r.to = delivery.recipient',
+          '  WHERE (SELECT COUNT(*) FROM delivery AS d',
+          '    WHERE d.campaign = delivery.campaign',
+          '    AND d.letter = delivery.letter',
+          '    AND d.recipient = r.from) > 0)'
+        ].join(' '),
+        [list.id, @id]
+      )
+      t.exec(
+        [
+          'UPDATE delivery SET recipient = alt.to FROM',
+          '(SELECT s.id AS from, t.id AS to FROM recipient AS s',
+          '  JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
+          '  AND s.list = $1 AND t.list = $2) AS alt',
+          'WHERE recipient = alt.from'
+        ].join(' '),
+        [list.id, @id]
+      )
+      t.exec(
+        [
+          'DELETE FROM recipient WHERE id IN',
+          '(SELECT s.id FROM recipient AS s',
+          '  JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
+          '  AND s.list = $1 AND t.list = $2)'
+        ].join(' '),
+        [list.id, @id]
+      )
     end
   end
 end

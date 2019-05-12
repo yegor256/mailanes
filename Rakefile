@@ -31,7 +31,7 @@ raise "Invalid encoding \"#{Encoding.default_external}\"" unless Encoding.defaul
 
 ENV['RACK_ENV'] = 'test'
 
-task default: %i[check_outdated_gems clean test rubocop xcop copyright]
+task default: %i[clean test rubocop xcop copyright]
 
 require 'rake/testtask'
 Rake::TestTask.new(test: :liquibase) do |test|
@@ -86,10 +86,4 @@ task(:copyright) do
     --include '*.txt' \
     --include 'Rakefile' \
     ."
-end
-
-task(:check_outdated_gems) do
-  sh 'bundle outdated' do |ok, _|
-    puts 'Some dependencies are outdated' unless ok
-  end
 end
