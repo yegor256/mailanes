@@ -10,6 +10,8 @@
 [![Test Coverage](https://img.shields.io/codecov/c/github/yegor256/mailanes.svg)](https://codecov.io/github/yegor256/mailanes?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/451556110dacf73cc6f6/maintainability)](https://codeclimate.com/github/yegor256/mailanes/maintainability)
 
+[![Hits-of-Code](https://hitsofcode.com/github/yegor256/mailanes)](https://hitsofcode.com/view/github/yegor256/mailanes)
+
 It's an e-mail sending web app.
 
 Read this blog post, it explains how it works:

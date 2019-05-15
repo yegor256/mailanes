@@ -164,8 +164,10 @@ before '/*' do
 end
 
 get '/github-callback' do
+  code = params[:code]
+  error(400) if code.nil?
   cookies[:glogin] = GLogin::Cookie::Open.new(
-    settings.glogin.user(params[:code]),
+    settings.glogin.user(code),
     settings.config['github']['encryption_secret'],
     context
   ).to_s
