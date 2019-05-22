@@ -34,13 +34,13 @@ release:
     git add ./version.rb
     git commit -m 'build number set'
     cp ../config.yml config.yml
-    LC_ALL=en_US.UTF-8 rake config
+    LC_ALL=en_US.UTF-8 bundle exec rake config
     git add config.yml
     git commit -m 'config.yml'
     git push -f heroku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
     rm -rf target
-    LC_ALL=en_US.UTF-8 rake liquibase
+    LC_ALL=en_US.UTF-8 bundle exec rake liquibase
     rm -rf config.yml
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 https://www.mailanes.com > /dev/null
   commanders:
@@ -52,5 +52,5 @@ merge:
   script: |-
     pdd -f /dev/null
     bundle install
-    rake
+    bundle exec rake
 deploy: {}
