@@ -157,9 +157,13 @@ before '/*' do
     end
   end
   if params[:auth]
-    @locals[:user] = {
-      login: settings.codec.decrypt(Hex::ToText.new(params[:auth]).to_s)
-    }
+    begin
+      @locals[:user] = {
+        login: settings.codec.decrypt(Hex::ToText.new(params[:auth]).to_s)
+      }
+    rescue OpenSSL::Cipher::CipherError => _
+      redirect to('/')
+    end
   end
 end
 
