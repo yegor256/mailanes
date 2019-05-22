@@ -42,7 +42,8 @@ release:
     rm -rf target
     LC_ALL=en_US.UTF-8 rake liquibase
     rm -rf config.yml
-    curl -f --connect-timeout 15 --retry 5 --retry-delay 30 http://www.mailanes.com > /dev/null
+    curl -f --connect-timeout 15 --retry 5 --retry-delay 30 https://www.mailanes.com > /dev/null
+    sleep 5
   commanders:
   - yegor256
 architect:
