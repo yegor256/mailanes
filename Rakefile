@@ -34,7 +34,7 @@ ENV['RACK_ENV'] = 'test'
 task default: %i[clean test rubocop xcop copyright]
 
 require 'rake/testtask'
-Rake::TestTask.new(test: :liquibase) do |test|
+Rake::TestTask.new(test: %i[pgsql liquibase]) do |test|
   Rake::Cleaner.cleanup_files(['coverage'])
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/test_*.rb'
@@ -66,7 +66,7 @@ Pgtk::PgsqlTask.new(:pgsql) do |t|
 end
 
 require 'pgtk/liquibase_task'
-Pgtk::LiquibaseTask.new(liquibase: :pgsql) do |t|
+Pgtk::LiquibaseTask.new(:liquibase) do |t|
   t.master = 'liquibase/master.xml'
   t.yaml = 'target/pgsql-config.yml'
 end
@@ -76,7 +76,7 @@ task(:config) do
   YAML.safe_load(File.open('config.yml')).to_yaml
 end
 
-task(run: :pgsql) do
+task(run: %i[pgsql liquibase]) do
   `rerun -b "RACK_ENV=test rackup"`
 end
 
