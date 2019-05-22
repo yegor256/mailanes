@@ -68,7 +68,7 @@ end
 require 'pgtk/liquibase_task'
 Pgtk::LiquibaseTask.new(:liquibase) do |t|
   t.master = 'liquibase/master.xml'
-  t.yaml = 'target/pgsql-config.yml'
+  t.yaml = ['target/pgsql-config.yml', 'config.yml']
 end
 
 desc 'Check the quality of config file'
