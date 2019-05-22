@@ -172,7 +172,7 @@ All URIs:
   * `/api/campaigns/:id/deliveries_count.json`: deliveries per day (last day, change with `days`)
   * more coming...
 
-# How to contribute
+## How to contribute
 
 Read [these guidelines](https://www.yegor256.com/2014/04/15/github-guidelines.html).
 Make sure you build is green before you contribute
