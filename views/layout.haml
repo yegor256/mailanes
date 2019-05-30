@@ -66,7 +66,7 @@
         %nav
           %ul
             %li
-              = "v#{ver}"
+              = "#{ENV['HEROKU_RELEASE_VERSION']}/#{ver}"
             %li
               %a{href: 'https://iplocation.com/?ip=' + request_ip}
                 = request_ip
@@ -76,5 +76,5 @@
               %a{href: 'https://github.com/yegor256/mailanes/stargazers'}<
                 %img{src: 'https://img.shields.io/github/stars/yegor256/mailanes.svg?style=flat-square'}
             %li
-              %a{href: 'http://www.sixnines.io/h/8b49'}<
-                %img{src: 'http://www.sixnines.io/b/8b49?style=flat'}
+              %a{href: 'https://www.sixnines.io/h/8b49'}<
+                %img{src: 'https://www.sixnines.io/b/8b49?style=flat'}
