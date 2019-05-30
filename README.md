@@ -1,4 +1,4 @@
-<img src="http://www.mailanes.com/logo.svg" width="92px" height="92px"/>
+<img src="https://www.mailanes.com/logo.svg" width="92px" height="92px"/>
 
 [![EO principles respected here](http://www.elegantobjects.org/badge.svg)](http://www.elegantobjects.org)
 [![Managed by Zerocracy](https://www.0crat.com/badge/CAZPZR9FS.svg)](https://www.0crat.com/p/CAZPZR9FS)
@@ -10,14 +10,13 @@
 [![Test Coverage](https://img.shields.io/codecov/c/github/yegor256/mailanes.svg)](https://codecov.io/github/yegor256/mailanes?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/451556110dacf73cc6f6/maintainability)](https://codeclimate.com/github/yegor256/mailanes/maintainability)
 
-[![Availability at SixNines](http://www.sixnines.io/b/8b49)](http://www.sixnines.io/h/8b49)
+[![Availability at SixNines](https://www.sixnines.io/b/8b49)](https://www.sixnines.io/h/8b49)
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/mailanes)](https://hitsofcode.com/view/github/yegor256/mailanes)
 
 It's an e-mail sending web app.
 
 Read this blog post, it explains how it works:
-[Mailanes.com Helps Manage Newsletters and Mailing Lists
-](https://www.yegor256.com/2018/10/30/mailanes.html).
+[_Mailanes.com Helps Manage Newsletters and Mailing Lists_](https://www.yegor256.com/2018/10/30/mailanes.html).
 
 ## How to Configure?
 
