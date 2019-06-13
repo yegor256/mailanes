@@ -21,6 +21,13 @@
     %a{href: "/campaign?id=#{campaign.id}"}= "Campaign ##{campaign.id}"
   = "\"#{campaign.title}\""
 
+%p
+  Opened:
+  - if delivery.opened?
+    yes
+  - else
+    not yet
+
 %p= delivery.details
 
 %p
