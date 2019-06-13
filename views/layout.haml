@@ -71,6 +71,8 @@
             %li
               %a{href: 'https://iplocation.com/?ip=' + request_ip}
                 = request_ip
+            %li
+              = "#{((Time.now - http_start) * 1000).round}ms"
         %nav
           %ul
             %li

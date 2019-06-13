@@ -141,6 +141,7 @@ end
 before '/*' do
   @locals = {
     ver: VERSION,
+    http_start: Time.now,
     login_link: settings.glogin.login_uri,
     request_ip: request.ip
   }
