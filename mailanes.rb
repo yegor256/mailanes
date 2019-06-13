@@ -764,6 +764,20 @@ get '/unsubscribe' do
   )
 end
 
+get '/opened' do
+  token = params[:token]
+  return 'The URL is broken' if token.nil?
+  id = begin
+    settings.codec.decrypt(token).to_i
+  rescue OpenSSL::Cipher::CipherError => ex
+    return "Token is invalid, can\'t use it: #{ex.message}"
+  end
+  delivery = Delivery.new(id: id, pgsql: settings.pgsql)
+  delivery.opened
+  content_type 'image/png'
+  IO.read(File.join(__dir__, 'public/logo-64.png'))
+end
+
 get '/api' do
   haml :api, layout: :layout, locals: merged(
     title: '/api'

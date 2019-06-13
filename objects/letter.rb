@@ -76,6 +76,10 @@ class Letter
     @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1', [@id])[0]['count'].to_i
   end
 
+  def opened_count
+    @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1 AND opened IS NOT NULL', [@id])[0]['count'].to_i
+  end
+
   def exists?
     !@pgsql.exec('SELECT id FROM letter WHERE id=$1', [@id]).empty?
   end
@@ -174,6 +178,14 @@ class Letter
       Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(content),
       delivery
     )
+    if cfg('on', 'tracking').downcase.strip == 'on' && !delivery.nil?
+      html += [
+        "<img src=\"https://www.mailanes.com/opened?token=#{CGI.escape(codec.encrypt(delivery.id.to_s))}\"",
+        'alt="" width="1" height="1" border="0"',
+        'style="height:1px !important; width:1px !important;',
+        'border-width:0 !important; margin:0 !important; padding:0 !important;"/>'
+      ].join(' ')
+    end
     text = with_utm(
       Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(content),
       delivery

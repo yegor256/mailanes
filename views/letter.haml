@@ -86,6 +86,15 @@
 
 %p
   Delivered
-  = letter.deliveries_count
+  - delivered = letter.deliveries_count
+  = delivered
   times.
+
+%p
+  Opened
+  - opened = letter.opened_count
+  = opened
+  times
+  - unless delivered.zero?
+    = "/ #{format('%.02f', (opened / delivered) * 100)}%."
 

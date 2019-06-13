@@ -134,6 +134,8 @@ quote: 12
 transport: SMTP
 # Maximum amount of emails to be sent per day
 speed: 100
+# Turn OFF email opening tracking feature (ON by default)
+tracking: off
 ```
 
 Here is how your Liquid template may look like:
