@@ -71,6 +71,13 @@
   = campaign.created.utc.iso8601
   = "(#{Ago.new(campaign.created)})"
 
+%p
+  Speed:
+  - speed = campaign.speed
+  = speed
+  - if speed > 250
+    %strong.red It is too high!
+
 - if campaign.exhausted?
   %p.red Exhausted
 

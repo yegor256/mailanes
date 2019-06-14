@@ -33,16 +33,18 @@
   There are
   = lane.letters.count
   letter(s),
-  the highest in the list will be delivered first:
+  %strong the highest
+  in the list will be delivered first:
 
-- lane.letters.all.each do |r|
+- letters = lane.letters.all
+- letters.each_with_index do |r, idx|
   %p
+    - unless idx.zero?
+      %a{href: "/letter-up?id=#{r.id}", title: 'Move it up'}= '⬆'
+    - if idx < letters.count - 1
+      %a{href: "/letter-down?id=#{r.id}", title: 'Move it down'}= '⬇'
     = succeed ':' do
       %a{href: "/letter?id=#{r.id}"}= "##{r.id}"
-    %span{class: ('cross' unless r.active?)}
+    %span{class: ('cross' unless r.active?), title: "Place: #{r.place}"}
       &= r.title
-    %br
-    %span.item.small= '%+d' % r.place
-    %a.item.small{href: "/letter-up?id=#{r.id}"} Up
-    %a.item.small{href: "/letter-down?id=#{r.id}"} Down
 

@@ -95,6 +95,10 @@ class Campaign
     @hash = {}
   end
 
+  def speed
+    (@hash['speed'] || @pgsql.exec('SELECT speed FROM campaign WHERE id=$1', [@id])[0]['speed']).to_i
+  end
+
   def active?
     (@hash['active'] || @pgsql.exec('SELECT active FROM campaign WHERE id=$1', [@id])[0]['active']) == 't'
   end

@@ -48,7 +48,11 @@ class Letters
     yaml = "title: #{title}\n"
     Letter.new(
       id: @pgsql.exec(
-        'INSERT INTO letter (lane, yaml) VALUES ($1, $2) RETURNING id',
+        [
+          'INSERT INTO letter (lane, yaml, place)',
+          'VALUES ($1, $2, 1 + (SELECT COALESCE(MAX(place), 0) FROM letter WHERE lane = $1))',
+          'RETURNING id'
+        ].join(' '),
         [@lane.id, yaml]
       )[0]['id'].to_i,
       pgsql: @pgsql,

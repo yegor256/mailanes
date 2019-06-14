@@ -33,8 +33,11 @@ class LettersTest < Minitest::Test
     lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
     lane = lanes.add
     letters = Letters.new(lane: lane, pgsql: test_pgsql)
-    letter = letters.add('Hi, dude!')
+    letters.add('First')
+    letters.add('Second')
+    letter = letters.add('Third')
     assert(letter.id.positive?)
-    assert_equal(1, letters.all.count)
+    assert_equal(3, letters.all.count)
+    assert_equal(3, letter.place)
   end
 end
