@@ -39,11 +39,16 @@ class PipelineTest < Minitest::Test
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
     campaign.toggle
+    Pipeline.new(pgsql: test_pgsql).fetch(Postman::Fake.new)
     letter = lane.letters.add
     letter.toggle
+    noise = lane.letters.add
+    noise.toggle
     post1 = Postman::Fake.new
-    Pipeline.new(pgsql: test_pgsql).fetch(post1)
+    Pipeline.new(pgsql: test_pgsql).fetch(post1, cycles: 1)
+    assert_equal(1, post1.deliveries.count)
     assert(post1.deliveries.find { |d| d.letter.id == letter.id })
+    # assert(!post1.deliveries.find { |d| d.letter.id == noise.id })
     post2 = Postman::Fake.new
     Pipeline.new(pgsql: test_pgsql).fetch(post2)
     assert(!post2.deliveries.find { |d| d.letter.id == letter.id })
@@ -79,6 +84,7 @@ class PipelineTest < Minitest::Test
     first.toggle
     second = lane.letters.add
     second.toggle
+    second.move(-1)
     post = Postman::Fake.new
     Pipeline.new(pgsql: test_pgsql).fetch(post, cycles: 1)
     assert(post.deliveries.find { |d| d.letter.id == second.id })
