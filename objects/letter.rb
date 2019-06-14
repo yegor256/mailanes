@@ -108,7 +108,25 @@ class Letter
   end
 
   def move(inc = 1)
-    @pgsql.exec('UPDATE letter SET place=place + $1 WHERE id = $2', [inc, @id])
+    raise "Invalid direction #{inc.inspect}" if inc != 1 && inc != -1
+    @pgsql.transaction do |t|
+      other = t.exec(
+        [
+          'SELECT id, place FROM letter',
+          "WHERE place #{inc.positive? ? '>' : '<'} $1 AND lane = $2",
+          "ORDER BY place #{inc.positive? ? 'ASC' : 'DESC'}"
+        ].join(' '),
+        [place, lane.id]
+      )[0]
+      t.exec(
+        'UPDATE letter SET place=$1 WHERE id = $2',
+        [place, other['id'].to_i]
+      )
+      t.exec(
+        'UPDATE letter SET place=$1 WHERE id = $2',
+        [other['place'].to_i, @id]
+      )
+    end
     @hash = {}
   end
 

@@ -47,6 +47,25 @@ class LetterTest < Minitest::Test
     assert_equal(false, letter.active?)
   end
 
+  def test_moves_up_and_down
+    owner = random_owner
+    letters = Letters.new(lane: Lanes.new(owner: owner, pgsql: test_pgsql).add, pgsql: test_pgsql)
+    a = letters.add
+    assert_equal(1, a.place)
+    b = letters.add
+    assert_equal(2, b.place)
+    c = letters.add
+    assert_equal(3, c.place)
+    c.move(-1)
+    assert_equal(1, a.place)
+    assert_equal(2, c.place)
+    assert_equal(3, b.place)
+    a.move(1)
+    assert_equal(1, c.place)
+    assert_equal(2, a.place)
+    assert_equal(3, b.place)
+  end
+
   def test_attach_and_detach
     owner = random_owner
     letters = Letters.new(lane: Lanes.new(owner: owner, pgsql: test_pgsql).add, pgsql: test_pgsql)
