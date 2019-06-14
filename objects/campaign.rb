@@ -90,7 +90,7 @@ class Campaign
   def save_yaml(yaml)
     @pgsql.exec('UPDATE campaign SET yaml=$1 WHERE id=$2', [YamlDoc.new(yaml).save, @id])
     yml = YamlDoc.new(yaml).load
-    speed = yml['speed'] ? hash['speed'].to_i : 65_536
+    speed = yml['speed'] ? yml['speed'].to_i : 65_536
     @pgsql.exec('UPDATE campaign SET speed=$1 WHERE id=$2', [speed, @id])
     @hash = {}
   end
