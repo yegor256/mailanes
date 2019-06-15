@@ -118,14 +118,10 @@ class Letter
         ].join(' '),
         [place, lane.id]
       )[0]
-      t.exec(
-        'UPDATE letter SET place=$1 WHERE id = $2',
-        [place, other['id'].to_i]
-      )
-      t.exec(
-        'UPDATE letter SET place=$1 WHERE id = $2',
-        [other['place'].to_i, @id]
-      )
+      mine = place
+      t.exec('UPDATE letter SET place=$1 WHERE id = $2', [65_536, other['id'].to_i])
+      t.exec('UPDATE letter SET place=$1 WHERE id = $2', [other['place'].to_i, @id])
+      t.exec('UPDATE letter SET place=$1 WHERE id = $2', [mine, other['id'].to_i])
     end
     @hash = {}
   end
