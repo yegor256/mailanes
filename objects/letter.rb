@@ -118,6 +118,7 @@ class Letter
         ].join(' '),
         [place, lane.id]
       )[0]
+      raise UserError, 'Can\'t move in this direction' if other.nil?
       mine = place
       t.exec('UPDATE letter SET place=$1 WHERE id = $2', [65_536, other['id'].to_i])
       t.exec('UPDATE letter SET place=$1 WHERE id = $2', [other['place'].to_i, @id])

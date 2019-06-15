@@ -429,13 +429,13 @@ end
 
 get '/letter-up' do
   letter = owner.lanes.letter(params[:id].to_i)
-  letter.move(+1)
+  letter.move(-1)
   flash("/lane?id=#{letter.lane.id}", "The letter ##{letter.id} has been UP-moved to the place ##{letter.place}")
 end
 
 get '/letter-down' do
   letter = owner.lanes.letter(params[:id].to_i)
-  letter.move(-1)
+  letter.move(+1)
   flash("/lane?id=#{letter.lane.id}", "The letter ##{letter.id} has been DOWN-moved to the place ##{letter.place}")
 end
 
