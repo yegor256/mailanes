@@ -32,6 +32,7 @@ SOFTWARE.
         lt RECORD;
       BEGIN
         FOR ln IN (SELECT * FROM lane) LOOP
+          p := 0;
           FOR lt IN (SELECT * FROM letter WHERE lane = ln.id ORDER BY place) LOOP
             UPDATE letter SET place = p WHERE id = lt.id;
             p := p + 1;
