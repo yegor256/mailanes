@@ -96,5 +96,5 @@
   = opened
   times
   - unless delivered.zero?
-    = "/ #{format('%.02f', (opened / delivered) * 100)}%."
+    = "/ #{format('%.02f', 100.0 * (opened / delivered))}%."
 
