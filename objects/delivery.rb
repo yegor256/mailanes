@@ -98,13 +98,13 @@ class Delivery
     @hash['relax'] || @pgsql.exec('SELECT relax FROM delivery WHERE id=$1', [@id])[0]['relax']
   end
 
-  def opened
-    @pgsql.exec('UPDATE delivery SET opened=NOW() WHERE id=$1', [@id])
+  def just_opened(details = '')
+    @pgsql.exec('UPDATE delivery SET opened = $2 WHERE id=$1', [@id, "#{Time.now.utc.iso8601}: #{details}"])
     @hash = {}
   end
 
-  def opened?
-    !(@hash['opened'] || @pgsql.exec('SELECT opened FROM delivery WHERE id=$1', [@id])[0]['opened']).nil?
+  def opened
+    @hash['opened'] || @pgsql.exec('SELECT opened FROM delivery WHERE id=$1', [@id])[0]['opened']
   end
 
   def delete

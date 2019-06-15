@@ -23,12 +23,13 @@
 
 %p
   Opened:
-  - if delivery.opened?
-    yes
+  - if delivery.opened.empty?
+    Not yet :(
   - else
-    not yet
+    &= delivery.opened
 
-%p= delivery.details
+%p
+  &= delivery.details
 
 %p
   %a.red{href: "/delete-delivery?id=#{delivery.id}", onclick: "return confirm('Are you sure?');"} Delete

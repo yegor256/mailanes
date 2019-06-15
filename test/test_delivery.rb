@@ -37,8 +37,8 @@ class DeliveryTest < Minitest::Test
     letter = lane.letters.add
     deliveries = Deliveries.new(pgsql: test_pgsql)
     delivery = deliveries.add(campaign, letter, recipient)
-    assert(!delivery.opened?)
-    delivery.opened
-    assert(delivery.opened?)
+    assert(delivery.opened.empty?)
+    delivery.just_opened
+    assert(!delivery.opened.empty?)
   end
 end

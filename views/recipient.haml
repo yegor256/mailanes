@@ -90,8 +90,8 @@
 - else
   - deliveries.each do |d|
     %p
-      - if d.opened?
-        = '💌 '
+      - unless d.opened.empty?
+        %span{title: d.opened}= '💌 '
       %a{href: "/delivery?id=#{d.id}"}= "##{d.id}"
       = '/'
       = d.created.utc.iso8601

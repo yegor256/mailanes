@@ -774,7 +774,7 @@ get '/opened' do
     return "Token is invalid, can\'t use it: #{ex.message}"
   end
   delivery = Delivery.new(id: id, pgsql: settings.pgsql)
-  delivery.opened
+  delivery.just_opened("#{request.ip} by #{headers['User-Agent']}")
   content_type 'image/png'
   IO.read(File.join(__dir__, 'public/logo-64.png'))
 end

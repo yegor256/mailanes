@@ -77,7 +77,7 @@ class Letter
   end
 
   def opened_count
-    @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1 AND opened IS NOT NULL', [@id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1 AND opened != \'\'', [@id])[0]['count'].to_i
   end
 
   def exists?
