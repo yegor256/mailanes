@@ -774,7 +774,7 @@ get '/opened' do
     return "Token is invalid, can\'t use it: #{ex.message}"
   end
   delivery = Delivery.new(id: id, pgsql: settings.pgsql)
-  delivery.just_opened("#{request.ip} by #{headers['User-Agent']}")
+  delivery.just_opened("#{request.ip} (#{country}) by #{request.env['USER_AGENT']}")
   content_type 'image/png'
   IO.read(File.join(__dir__, 'public/logo-64.png'))
 end
@@ -906,4 +906,9 @@ def shared_list(id)
     raise UserError, "@#{current_user} doesn't have access to the list ##{list.id}"
   end
   list
+end
+
+def country
+  country = Geocoder.search(request.ip).first
+  country.nil? ? '??' : country.country.to_s
 end

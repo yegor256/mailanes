@@ -70,7 +70,7 @@
               = "#{ENV['HEROKU_RELEASE_VERSION']}/#{ver}"
             %li
               %a{href: 'https://iplocation.com/?ip=' + request_ip}
-                = request_ip
+                = "#{request_ip}/#{country}"
             %li{title: 'The version of PostgreSQL server'}
               = "pg:#{settings.pgsql.version}"
             %li
