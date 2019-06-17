@@ -65,6 +65,12 @@ class ListTest < Minitest::Test
     assert_equal(0, list.deliveries_count)
   end
 
+  def test_counts_opens
+    owner = random_owner
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    assert_equal(0, list.opened_count)
+  end
+
   def test_absorbs_duplicates
     test_pgsql.exec('DELETE FROM delivery')
     owner = random_owner

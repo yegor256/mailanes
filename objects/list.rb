@@ -105,6 +105,17 @@ class List
     )[0]['count'].to_i
   end
 
+  def opened_count
+    @pgsql.exec(
+      [
+        'SELECT COUNT(*) FROM recipient',
+        'JOIN delivery ON recipient.id = delivery.recipient AND delivery.opened != \'\'',
+        'WHERE recipient.list = $1'
+      ].join(' '),
+      [@id]
+    )[0]['count'].to_i
+  end
+
   def absorb_counts
     q = [
       'SELECT * FROM',
