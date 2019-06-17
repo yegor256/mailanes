@@ -41,10 +41,7 @@ class Delivery
 
   def recipient
     id = @hash['recipient'] || @pgsql.exec('SELECT recipient FROM delivery WHERE id=$1', [@id])[0]['recipient']
-    Recipient.new(
-      id: id.to_i,
-      pgsql: @pgsql
-    )
+    Recipient.new(id: id.to_i, pgsql: @pgsql, hash: @hash.slice('bounced'))
   end
 
   def letter?

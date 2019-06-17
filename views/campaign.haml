@@ -101,6 +101,8 @@
 - else
   - deliveries.each do |d|
     %p
+      - if d.recipient.bounced?
+        %span{title: "The recipient #{d.recipient.id} was bounced"}= '👎'
       - unless d.opened.empty?
         %span{title: d.opened}= '💌 '
       %a{href: "/delivery?id=#{d.id}"}= "##{d.id}"
@@ -108,7 +110,7 @@
       = d.created.utc.iso8601
       = "(#{Ago.new(d.created)})"
       to
-      %a{href: "/recipient?id=#{d.recipient.id}"}= "##{d.recipient.id}"
+      %a{href: "/recipient?id=#{d.recipient.id}", style: d.recipient.bounced? ? 'text-decoration:line-through' : ''}= "##{d.recipient.id}"
       with letter
       %a{href: "/letter?id=#{d.letter.id}"}= "##{d.letter.id}"
       in campaign

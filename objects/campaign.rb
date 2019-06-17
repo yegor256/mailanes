@@ -129,7 +129,8 @@ class Campaign
 
   def deliveries(limit: 50)
     q = [
-      'SELECT * FROM delivery',
+      'SELECT delivery.*, recipient.bounced AS bounced FROM delivery',
+      'JOIN recipient ON delivery.recipient = recipient.id',
       'WHERE campaign = $1',
       'ORDER BY delivery.created DESC',
       'LIMIT $2'
