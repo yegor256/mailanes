@@ -98,6 +98,7 @@ class Campaign
     if yml['decoy']
       raise UserError, 'Decoy amount must be set' if yml['decoy']['amount'].nil?
       raise UserError, 'Decoy amount must be a number' unless yml['decoy']['amount'].is_a?(Numeric)
+      raise UserError, 'Decoy amount must be positive' if yml['decoy']['amount'].zero?
     end
     speed = yml['speed'] ? yml['speed'].to_i : 65_536
     @pgsql.exec('UPDATE campaign SET speed=$1 WHERE id=$2', [speed, @id])
