@@ -141,7 +141,10 @@ class LetterTest < Minitest::Test
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipient = list.recipients.add('test11@mailanes.com')
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
+    campaign.save_yaml("title: hello\nspeed: 10\ndecoy:\n  amount: 2\n  address: fake@mailanes.com")
     letter = lane.letters.add
+    delivery = Deliveries.new(pgsql: test_pgsql).add(campaign, letter, recipient)
     RandomPort::Pool::SINGLETON.acquire do |port|
       Dir.mktmpdir do |dir|
         smtpd = FakeSMTPd::Runner.new(
@@ -163,7 +166,7 @@ class LetterTest < Minitest::Test
         codec = GLogin::Codec.new('some secret')
         begin
           smtpd.start
-          letter.deliver(recipient, codec)
+          letter.deliver(recipient, codec, delivery: delivery)
         ensure
           smtpd.stop
         end
