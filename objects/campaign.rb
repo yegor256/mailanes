@@ -168,6 +168,18 @@ class Campaign
     )[0]['count'].to_i
   end
 
+  def bounce_count(days: -1)
+    @pgsql.exec(
+      [
+        'SELECT COUNT(*) FROM delivery',
+        'JOIN recipient ON delivery.recipient = recipient.id',
+        'WHERE campaign = $1 AND bounced IS NOT NULL',
+        days.positive? ? "AND delivery.created > NOW() - INTERVAL '#{days} DAYS'" : ''
+      ].join(' '),
+      [@id]
+    )[0]['count'].to_i
+  end
+
   def pipeline
     @pgsql.exec(Pipeline.query(@id))
   end

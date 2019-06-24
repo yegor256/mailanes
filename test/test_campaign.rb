@@ -72,6 +72,16 @@ class CampaignTest < Minitest::Test
     end
   end
 
+  def test_counts
+    owner = random_owner
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
+    assert_equal(0, campaign.deliveries_count(days: 10))
+    assert_equal(0, campaign.recipients_count)
+    assert_equal(0, campaign.bounce_count(days: 10))
+  end
+
   def test_adds_and_removes_sources
     owner = random_owner
     campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(

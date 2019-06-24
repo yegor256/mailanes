@@ -92,7 +92,10 @@
 %p
   Delivered
   = campaign.deliveries_count
-  emails.
+  emails;
+  bounced
+  = campaign.bounce_count
+  recipients.
 
 - deliveries = campaign.deliveries
 - if deliveries.empty?
