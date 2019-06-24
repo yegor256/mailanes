@@ -63,10 +63,7 @@ class Delivery
 
   def campaign
     id = @hash['campaign'] || @pgsql.exec('SELECT campaign FROM delivery WHERE id=$1', [@id])[0]['campaign']
-    Campaign.new(
-      id: id.to_i,
-      pgsql: @pgsql
-    )
+    Campaign.new(id: id.to_i, pgsql: @pgsql)
   end
 
   def details

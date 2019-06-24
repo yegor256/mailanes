@@ -95,6 +95,13 @@ notify:
   # Notify in Telegram chat. You can get this number
   # just by starting a chat with https://t.me/mailanes_bot
   telegram: 136544085
+# Send fake emails to this address, in order to
+# lower the bounce-back stats of the SMTP providers (recommended)
+decoy:
+  # How many fake emails per each real email
+  amount: 0.1
+  # Destination address ('*' will be replaced by a random 0-9 number)
+  address: my-fake***@example.com
 ```
 
 ### Letter

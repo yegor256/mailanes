@@ -25,6 +25,7 @@ require_relative 'lane'
 require_relative 'list'
 require_relative 'pipeline'
 require_relative 'yaml_doc'
+require_relative 'user_error'
 
 # Campaign.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -73,6 +74,10 @@ class Campaign
     )
   end
 
+  def decoy
+    yaml['decoy'] || { amount: 0 }
+  end
+
   def title
     yaml['title'] || 'unknown'
   end
@@ -90,6 +95,10 @@ class Campaign
   def save_yaml(yaml)
     @pgsql.exec('UPDATE campaign SET yaml=$1 WHERE id=$2', [YamlDoc.new(yaml).save, @id])
     yml = YamlDoc.new(yaml).load
+    if yml['decoy']
+      raise UserError, 'Decoy amount must be set' if yml['decoy']['amount'].nil?
+      raise UserError, 'Decoy amount must be a number' unless yml['decoy']['amount'].is_a?(Numeric)
+    end
     speed = yml['speed'] ? yml['speed'].to_i : 65_536
     @pgsql.exec('UPDATE campaign SET speed=$1 WHERE id=$2', [speed, @id])
     @hash = {}

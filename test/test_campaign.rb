@@ -48,7 +48,7 @@ class CampaignTest < Minitest::Test
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
-    campaign.save_yaml("title: hello\nspeed: 10")
+    campaign.save_yaml("title: hello\nspeed: 10\ndecoy:\n  amount: 0.03")
     assert_equal('hello', campaign.title)
   end
 

@@ -132,9 +132,12 @@
   = "(#{total.zero? ? 0 : 100 * active / total}%)"
   are active,
   - opened = list.opened_count
-  = opened
-  = "(#{total.zero? ? 0 : 100 * opened / total}%)"
-  read their emails:
+  - if opened.zero?
+    no emails opened yet
+  - else
+    = opened
+    = "(#{total.zero? ? 0 : 100 * opened / total}%)"
+    read their emails:
 
 %p
   - list.recipients.all(query: params[:query] || '').each do |r|

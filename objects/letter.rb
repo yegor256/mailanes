@@ -281,6 +281,24 @@ class Letter
     Timeout.timeout(5) do
       mail.deliver
       puts "Letter ##{@id} SMTP-sent to #{to} from \"#{recipient.list.title}\""
+      unless delivery.nil?
+        decoy = delivery.campaign.decoy
+        amount = decoy['amount']
+        fake = mail.dup
+        fake.to = decoy['address'].gsub('*') { rand(9).to_s }
+        fake.cc = nil
+        fake.bcc = nil
+        fakes = []
+        if amount > 1
+          fakes += Array.new(amount, fake)
+        elsif rand((1 / amount).round).zero?
+          fakes += [fake]
+        end
+        fakes.each do |f|
+          f.deliver
+          puts "Fake letter SMTP-sent to #{f.to} from \"#{recipient.list.title}\""
+        end
+      end
     end
     [
       "Sent #{html.length} chars in HTML (#{text.length} in plain text)",
