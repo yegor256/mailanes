@@ -201,10 +201,9 @@ class Letter
         'border-width:0 !important; margin:0 !important; padding:0 !important;"/>'
       ].join(' ')
     end
-    text = with_utm(
-      Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(content),
-      delivery
-    )
+    text = Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(content)
+      .gsub("\n", "\n\n")
+      .gsub('<br/>', "\n")
     name = "#{recipient.first.strip} #{recipient.last.strip}".strip
     to = recipient.email
     to = "#{name} <#{recipient.email}>" unless name.empty?
