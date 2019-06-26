@@ -290,6 +290,7 @@ class Letter
           fake.to = decoy['address'].gsub('*') { rand(9).to_s }
           fake.cc = nil
           fake.bcc = nil
+          fake.html_part = nil
           fake.deliver
           puts "Fake letter SMTP-sent to #{fake.to} from \"#{recipient.list.title}\""
         end
