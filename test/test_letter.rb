@@ -186,6 +186,44 @@ class LetterTest < Minitest::Test
     end
   end
 
+  def test_sends_with_no_decoy
+    owner = random_owner
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    recipient = list.recipients.add('test11@mailanes.com')
+    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
+    campaign.save_yaml("title: hello\nspeed: 10")
+    letter = lane.letters.add
+    delivery = Deliveries.new(pgsql: test_pgsql).add(campaign, letter, recipient)
+    RandomPort::Pool::SINGLETON.acquire do |port|
+      Dir.mktmpdir do |dir|
+        smtpd = FakeSMTPd::Runner.new(
+          dir: File.join(dir, 'messages'),
+          port: port,
+          logfile: File.join(dir, 'smtpd.log'),
+          pidfile: File.join(dir, 'smtpd.pid')
+        )
+        letter.save_yaml(
+          [
+            'from: test@mailanes.com',
+            'smtp:',
+            '  host: localhost',
+            "  port: #{port}",
+            '  user: test',
+            '  password: test'
+          ].join("\n")
+        )
+        codec = GLogin::Codec.new('some secret')
+        begin
+          smtpd.start
+          letter.deliver(recipient, codec, delivery: delivery)
+        ensure
+          smtpd.stop
+        end
+      end
+    end
+  end
+
   def test_sends_via_telegram
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: test_pgsql).add

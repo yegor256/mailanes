@@ -75,7 +75,7 @@ class Campaign
   end
 
   def decoy
-    yaml['decoy'] || { amount: 0 }
+    yaml['decoy'] || { 'amount' => 0 }
   end
 
   def title
