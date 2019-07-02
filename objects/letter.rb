@@ -84,6 +84,10 @@ class Letter
     @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1 AND bounced IS NOT NULL', [@id])[0]['count'].to_i
   end
 
+  def unsubscribe_count
+    @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1 AND unsubscribed IS NOT NULL', [@id])[0]['count'].to_i
+  end
+
   def exists?
     !@pgsql.exec('SELECT id FROM letter WHERE id=$1', [@id]).empty?
   end

@@ -113,4 +113,9 @@ class Delivery
     @pgsql.exec('UPDATE delivery SET bounced=NOW() WHERE id=$1', [@id])
     @hash = {}
   end
+
+  def unsubscribe
+    @pgsql.exec('UPDATE delivery SET unsubscribe=NOW() WHERE id=$1', [@id])
+    @hash = {}
+  end
 end

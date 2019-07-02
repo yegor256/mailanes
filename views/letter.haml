@@ -97,11 +97,17 @@
     = opened
     times
     - unless delivered.zero?
-      = "/ #{format('%.02f', 100.0 * opened / delivered)}%."
+      = "/ #{format('%.02f', 100.0 * opened / delivered)}%"
   = succeed ';' do
     bounced:
     - bounced = letter.bounce_count
     = bounced
     - unless delivered.zero?
-      = "/ #{format('%.02f', 100.0 * bounced / delivered)}%."
+      = "/ #{format('%.02f', 100.0 * bounced / delivered)}%"
+  = succeed '.' do
+    unsubscribed:
+    - unsubscribed = letter.unsubscribe_count
+    = unsubscribed
+    - unless delivered.zero?
+      = "/ #{format('%.02f', 100.0 * unsubscribed / delivered)}%"
 
