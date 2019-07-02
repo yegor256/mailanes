@@ -85,16 +85,23 @@
         %a{href: "/detach?letter=#{letter.id}&name=#{CGI.escape(a)}", onclick: "return confirm('Are you sure?');"} delete
 
 %p
-  Delivered
+  Delivered:
   - delivered = letter.deliveries_count
   = delivered
   times.
 
 %p
-  Opened
-  - opened = letter.opened_count
-  = opened
-  times
-  - unless delivered.zero?
-    = "/ #{format('%.02f', 100.0 * opened / delivered)}%."
+  = succeed ';' do
+    Opened:
+    - opened = letter.opened_count
+    = opened
+    times
+    - unless delivered.zero?
+      = "/ #{format('%.02f', 100.0 * opened / delivered)}%."
+  = succeed ';' do
+    bounced:
+    - bounced = letter.bounce_count
+    = bounced
+    - unless delivered.zero?
+      = "/ #{format('%.02f', 100.0 * bounced / delivered)}%."
 

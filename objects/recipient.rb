@@ -82,15 +82,6 @@ class Recipient
     (@hash['active'] || @pgsql.exec('SELECT active FROM recipient WHERE id=$1', [@id])[0]['active']) == 't'
   end
 
-  def bounced?
-    !(@hash['bounced'] || @pgsql.exec('SELECT bounced FROM recipient WHERE id=$1', [@id])[0]['bounced']).nil?
-  end
-
-  def bounce
-    @pgsql.exec('UPDATE recipient SET bounced=NOW() WHERE id=$1', [@id])
-    @hash = {}
-  end
-
   # Amount of days to wait until something new can
   # be delivered to this guy (can be zero)
   def relax
@@ -127,6 +118,12 @@ class Recipient
 
   def move_to(list)
     @pgsql.exec('UPDATE recipient SET list = $1 WHERE id = $2', [list.id, @id])
+  end
+
+  def bounced?
+    d = @pgsql.exec('SELECT bounced FROM delivery WHERE recipient = $1', [@id])[0]
+    return false if d.nil?
+    !d['bounced'].nil?
   end
 
   def deliveries(limit: 50)

@@ -48,7 +48,6 @@ class RecipientsTest < Minitest::Test
     recipients = Recipients.new(list: list, pgsql: test_pgsql)
     recipients.add('tiu-1@mailanes.com', source: owner)
     recipients.add('tiu-2@mailanes.com', source: owner)
-    recipients.add('tiu-3@mailanes.com').bounce
     assert(1, recipients.weeks(owner).count)
     assert(recipients.weeks(owner)[0][:week])
     assert(recipients.weeks(owner)[0][:total])
@@ -95,8 +94,7 @@ class RecipientsTest < Minitest::Test
     deliveries = Deliveries.new(pgsql: test_pgsql)
     deliveries.add(campaign, letter, first)
     second = recipients.add('tes-110@mailanes.com')
-    deliveries.add(campaign, letter, second)
-    second.bounce
+    deliveries.add(campaign, letter, second).bounce
     assert_equal(0.5, recipients.bounce_rate)
   end
 

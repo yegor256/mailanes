@@ -79,7 +79,8 @@ class Campaigns
       [
         'SELECT COUNT(recipient.id) FROM recipient',
         'JOIN list ON recipient.list = list.id',
-        "WHERE list.owner = $1 AND recipient.bounced > NOW() - INTERVAL \'#{days} DAYS\'"
+        'JOIN delivery ON recipient.id = delivery.recipient',
+        "WHERE list.owner = $1 AND delivery.bounced > NOW() - INTERVAL \'#{days} DAYS\'"
       ].join(' '),
       [@owner]
     )[0]['count'].to_i

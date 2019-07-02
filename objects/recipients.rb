@@ -123,10 +123,12 @@ class Recipients
   def weeks(source)
     @pgsql.exec(
       [
-        'SELECT CONCAT(DATE_PART(\'year\', created), \'/\', DATE_PART(\'week\', created)) AS week,',
-        'COUNT(*) AS total,',
-        'COUNT(*) FILTER (WHERE bounced IS NOT NULL) as bad',
+        'SELECT CONCAT(DATE_PART(\'year\', recipient.created), \'/\',',
+        '  DATE_PART(\'week\', recipient.created)) AS week,',
+        'COUNT(recipient.*) AS total,',
+        'COUNT(recipient.*) FILTER (WHERE bounced IS NOT NULL) as bad',
         'FROM recipient',
+        'LEFT JOIN delivery ON recipient.id = delivery.recipient',
         'WHERE list = $1 AND source = $2',
         'GROUP BY week',
         'ORDER BY week DESC'

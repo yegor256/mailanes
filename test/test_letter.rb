@@ -175,12 +175,13 @@ class LetterTest < Minitest::Test
           assert(body.include?('X-Complaints-To: reply@mailanes.com'))
           assert(body.include?('List-Unsubscribe: '))
           assert(body.include?('Return-Path: <reply@mailanes.com>'))
-          assert(body.include?("List-Id: #{recipient.id}"))
+          assert(body.include?("List-Id: #{delivery.id}"))
           assert(body.include?("X-Mailanes-Recipient: #{recipient.id}:"))
-          match = body.match(/#{recipient.id}:([a-f0-9]{20,})\n/)
+          match = body.match(/#{recipient.id}:(?<sign>[a-f0-9]{20,}):(?<did>#{delivery.id})\n/)
           assert(!match.nil?)
-          sign = Hex::ToText.new(match[1]).to_s
-          assert_equal(recipient.id, codec.decrypt(sign).to_i)
+          sign = Hex::ToText.new(match[:sign]).to_s
+          assert_equal(recipient.id, codec.decrypt(sign).to_i, body)
+          assert_equal(delivery.id, match[:did].to_i, body)
         end
       end
     end

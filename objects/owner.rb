@@ -54,10 +54,12 @@ class Owner
   def months(source)
     @pgsql.exec(
       [
-        'SELECT CONCAT(DATE_PART(\'year\', created), \'/\', DATE_PART(\'month\', created)) AS month,',
-        'COUNT(*) AS total,',
-        'COUNT(*) FILTER (WHERE bounced IS NOT NULL) as bad',
+        'SELECT CONCAT(DATE_PART(\'year\', recipient.created), \'/\',',
+        '  DATE_PART(\'month\', recipient.created)) AS month,',
+        'COUNT(recipient.*) AS total,',
+        'COUNT(recipient.*) FILTER (WHERE bounced IS NOT NULL) as bad',
         'FROM recipient',
+        'LEFT JOIN delivery ON recipient.id = delivery.recipient',
         'WHERE source = $1',
         'GROUP BY month',
         'ORDER BY month DESC'

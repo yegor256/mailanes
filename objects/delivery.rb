@@ -104,4 +104,13 @@ class Delivery
   def delete
     @pgsql.exec('DELETE FROM delivery WHERE id=$1', [@id])
   end
+
+  def bounced?
+    !(@hash['bounced'] || @pgsql.exec('SELECT bounced FROM delivery WHERE id=$1', [@id])[0]['bounced']).nil?
+  end
+
+  def bounce
+    @pgsql.exec('UPDATE delivery SET bounced=NOW() WHERE id=$1', [@id])
+    @hash = {}
+  end
 end

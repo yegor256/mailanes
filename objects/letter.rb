@@ -80,6 +80,10 @@ class Letter
     @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1 AND opened != \'\'', [@id])[0]['count'].to_i
   end
 
+  def bounce_count
+    @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1 AND bounced IS NOT NULL', [@id])[0]['count'].to_i
+  end
+
   def exists?
     !@pgsql.exec('SELECT id FROM letter WHERE id=$1', [@id]).empty?
   end
@@ -248,18 +252,21 @@ class Letter
         body html
       end
     end
-    mail.header['List-Unsubscribe'] = [
-      '<https://www.mailanes.com/unsubscribe?',
-      unsubscribe(codec, recipient, delivery),
-      '>, <mailto:reply@mailanes.com?subject=',
-      CGI.escape("MAILANES:#{recipient.id}:#{codec.encrypt(recipient.id.to_s)}"),
-      '>'
-    ].join
-    mail.header['List-Id'] = recipient.id.to_s
+    unless delivery.nil?
+      rid = recipient.id
+      did = delivery.id
+      mail.header['X-Mailanes-Recipient'] = "#{rid}:#{Hex::FromText.new(codec.encrypt(rid.to_s))}:#{did}"
+      mail.header['List-Unsubscribe'] = [
+        '<https://www.mailanes.com/unsubscribe?',
+        unsubscribe(codec, recipient, delivery),
+        '>, <mailto:reply@marecipientom?subject=',
+        CGI.escape("MAILANES:#{rid}:#{codec.encrypt(rid.to_s)}:#{did}"),
+        '>'
+      ].join
+      mail.header['List-Id'] = did.to_s
+    end
     mail.header['Return-Path'] = 'reply@mailanes.com'
     mail.header['X-Complaints-To'] = 'reply@mailanes.com'
-    sign = Hex::FromText.new(codec.encrypt(recipient.id.to_s)).to_s
-    mail.header['X-Mailanes-Recipient'] = "#{recipient.id}:#{sign}"
     attachments.each do |a|
       Tempfile.open do |f|
         download(a, f.path)
@@ -305,7 +312,7 @@ class Letter
 
   def unsubscribe(codec, recipient, delivery)
     token = codec.encrypt(recipient.id.to_s)
-    "token=#{CGI.escape(token)}" + (delivery.nil? ? '' : "&d=#{delivery.id}")
+    "token=#{CGI.escape(token)}" + (delivery.nil? ? '' : "&did=#{delivery.id}")
   end
 
   def markdown(lqd, codec, recipient, delivery)

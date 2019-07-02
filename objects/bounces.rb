@@ -41,8 +41,8 @@ class Bounces
   def fetch(tbot: Tbot.new)
     action = lambda do |m|
       body = m.pop
-      match(body, /X-Mailanes-Recipient: ([0-9]+):([a-f0-9=\n]+)/, tbot)
-      match(body, /Subject: MAILANES:([0-9]+):([a-f0-9=\n]+)/, tbot)
+      match(body, /X-Mailanes-Recipient: (?<id>[0-9]+):(?<encrypted>[a-f0-9=\n]+)(?:(?<did>[0-9]+))?/, tbot)
+      match(body, /Subject: MAILANES:(?<id>[0-9]+):(?<encrypted>[a-f0-9=\n]+)(?:(?<did>[0-9]+))?/, tbot)
       puts "Message #{m.unique_id} processed and deleted"
       m.delete
     end
@@ -69,18 +69,25 @@ class Bounces
     end
   end
 
-  def match(body, regex, tbot)
-    body.scan(regex).each do |match|
-      next if match[0].nil? || match[1].nil?
+  def match(body, regex, tbot, delivery: false)
+    body.scan(regex).each do |id, encrypted, did|
+      next if id.nil? || encrypted.nil?
       begin
-        plain = match[0].to_i
-        sign = Hex::ToText.new(match[1].gsub("=\n", '').gsub(/\=.+/, '')).to_s
+        plain = id.to_i
+        sign = Hex::ToText.new(encrypted.gsub("=\n", '').gsub(/\=.+/, '')).to_s
         decoded = @codec.decrypt(sign).to_i
-        raise "Invalid signature #{match[1]} for recipient ID ##{plain}" unless plain == decoded
+        raise "Invalid signature #{encrypted} for recipient ID ##{plain}" unless plain == decoded
         recipient = Recipient.new(id: plain, pgsql: @pgsql)
         recipient.toggle if recipient.active?
-        recipient.bounce
-        recipient.post_event("SMTP delivery bounced back:\n#{body[0..1024]}")
+        if did
+          Delivery.new(id: did.to_i, pgsql: @pgsql).bounce
+          recipient.post_event("SMTP delivery ##{did} bounced back:\n#{body[0..1024]}")
+        else
+          delivery = recipient.deliveries(limit: 1)[0]
+          raise "The recipient #{recipient.id} has no deliveries" if delivery.nil?
+          delivery.bounce
+          recipient.post_event("Unrecognized SMTP delivery bounced back:\n#{body[0..1024]}")
+        end
         list = recipient.list
         rate = list.recipients.bounce_rate
         tbot.notify(

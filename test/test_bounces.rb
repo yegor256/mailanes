@@ -26,6 +26,8 @@ require_relative 'test__helper'
 require_relative '../objects/bounces'
 require_relative '../objects/hex'
 require_relative '../objects/lists'
+require_relative '../objects/lanes'
+require_relative '../objects/campaigns'
 
 class BouncesTest < Minitest::Test
   def test_deactives_recipients
@@ -46,6 +48,9 @@ class BouncesTest < Minitest::Test
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipient = list.recipients.add('test@mailanes.com')
+    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
+    Deliveries.new(pgsql: test_pgsql).add(campaign, lane.letters.add, recipient)
     codec = GLogin::Codec.new('some key')
     msg = FakeMsg.new(recipient, codec)
     Bounces.new([msg], '', '', codec, pgsql: test_pgsql).fetch
