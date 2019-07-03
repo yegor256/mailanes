@@ -81,7 +81,7 @@ task(run: %i[pgsql liquibase]) do
 end
 
 task(:copyright) do
-  sh "grep -q -r '#{Date.today.strftime('%Y')}' \
+  sh "grep -q -r '2018-#{Date.today.strftime('%Y')}' \
     --include '*.rb' \
     --include '*.txt' \
     --include 'Rakefile' \
