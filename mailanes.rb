@@ -29,6 +29,7 @@ require 'haml'
 require 'json'
 require 'pgtk/pool'
 require 'raven'
+require 'loog'
 require 'sinatra'
 require 'sinatra/cookies'
 require 'time'
@@ -77,6 +78,7 @@ configure do
   set :config, config
   set :logging, true
   set :server_settings, timeout: 25
+  set :log, Loog::REGULAR
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
     config['github']['client_secret'],
@@ -84,24 +86,14 @@ configure do
   )
   set :codec, GLogin::Codec.new(config['token_secret'])
   if File.exist?('target/pgsql-config.yml')
-    cfg = YAML.load_file('target/pgsql-config.yml')
     set :pgsql, Pgtk::Pool.new(
-      host: cfg['pgsql']['host'],
-      port: cfg['pgsql']['port'],
-      dbname: cfg['pgsql']['dbname'],
-      user: cfg['pgsql']['user'],
-      password: cfg['pgsql']['password'],
-      log: nil
+      Pgtk::Wire::Yaml.new(File.join(__dir__, 'target/pgsql-config.yml')),
+      log: settings.log
     )
   else
-    uri = URI(ENV['DATABASE_URL'])
     set :pgsql, Pgtk::Pool.new(
-      host: uri.host,
-      port: uri.port,
-      dbname: uri.path[1..-1],
-      user: uri.userinfo.split(':')[0],
-      password: uri.userinfo.split(':')[1],
-      log: nil
+      Pgtk::Wire::Env.new('DATABASE_URL'),
+      log: settings.log
     )
   end
   settings.pgsql.start(4)

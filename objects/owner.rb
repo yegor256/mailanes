@@ -35,22 +35,6 @@ class Owner
     @pgsql = pgsql
   end
 
-  def lists
-    Lists.new(owner: @login, pgsql: @pgsql)
-  end
-
-  def lanes
-    Lanes.new(owner: @login, pgsql: @pgsql)
-  end
-
-  def campaigns
-    Campaigns.new(owner: @login, pgsql: @pgsql)
-  end
-
-  def deliveries
-    Deliveries.new(pgsql: @pgsql)
-  end
-
   def months(source)
     @pgsql.exec(
       [
@@ -66,5 +50,21 @@ class Owner
       ].join(' '),
       [source.downcase.strip]
     ).map { |r| { month: r['month'], total: r['total'].to_i, bad: r['bad'].to_i } }
+  end
+
+  def lists
+    Lists.new(owner: @login, pgsql: @pgsql)
+  end
+
+  def lanes
+    Lanes.new(owner: @login, pgsql: @pgsql)
+  end
+
+  def campaigns
+    Campaigns.new(owner: @login, pgsql: @pgsql)
+  end
+
+  def deliveries
+    Deliveries.new(pgsql: @pgsql)
   end
 end

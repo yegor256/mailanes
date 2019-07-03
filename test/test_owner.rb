@@ -22,12 +22,19 @@
 
 require 'minitest/autorun'
 require_relative 'test__helper'
-require_relative '../objects/hex'
+require_relative '../objects/owner'
 
-class HexTest < Minitest::Test
-  def test_prints_and_parses
-    text = 'How are you'
-    hex = Hex::FromText.new(text).to_s
-    assert_equal(text, Hex::ToText.new(hex).to_s)
+class OwnerTest < Minitest::Test
+  def test_monthly_contribution
+    login = random_owner
+    owner = Owner.new(login: owner, pgsql: test_pgsql)
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    recipients = Recipients.new(list: list, pgsql: test_pgsql)
+    total = 5
+    total.times do |i|
+      recipients.add("test#{i}@mailanes.com", source: login)
+    end
+    data = owner.months(login)
+    assert_equal(total, data[0][:total])
   end
 end

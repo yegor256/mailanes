@@ -23,6 +23,7 @@
 ENV['RACK_ENV'] = 'test'
 
 require 'simplecov'
+SimpleCov.root(File.expand_path(File.join(__dir__, '..')))
 SimpleCov.start
 if ENV['CI'] == 'true'
   require 'codecov'
@@ -32,6 +33,7 @@ end
 require 'yaml'
 require 'minitest/autorun'
 require 'pgtk/pool'
+require 'loog'
 module Minitest
   class Test
     def random_owner
@@ -40,15 +42,11 @@ module Minitest
     end
 
     def test_pgsql
-      config = YAML.load_file('target/pgsql-config.yml')
       # rubocop:disable Style/ClassVars
       @@test_pgsql ||= Pgtk::Pool.new(
-        host: config['pgsql']['host'],
-        port: config['pgsql']['port'],
-        dbname: config['pgsql']['dbname'],
-        user: config['pgsql']['user'],
-        password: config['pgsql']['password']
-      ).start(4)
+        Pgtk::Wire::Yaml.new(File.join(__dir__, '../target/pgsql-config.yml')),
+        log: Loog::REGULAR
+      ).start
       # rubocop:enable Style/ClassVars
     end
   end
