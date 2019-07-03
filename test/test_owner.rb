@@ -30,7 +30,7 @@ class OwnerTest < Minitest::Test
     owner = Owner.new(login: owner, pgsql: test_pgsql)
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipients = Recipients.new(list: list, pgsql: test_pgsql)
-    total = 5
+    total = 3
     total.times do |i|
       recipients.add("test#{i}@mailanes.com", source: login)
     end

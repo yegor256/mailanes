@@ -52,7 +52,7 @@ class Lane
     ).load
   end
 
-  def save_yaml(yaml)
+  def yaml=(yaml)
     @pgsql.exec('UPDATE lane SET yaml=$1 WHERE id=$2', [YamlDoc.new(yaml).save, @id])
     @hash = {}
   end

@@ -103,9 +103,9 @@ class LetterTest < Minitest::Test
     letters = Letters.new(lane: lane, pgsql: test_pgsql)
     letter = letters.add('Hi, dude!')
     %w[first second third].each do |text|
-      letter.save_yaml("test: #{text}")
+      letter.yaml = "test: #{text}"
       assert_equal(text, letter.yaml['test'])
-      letter.save_liquid(text)
+      letter.liquid = text
       assert_equal(text, letter.liquid)
     end
   end
@@ -118,9 +118,9 @@ class LetterTest < Minitest::Test
     letters.add
     letter = letters.all[0]
     %w[first second third].each do |text|
-      letter.save_yaml("test: #{text}")
+      letter.yaml = "test: #{text}"
       assert_equal(text, letter.yaml['test'])
-      letter.save_liquid(text)
+      letter.liquid = text
       assert_equal(text, letter.liquid)
     end
   end
@@ -142,7 +142,7 @@ class LetterTest < Minitest::Test
     recipient = list.recipients.add('test11@mailanes.com')
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
-    campaign.save_yaml("title: hello\nspeed: 10\ndecoy:\n  amount: 2\n  address: fake***@mailanes.com")
+    campaign.yaml = "title: hello\nspeed: 10\ndecoy:\n  amount: 2\n  address: fake***@mailanes.com"
     letter = lane.letters.add
     delivery = Deliveries.new(pgsql: test_pgsql).add(campaign, letter, recipient)
     RandomPort::Pool::SINGLETON.acquire do |port|
@@ -153,16 +153,14 @@ class LetterTest < Minitest::Test
           logfile: File.join(dir, 'smtpd.log'),
           pidfile: File.join(dir, 'smtpd.pid')
         )
-        letter.save_yaml(
-          [
-            'from: test@mailanes.com',
-            'smtp:',
-            '  host: localhost',
-            "  port: #{port}",
-            '  user: test',
-            '  password: test'
-          ].join("\n")
-        )
+        letter.yaml = [
+          'from: test@mailanes.com',
+          'smtp:',
+          '  host: localhost',
+          "  port: #{port}",
+          '  user: test',
+          '  password: test'
+        ].join("\n")
         codec = GLogin::Codec.new('some secret')
         begin
           smtpd.start
@@ -193,7 +191,7 @@ class LetterTest < Minitest::Test
     recipient = list.recipients.add('test11@mailanes.com')
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
-    campaign.save_yaml("title: hello\nspeed: 10")
+    campaign.yaml = "title: hello\nspeed: 10"
     letter = lane.letters.add
     delivery = Deliveries.new(pgsql: test_pgsql).add(campaign, letter, recipient)
     RandomPort::Pool::SINGLETON.acquire do |port|
@@ -204,16 +202,14 @@ class LetterTest < Minitest::Test
           logfile: File.join(dir, 'smtpd.log'),
           pidfile: File.join(dir, 'smtpd.pid')
         )
-        letter.save_yaml(
-          [
-            'from: test@mailanes.com',
-            'smtp:',
-            '  host: localhost',
-            "  port: #{port}",
-            '  user: test',
-            '  password: test'
-          ].join("\n")
-        )
+        letter.yaml = [
+          'from: test@mailanes.com',
+          'smtp:',
+          '  host: localhost',
+          "  port: #{port}",
+          '  user: test',
+          '  password: test'
+        ].join("\n")
         codec = GLogin::Codec.new('some secret')
         begin
           smtpd.start
@@ -230,20 +226,16 @@ class LetterTest < Minitest::Test
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipient = list.recipients.add('tes-t11@mailanes.com')
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
-    lane.save_yaml(
-      [
-        'telegram:',
-        '  chat_id: 0'
-      ].join("\n")
-    )
+    lane.yaml = [
+      'telegram:',
+      '  chat_id: 0'
+    ].join("\n")
     tbot = Tbot::Fake.new
     letter = lane.letters.add('some title', tbot: tbot)
-    letter.save_liquid('How are you?')
-    letter.save_yaml(
-      [
-        'transport: telegram'
-      ].join("\n")
-    )
+    letter.liquid = 'How are you?'
+    letter.yaml = [
+      'transport: telegram'
+    ].join("\n")
     letter.deliver(recipient)
     assert_equal(1, tbot.sent.count)
     assert(tbot.sent[0].include?('How are you?'))

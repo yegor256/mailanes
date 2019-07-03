@@ -92,7 +92,7 @@ class Campaign
     ).load
   end
 
-  def save_yaml(yaml)
+  def yaml=(yaml)
     @pgsql.exec('UPDATE campaign SET yaml=$1 WHERE id=$2', [YamlDoc.new(yaml).save, @id])
     yml = YamlDoc.new(yaml).load
     if yml['decoy']

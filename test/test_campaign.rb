@@ -48,7 +48,7 @@ class CampaignTest < Minitest::Test
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
-    campaign.save_yaml("title: hello\nspeed: 10\ndecoy:\n  amount: 0.03")
+    campaign.yaml = "title: hello\nspeed: 10\ndecoy:\n  amount: 0.03"
     assert_equal('hello', campaign.title)
   end
 
@@ -58,7 +58,7 @@ class CampaignTest < Minitest::Test
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
     assert_raises(UserError) do
-      campaign.save_yaml('this is not yaml')
+      campaign.yaml = 'this is not yaml'
     end
   end
 
@@ -68,7 +68,7 @@ class CampaignTest < Minitest::Test
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
     assert_raises(UserError) do
-      campaign.save_yaml('this is not yaml')
+      campaign.yaml = 'this is not yaml'
     end
   end
 

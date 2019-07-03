@@ -58,14 +58,18 @@ class Recipient
     ).load
   end
 
-  def save_yaml(yaml)
+  def yaml=(yaml)
     @pgsql.exec('UPDATE recipient SET yaml=$1 WHERE id=$2', [YamlDoc.new(yaml).save, @id])
     @hash = {}
   end
 
-  def change_email(email)
+  def email=(email)
     @pgsql.exec('UPDATE recipient SET email=$1 WHERE id=$2', [email, @id])
     @hash = {}
+  end
+
+  def email
+    @hash['email'] || @pgsql.exec('SELECT email FROM recipient WHERE id=$1', [@id])[0]['email']
   end
 
   def toggle
@@ -88,10 +92,6 @@ class Recipient
     max = @pgsql.exec('SELECT MAX(relax) FROM delivery WHERE recipient = $1', [@id])[0]['max']
     relax = max.nil? ? Time.now : Time.parse(max)
     ((relax - Time.now) / (24 * 60 * 60)).round.to_i
-  end
-
-  def email
-    @hash['email'] || @pgsql.exec('SELECT email FROM recipient WHERE id=$1', [@id])[0]['email']
   end
 
   def first

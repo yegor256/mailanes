@@ -53,16 +53,16 @@ class List
     ).load
   end
 
-  def owner
-    @hash['owner'] || @pgsql.exec('SELECT owner FROM list WHERE id=$1', [@id])[0]['owner']
-  end
-
-  def save_yaml(yaml)
+  def yaml=(yaml)
     @pgsql.exec('UPDATE list SET yaml=$1 WHERE id=$2', [YamlDoc.new(yaml).save, @id])
     yml = YamlDoc.new(yaml).load
     stop = yml['stop'] || false
     @pgsql.exec('UPDATE list SET stop=$1 WHERE id=$2', [stop, @id])
     @hash = {}
+  end
+
+  def owner
+    @hash['owner'] || @pgsql.exec('SELECT owner FROM list WHERE id=$1', [@id])[0]['owner']
   end
 
   def stop?

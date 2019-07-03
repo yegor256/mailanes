@@ -44,7 +44,7 @@ class ListTest < Minitest::Test
     owner = random_owner
     lists = Lists.new(owner: owner, pgsql: test_pgsql)
     list = lists.add
-    list.save_yaml("friends:\n- Jeff\n- john10")
+    list.yaml = "friends:\n- Jeff\n- john10"
     assert(list.friend?('jeff'))
     assert(!list.friend?('john'))
   end
@@ -53,9 +53,9 @@ class ListTest < Minitest::Test
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     assert(!list.stop?)
-    list.save_yaml('stop: true')
+    list.yaml = 'stop: true'
     assert(list.stop?)
-    list.save_yaml('stop: false')
+    list.yaml = 'stop: false'
     assert(!list.stop?)
   end
 

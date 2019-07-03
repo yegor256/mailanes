@@ -63,7 +63,7 @@ class PipelineTest < Minitest::Test
     campaign.toggle
     first = lane.letters.add
     first.toggle
-    first.save_yaml('relax: "1:0:0"')
+    first.yaml = 'relax: "1:0:0"'
     post = Postman::Fake.new
     Pipeline.new(pgsql: test_pgsql).fetch(post)
     assert(post.deliveries.find { |d| d.letter.id == first.id })
@@ -98,7 +98,7 @@ class PipelineTest < Minitest::Test
     assert(!list.stop?)
     list.recipients.add(email)
     stop = Lists.new(owner: owner, pgsql: test_pgsql).add
-    stop.save_yaml('stop: true')
+    stop.yaml = 'stop: true'
     assert(stop.stop?)
     stop.recipients.add(email)
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
@@ -116,7 +116,7 @@ class PipelineTest < Minitest::Test
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     list.recipients.add('jeff@mailanes.com')
     stop = Lists.new(owner: owner, pgsql: test_pgsql).add
-    stop.save_yaml('stop: true')
+    stop.yaml = 'stop: true'
     stop.recipients.add('walter@mailanes.com')
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
@@ -132,7 +132,7 @@ class PipelineTest < Minitest::Test
     owner = random_owner
     email = 'test932@mailanes.com'
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
-    list.save_yaml('stop: true')
+    list.yaml = 'stop: true'
     assert(list.stop?)
     list.recipients.add(email)
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
@@ -150,7 +150,7 @@ class PipelineTest < Minitest::Test
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
     letter = lane.letters.add
     letter.toggle
-    letter.save_yaml('until: 01-01-1970')
+    letter.yaml = 'until: 01-01-1970'
     Pipeline.new(pgsql: test_pgsql).deactivate
     assert(!letter.active?)
   end
@@ -175,7 +175,7 @@ class PipelineTest < Minitest::Test
     campaign.toggle
     letter = lane.letters.add
     letter.toggle
-    letter.save_yaml("transport: telegram\ntelegram:\n  chat_id: 1")
+    letter.yaml = "transport: telegram\ntelegram:\n  chat_id: 1"
     tbot = Tbot::Fake.new
     Pipeline.new(tbot: tbot, pgsql: test_pgsql).fetch(Postman.new)
     assert_equal(1, campaign.deliveries.count)

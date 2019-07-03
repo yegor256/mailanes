@@ -89,7 +89,7 @@ class AppTest < Minitest::Test
   def test_adds_new_recipient
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
-    list.save_yaml("friends:\n- jeff")
+    list.yaml = "friends:\n- jeff"
     login('jeff')
     email = "#{SecureRandom.hex[0..8]}@mailanes.com"
     post("/do-add?id=#{list.id}&email=#{email}")
@@ -100,7 +100,7 @@ class AppTest < Minitest::Test
   def test_downloads_friends_list
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
-    list.save_yaml("friends:\n- jeff")
+    list.yaml = "friends:\n- jeff"
     login('jeff')
     get("/download-list?list=#{list.id}")
     assert_equal(200, last_response.status, last_response.body)

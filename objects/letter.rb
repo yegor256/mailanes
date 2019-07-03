@@ -135,12 +135,12 @@ class Letter
     @hash = {}
   end
 
-  def save_liquid(liquid)
+  def liquid=(liquid)
     @pgsql.exec('UPDATE letter SET liquid=$1 WHERE id=$2', [liquid, @id])
     @hash = {}
   end
 
-  def save_yaml(yaml)
+  def yaml=(yaml)
     @pgsql.exec('UPDATE letter SET yaml=$1 WHERE id=$2', [YamlDoc.new(yaml).save, @id])
     yml = YamlDoc.new(yaml).load
     speed = yml['speed'] ? yml['speed'].to_i : 65_536

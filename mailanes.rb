@@ -231,7 +231,7 @@ end
 
 post '/save-list' do
   list = owner.lists.list(params[:id].to_i)
-  list.save_yaml(params[:yaml])
+  list.yaml = params[:yaml]
   flash("/list?id=#{list.id}", "YAML has been saved to the list ##{list.id}")
 end
 
@@ -281,7 +281,7 @@ post '/change-email' do
   recipient = list.recipients.recipient(params[:id].to_i)
   before = recipient.email
   after = params[:email]
-  recipient.change_email(after)
+  recipient.email = after
   recipient.post_event("Email changed from #{before} to #{after} by @#{current_user}")
   flash("/recipient?id=#{recipient.id}", "The email has been changed for the recipient ##{recipient.id}")
 end
@@ -399,7 +399,7 @@ end
 
 post '/save-lane' do
   lane = owner.lanes.lane(params[:id].to_i)
-  lane.save_yaml(params[:yaml])
+  lane.yaml = params[:yaml]
   flash("/lane?id=#{lane.id}", "The YAML config of the lane ##{lane.id} has been saved")
 end
 
@@ -433,8 +433,8 @@ end
 
 post '/save-letter' do
   letter = owner.lanes.letter(params[:id].to_i)
-  letter.save_liquid(params[:liquid])
-  letter.save_yaml(params[:yaml])
+  letter.liquid = params[:liquid]
+  letter.yaml = params[:yaml]
   flash("/letter?id=#{letter.id}", "YAML and Liquid have been saved for the letter ##{letter.id}")
 end
 
@@ -480,8 +480,8 @@ post '/copy-letter' do
   letter = owner.lanes.letter(params[:id].to_i)
   lane = owner.lanes.lane(params[:lane].to_i)
   copy = lane.letters.add(letter.title)
-  copy.save_yaml(letter.yaml.to_yaml)
-  copy.save_liquid(letter.liquid)
+  copy.yaml = letter.yaml.to_yaml
+  copy.liquid = letter.liquid
   flash("/letter?id=#{copy.id}", "The letter ##{letter.id} has been copied to the letter ##{copy.id}")
 end
 
@@ -548,7 +548,7 @@ end
 
 post '/save-campaign' do
   campaign = owner.campaigns.campaign(params[:id].to_i)
-  campaign.save_yaml(params[:yaml])
+  campaign.yaml = params[:yaml]
   flash("/campaign?id=#{campaign.id}", "YAML has been saved for the campaign ##{campaign.id}")
 end
 
@@ -672,14 +672,12 @@ post '/subscribe' do
     )
     country = Geocoder.search(request.ip).first
     country = country.nil? ? '' : country.country.to_s
-    recipient.save_yaml(
-      {
-        'request_ip' => request.ip.to_s,
-        'country' => country,
-        'referrer' => request.referer.to_s,
-        'user_agent' => request.user_agent.to_s
-      }.merge(params).to_yaml
-    )
+    recipient.yaml = {
+      'request_ip' => request.ip.to_s,
+      'country' => country,
+      'referrer' => request.referer.to_s,
+      'user_agent' => request.user_agent.to_s
+    }.merge(params).to_yaml
     recipient.post_event(
       [
         'Subscribed.',
