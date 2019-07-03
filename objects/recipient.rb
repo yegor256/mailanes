@@ -36,7 +36,7 @@ class Recipient
     raise 'ID has to be larger than zero' if id.zero?
     @id = id
     @pgsql = pgsql
-    @hash = hash
+    @hash = hash.dup
   end
 
   def list

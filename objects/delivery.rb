@@ -36,7 +36,7 @@ class Delivery
     raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
     @id = id
     @pgsql = pgsql
-    @hash = hash
+    @hash = hash.dup
   end
 
   def recipient
