@@ -120,9 +120,9 @@ class RecipientTest < Minitest::Test
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipients = Recipients.new(list: list, pgsql: test_pgsql)
     recipient = recipients.add('x76@mailanes.com')
-    after = '467hsh@mailanes.com'
-    recipient.email = after
-    assert_equal(after, recipient.email)
+    assert_equal('x76@mailanes.com', recipient.email)
+    recipient.email = '467hsh@mailanes.com'
+    assert_equal('467hsh@mailanes.com', recipient.email)
     recipient.email = 'another-one@mailanes.com'
     assert_equal('another-one@mailanes.com', recipient.email)
   end

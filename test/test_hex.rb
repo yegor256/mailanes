@@ -25,9 +25,13 @@ require_relative 'test__helper'
 require_relative '../objects/hex'
 
 class HexTest < Minitest::Test
-  def test_prints_and_parses
-    text = 'How are you'
-    hex = Hex::FromText.new(text).to_s
-    assert_equal(text, Hex::ToText.new(hex).to_s)
+  def test_prints
+    hex = Hex::FromText.new('How are you?').to_s
+    assert_equal('486f772061726520796f753f', hex)
+  end
+
+  def test_parses
+    text = Hex::ToText.new('486f772061726520796f753f').to_s
+    assert_equal('How are you?', text)
   end
 end

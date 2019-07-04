@@ -27,14 +27,16 @@ require_relative '../objects/owner'
 class OwnerTest < Minitest::Test
   def test_monthly_contribution
     login = random_owner
-    owner = Owner.new(login: owner, pgsql: test_pgsql)
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    source = "src-#{rand(999)}"
+    owner = Owner.new(pgsql: test_pgsql, login: login)
+    assert_equal(0, owner.months(source).count)
+    list = Lists.new(owner: login, pgsql: test_pgsql).add
     recipients = Recipients.new(list: list, pgsql: test_pgsql)
     total = 3
     total.times do |i|
-      recipients.add("test#{i}@mailanes.com", source: login)
+      recipients.add("test#{i}@mailanes.com", source: source)
     end
-    data = owner.months(login)
+    data = owner.months(source)
     assert_equal(total, data[0][:total])
   end
 end

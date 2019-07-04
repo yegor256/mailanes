@@ -20,9 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'time'
 require 'time_difference'
 
-# Time ago.
+# The "time ago" piece of text.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018-2019 Yegor Bugayenko
 # License:: MIT
@@ -31,8 +32,13 @@ class Ago
     @time = time
   end
 
+  # Turn it into a string.
   def to_s
     diff = TimeDifference.between(@time, Time.now).humanize
-    diff.nil? ? 'just now' : diff.split(' ', 3).take(2).join(' ').downcase.gsub(/[^a-z0-9 ]/, '') + ' ago'
+    if diff.nil?
+      'just now'
+    else
+      diff.split(' ', 3).take(2).join(' ').downcase.gsub(/[^a-z0-9 ]/, '') + ' ago'
+    end
   end
 end

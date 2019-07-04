@@ -26,7 +26,8 @@ require_relative '../objects/ago'
 
 class AgoTest < Minitest::Test
   def test_just_now
-    assert_equal('just now', Ago.new(Time.now).to_s)
+    ago = Ago.new(Time.now)
+    assert_equal('just now', ago.to_s)
   end
 
   def test_hour_ago

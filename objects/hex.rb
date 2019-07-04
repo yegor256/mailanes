@@ -25,25 +25,27 @@
 # Copyright:: Copyright (c) 2018-2019 Yegor Bugayenko
 # License:: MIT
 class Hex
-  # From text to hex
+  # From text to hex.
   class FromText
     def initialize(text)
       @text = text
     end
 
+    # Turn it into a string.
     def to_s
       @text.unpack('U' * @text.length).collect { |x| x.to_s(16) }.join
     end
   end
 
-  # From hex to text
+  # From hex to text.
   class ToText
     def initialize(hex)
       @hex = hex
     end
 
+    # Turn it into a string.
     def to_s
-      [@hex].pack('H*')
+      [@hex].pack('H*').force_encoding('UTF-8')
     end
   end
 end
