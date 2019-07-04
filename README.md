@@ -9,6 +9,7 @@
 [![PDD status](http://www.0pdd.com/svg?name=yegor256/mailanes)](http://www.0pdd.com/p?name=yegor256/mailanes)
 [![Test Coverage](https://img.shields.io/codecov/c/github/yegor256/mailanes.svg)](https://codecov.io/github/yegor256/mailanes?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/451556110dacf73cc6f6/maintainability)](https://codeclimate.com/github/yegor256/mailanes/maintainability)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/mailanes/blob/master/LICENSE.txt)
 
 [![Availability at SixNines](https://www.sixnines.io/b/8f0c)](https://www.sixnines.io/h/8f0c)
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/mailanes)](https://hitsofcode.com/view/github/yegor256/mailanes)
