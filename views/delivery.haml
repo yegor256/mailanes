@@ -9,11 +9,12 @@
     %a{href: "/recipient?id=#{recipient.id}"}= "Recipient ##{recipient.id}"
   = "#{recipient.email}"
 
-%p
-  - letter = delivery.letter
-  = succeed ':' do
-    %a{href: "/letter?id=#{letter.id}"}= "Letter ##{letter.id}"
-  = "\"#{letter.title}\""
+- if delivery.letter?
+  %p
+    - letter = delivery.letter
+    = succeed ':' do
+      %a{href: "/letter?id=#{letter.id}"}= "Letter ##{letter.id}"
+    = "\"#{letter.title}\""
 
 %p
   - campaign = delivery.campaign

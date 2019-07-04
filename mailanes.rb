@@ -680,7 +680,7 @@ post '/subscribe' do
     }.merge(params).to_yaml
     recipient.post_event(
       [
-        'Subscribed.',
+        "Subscribed via #{request.url} from #{request.ip} (#{country}).",
         @locals[:user] ? "It was done by #{current_user}." : ''
       ].join(' ')
     )
