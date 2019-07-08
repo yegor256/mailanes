@@ -209,7 +209,7 @@ class Letter
         'border-width:0 !important; margin:0 !important; padding:0 !important;"/>'
       ].join(' ')
     end
-    text = Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(content)
+    text = Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(content.gsub("<br/>\n", '<br/>'))
       .gsub("\n", "\n\n")
       .gsub('<br/>', "\n")
     name = "#{recipient.first.strip} #{recipient.last.strip}".strip
