@@ -53,6 +53,12 @@ class Postman
       log = letter.deliver(recipient, @codec, delivery: delivery)
     rescue StandardError => e
       log = "#{e.class.name} #{e.message}; #{e.backtrace.join('; ')}"
+      tbot.notify(
+        'error', delivery.campaign.yaml,
+        "⚠️ We just failed to deliver letter [##{letter.id}](https://www.mailanes.com/letter?id=#{letter.id})",
+        "because of the error of type `#{e.class.name}`: #{e.message.inspect};",
+        "you may find more details [here](https://www.mailanes.com/delivery?id=#{delivery.id})"
+      )
     end
     delivery.close(log)
   end

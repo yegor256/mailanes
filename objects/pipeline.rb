@@ -58,10 +58,8 @@ class Pipeline
         @tbot.notify(
           'deactivate',
           c.yaml,
-          [
-            "The letter ##{letter.id} \"#{letter.title}\" has been deactivated",
-            "in the campaign ##{c.id} \"#{c.title}\" due to its UNTIL configuration."
-          ].join(' ')
+          "The letter ##{letter.id} \"#{letter.title}\" has been deactivated",
+          "in the campaign ##{c.id} \"#{c.title}\" due to its UNTIL configuration."
         )
       end
     end
@@ -72,10 +70,8 @@ class Pipeline
       @tbot.notify(
         'deactivate',
         campaign.yaml,
-        [
-          "The campaign ##{campaign.id} has been deactivated because of its UNTIL configuration:",
-          "\"#{campaign.title}.\""
-        ].join(' ')
+        "The campaign ##{campaign.id} has been deactivated because of its UNTIL configuration:",
+        "\"#{campaign.title}.\""
       )
     end
   end
@@ -89,10 +85,8 @@ class Pipeline
       @tbot.notify(
         'exhaust',
         campaign.yaml,
-        [
-          "The campaign ##{campaign.id} is not exhausted anymore (#{queue} recipients in the queue):",
-          "[\"#{campaign.title}\"](https://www.mailanes.com/campaign?id=#{campaign.id})."
-        ].join(' ')
+        "The campaign ##{campaign.id} is not exhausted anymore (#{queue} recipients in the queue):",
+        "[\"#{campaign.title}\"](https://www.mailanes.com/campaign?id=#{campaign.id})."
       )
     end
     @pgsql.exec('SELECT * FROM campaign WHERE active = true AND exhausted IS NULL').each do |r|
@@ -102,10 +96,8 @@ class Pipeline
       @tbot.notify(
         'exhaust',
         campaign.yaml,
-        [
-          "The campaign ##{campaign.id} has been exhausted:",
-          "[\"#{campaign.title}\"](https://www.mailanes.com/campaign?id=#{campaign.id})."
-        ].join(' ')
+        "The campaign ##{campaign.id} has been exhausted:",
+        "[\"#{campaign.title}\"](https://www.mailanes.com/campaign?id=#{campaign.id})."
       )
     end
   end

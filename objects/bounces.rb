@@ -93,13 +93,11 @@ class Bounces
         tbot.notify(
           'bounce',
           recipient.list.yaml,
-          [
-            "The email `#{recipient.email}` to recipient",
-            "[##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
-            'bounced back, that\'s why we deactivated it in the list',
-            "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
-            "Bounce rate of the list is #{(rate * 100).round(2)}% (#{rate > 0.05 ? 'too high!' : 'it is OK'})."
-          ].join(' ')
+          "The email `#{recipient.email}` to recipient",
+          "[##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
+          'bounced back, that\'s why we deactivated it in the list',
+          "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
+          "Bounce rate of the list is #{(rate * 100).round(2)}% (#{rate > 0.05 ? 'too high!' : 'it is OK'})."
         )
         puts "Recipient ##{recipient.id}/#{recipient.email} from \"#{recipient.list.title}\" bounced :("
       rescue StandardError => e

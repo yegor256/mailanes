@@ -59,10 +59,10 @@ class Tbot
     end
   end
 
-  def notify(type, yaml, msg)
+  def notify(type, yaml, *msg)
     return unless yaml['notify'] && yaml['notify']['telegram']
     return if yaml['notify']['ignore'].is_a?(Array) && yaml['notify']['ignore'].include?(type)
-    post(yaml['notify']['telegram'].to_i, msg)
+    post(yaml['notify']['telegram'].to_i, msg.join(' '))
   end
 
   def post(chat, msg, c: @client)

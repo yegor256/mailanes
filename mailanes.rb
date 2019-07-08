@@ -293,11 +293,9 @@ post '/comment-recipient' do
   settings.tbot.notify(
     'comment',
     list.yaml,
-    [
-      "The recipient ##{recipient.id}/#{params[:email]}",
-      "has got a new comment from #{current_user}:\n\n",
-      params[:comment]
-    ].join(' ')
+    "The recipient ##{recipient.id}/#{params[:email]}",
+    "has got a new comment from #{current_user}:\n\n",
+    params[:comment]
   )
   flash(
     "/recipient?id=#{recipient.id}",
@@ -342,11 +340,9 @@ post '/upload-recipients' do
     settings.tbot.notify(
       'upload',
       list.yaml,
-      [
-        "#{File.readlines(f.path).count} recipients uploaded into",
-        "the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
-        "by #{current_user}."
-      ].join(' ')
+      "#{File.readlines(f.path).count} recipients uploaded into",
+      "the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
+      "by #{current_user}."
     )
   end
   flash(params[:redirect] || "/list?id=#{list.id}", "The CSV has been uploaded to the list ##{list.id}")
@@ -603,12 +599,10 @@ post '/do-add' do
   settings.tbot.notify(
     'add',
     list.yaml,
-    [
-      "New recipient `#{email}` has been added",
-      "by #{current_user} to your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
-      "(#{list.recipients.count} emails are there).",
-      "There are #{list.recipients.per_day(10).round(2)} emails joining daily (last #{days} days statistics)."
-    ].join(' ')
+    "New recipient `#{email}` has been added",
+    "by #{current_user} to your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
+    "(#{list.recipients.count} emails are there).",
+    "There are #{list.recipients.per_day(10).round(2)} emails joining daily (last #{days} days statistics)."
   )
   flash("/add?list=#{list.id}", "The recipient ##{recipient.id} has been added to the list ##{list.id}")
 end
@@ -618,10 +612,8 @@ get '/download-list' do
   settings.tbot.notify(
     'download',
     list.yaml,
-    [
-      "Your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
-      "has been downloaded by #{current_user}."
-    ].join(' ')
+    "Your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
+    "has been downloaded by #{current_user}."
   )
   response.headers['Content-Type'] = 'text/csv'
   response.headers['Content-Disposition'] = "attachment; filename='#{list.title.gsub(/[^a-zA-Z0-9]/, '-')}.csv'"
@@ -693,14 +685,12 @@ post '/subscribe' do
   settings.tbot.notify(
     'subscribe',
     list.yaml,
-    [
-      notify,
-      "\n\n```\n#{recipient.yaml.to_yaml}\n```\n\n",
-      "There are #{list.recipients.active_count} active subscribers in the list now,",
-      " out of #{list.recipients.count} total,",
-      " #{list.recipients.per_day.round(2)} joining daily.",
-      " More details are [here](https://www.mailanes.com/recipient?id=#{recipient.id})."
-    ].flatten.join
+    notify,
+    "\n\n```\n#{recipient.yaml.to_yaml}\n```\n\n",
+    "There are #{list.recipients.active_count} active subscribers in the list now,",
+    " out of #{list.recipients.count} total,",
+    " #{list.recipients.per_day.round(2)} joining daily.",
+    " More details are [here](https://www.mailanes.com/recipient?id=#{recipient.id})."
   )
   redirect params[:redirect] if params[:redirect]
   haml :subscribed, layout: :layout, locals: merged(
@@ -728,16 +718,14 @@ get '/unsubscribe' do
     settings.tbot.notify(
       'unsubscribe',
       list.yaml,
-      [
-        "The recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
-        " with the email `#{email}` has been unsubscribed from your list",
-        " [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
-        @locals[:user] ? " It was done by #{current_user}." : '',
-        params[:d] ? " It was the reaction to [this](http://www.mailanes.com/delivery?id=#{params[:d]})." : '',
-        " There are #{list.recipients.active_count} active subscribers in the list still,",
-        " out of #{list.recipients.count} total.",
-        "This is what we know about the recipient:\n\n```\n#{recipient.yaml.to_yaml}\n```"
-      ].join
+      "The recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
+      " with the email `#{email}` has been unsubscribed from your list",
+      " [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
+      @locals[:user] ? " It was done by #{current_user}." : '',
+      params[:d] ? " It was the reaction to [this](http://www.mailanes.com/delivery?id=#{params[:d]})." : '',
+      " There are #{list.recipients.active_count} active subscribers in the list still,",
+      " out of #{list.recipients.count} total.",
+      "This is what we know about the recipient:\n\n```\n#{recipient.yaml.to_yaml}\n```"
     )
     recipient.post_event('Unsubscribed' + (@locals[:user] ? " by @#{current_user}" : '') + '.')
   else

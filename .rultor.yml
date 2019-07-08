@@ -10,9 +10,11 @@ install: |-
   sudo apt-get -y install libpq-dev
   sudo rvm install ruby-2.6.0
   rvm use 2.6.0
-  sudo gem install pdd
+  gem install pdd
   git config --global user.email "server@mailanes.com"
   git config --global user.name "mailanes.com"
+  bundle install --no-color
+  export LC_ALL=en_US.UTF-8
 release:
   sensitive:
     - config.yml
@@ -20,9 +22,8 @@ release:
     pdd -f /dev/null
     export GEM_HOME=~/.ruby
     export GEM_PATH=$GEM_HOME:$GEM_PATH
-    bundle install --no-color
     ruby -v
-    LC_ALL=en_US.UTF-8 rake
+    bundle exec rake
     git remote add heroku git@heroku.com:mailanes.git
     rm -rf ~/.ssh
     mkdir ~/.ssh
@@ -34,23 +35,20 @@ release:
     git add ./version.rb
     git commit -m 'build number set'
     cp ../config.yml config.yml
-    LC_ALL=en_US.UTF-8 bundle exec rake config
+    bundle exec rake config
     git add config.yml
     git commit -m 'config.yml'
     git push -f heroku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
     rm -rf target
-    LC_ALL=en_US.UTF-8 bundle exec rake liquibase
+    bundle exec rake liquibase
     rm -rf config.yml
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 https://www.mailanes.com > /dev/null
-  commanders:
-  - yegor256
-architect:
-- yegor256
 merge:
-  commanders: []
   script: |-
     pdd -f /dev/null
-    bundle install
     bundle exec rake
-deploy: {}
+deploy:
+  script: |-
+    echo Nothing to deploy here
+    exit -1
