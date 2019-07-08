@@ -10,9 +10,11 @@ install: |-
   sudo apt-get -y install libpq-dev
   sudo rvm install ruby-2.6.0
   rvm use 2.6.0
-  sudo gem install pdd
   git config --global user.email "server@mailanes.com"
   git config --global user.name "mailanes.com"
+  export GEM_HOME=~/.ruby
+  export GEM_PATH=$GEM_HOME:$GEM_PATH
+  gem install pdd
   bundle install --no-color
   export LC_ALL=en_US.UTF-8
 release:
