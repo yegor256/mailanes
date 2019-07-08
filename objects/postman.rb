@@ -56,6 +56,7 @@ class Postman
       tbot.notify(
         'error', delivery.campaign.yaml,
         "⚠️ We just failed to deliver letter [##{letter.id}](https://www.mailanes.com/letter?id=#{letter.id})",
+        "to the recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
         "because of the error of type `#{e.class.name}`: #{e.message.inspect};",
         "you may find more details [here](https://www.mailanes.com/delivery?id=#{delivery.id})"
       )
