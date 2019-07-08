@@ -297,6 +297,7 @@ class Letter
         total = (rand((1 / total).round).zero? ? 1 : 0) if total < 1 && !total.zero?
         total.times do
           fake = mail.dup
+          fake.without_attachments!
           fake.to = decoy['address'].gsub('*') { rand(9).to_s }
           fake.cc = nil
           fake.bcc = nil
