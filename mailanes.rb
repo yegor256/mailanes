@@ -599,7 +599,7 @@ post '/do-add' do
   settings.tbot.notify(
     'add',
     list.yaml,
-    "New recipient `#{email}` has been added",
+    "👍 New recipient `#{email}` has been added",
     "by #{current_user} to your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
     "(#{list.recipients.count} emails are there).",
     "There are #{list.recipients.per_day(10).round(2)} emails joining daily (last #{days} days statistics)."
@@ -612,7 +612,7 @@ get '/download-list' do
   settings.tbot.notify(
     'download',
     list.yaml,
-    "Your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
+    "📤 Your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
     "has been downloaded by #{current_user}."
   )
   response.headers['Content-Type'] = 'text/csv'
@@ -651,9 +651,9 @@ post '/subscribe' do
       ].join(' ')
     )
     notify += [
-      "A subscriber `#{email}`",
-      " (recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
-      " re-entered the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}):"
+      "👍 A subscriber `#{email}`",
+      "(recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
+      "re-entered the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}):"
     ]
   else
     recipient = list.recipients.add(
@@ -677,20 +677,20 @@ post '/subscribe' do
       ].join(' ')
     )
     notify += [
-      "A new subscriber `#{email}` from #{country}",
-      " (recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id}))",
-      " just got into your list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}):"
+      "👍 A new subscriber [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
+      "from #{country} just got into your list",
+      "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}):"
     ]
   end
   settings.tbot.notify(
     'subscribe',
     list.yaml,
     notify,
-    "\n\n```\n#{recipient.yaml.to_yaml}\n```\n\n",
-    "There are #{list.recipients.active_count} active subscribers in the list now,",
-    " out of #{list.recipients.count} total,",
-    " #{list.recipients.per_day.round(2)} joining daily.",
-    " More details are [here](https://www.mailanes.com/recipient?id=#{recipient.id})."
+    "\n\n```\n#{recipient.yaml.to_yaml.strip}\n```",
+    "\n\nThere are #{list.recipients.active_count} active subscribers in the list now,",
+    "out of #{list.recipients.count} total,",
+    "#{list.recipients.per_day.round(2)} joining daily.",
+    "More details are [here](https://www.mailanes.com/recipient?id=#{recipient.id})."
   )
   redirect params[:redirect] if params[:redirect]
   haml :subscribed, layout: :layout, locals: merged(
@@ -718,13 +718,13 @@ get '/unsubscribe' do
     settings.tbot.notify(
       'unsubscribe',
       list.yaml,
-      "The recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
-      " with the email `#{email}` has been unsubscribed from your list",
-      " [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
-      @locals[:user] ? " It was done by #{current_user}." : '',
-      params[:d] ? " It was the reaction to [this](http://www.mailanes.com/delivery?id=#{params[:d]})." : '',
-      " There are #{list.recipients.active_count} active subscribers in the list still,",
-      " out of #{list.recipients.count} total.",
+      "😢 The recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
+      "with the email `#{email}` has been unsubscribed from your list",
+      "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
+      @locals[:user] ? "It was done by #{current_user}." : '',
+      params[:d] ? "It was the reaction to [this](http://www.mailanes.com/delivery?id=#{params[:d]})." : '',
+      "There are #{list.recipients.active_count} active subscribers in the list still,",
+      "out of #{list.recipients.count} total.",
       "This is what we know about the recipient:\n\n```\n#{recipient.yaml.to_yaml}\n```"
     )
     recipient.post_event('Unsubscribed' + (@locals[:user] ? " by @#{current_user}" : '') + '.')
