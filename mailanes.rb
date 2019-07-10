@@ -41,6 +41,7 @@ require_relative 'objects/bounces'
 require_relative 'objects/hex'
 require_relative 'objects/owner'
 require_relative 'objects/pipeline'
+require_relative 'objects/decoy'
 require_relative 'objects/postman'
 require_relative 'objects/tbot'
 require_relative 'objects/user_error'
@@ -60,6 +61,11 @@ configure do
       'encryption_secret' => ''
     },
     'pop3' => {
+      'host' => '',
+      'login' => '',
+      'password' => ''
+    },
+    'decoy_pop3' => {
       'host' => '',
       'login' => '',
       'password' => ''
@@ -101,13 +107,6 @@ configure do
   settings.pgsql.start(4)
   set :postman, Postman.new(settings.codec)
   set :tbot, Tbot.new(config['telegram_token'])
-  set :bounces, Bounces.new(
-    config['pop3']['host'],
-    config['pop3']['login'],
-    config['pop3']['password'],
-    settings.codec,
-    pgsql: settings.pgsql
-  )
   set :pipeline, Pipeline.new(pgsql: settings.pgsql, tbot: settings.tbot)
   if ENV['RACK_ENV'] != 'test'
     Thread.new do
@@ -121,7 +120,18 @@ configure do
           settings.pipeline.fetch(settings.postman)
           settings.pipeline.deactivate
           settings.pipeline.exhaust
-          settings.bounces.fetch(tbot: settings.tbot)
+          Bounces.new(
+            settings.config['pop3']['host'],
+            settings.config['pop3']['login'],
+            settings.config['pop3']['password'],
+            settings.codec,
+            pgsql: settings.pgsql
+          ).fetch(tbot: settings.tbot)
+          Decoy.new(
+            settings.config['decoy_pop3']['host'],
+            settings.config['decoy_pop3']['login'],
+            settings.config['decoy_pop3']['password']
+          ).fetch
         rescue StandardError => e
           puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
           Raven.capture_exception(e)
