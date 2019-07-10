@@ -114,7 +114,8 @@ class Bounces
         )
         puts "Recipient ##{recipient.id}/#{recipient.email} from \"#{recipient.list.title}\" bounced :("
       rescue StandardError => e
-        puts "Unclear message from ##{plain} in the inbox:\n#{e.message}\n\t#{e.backtrace.join("\n\t")}:\n#{body}"
+        puts "Unclear message from ##{plain} in the inbox while matching against #{regex}: \
+#{e.message}\n\t#{e.backtrace.join("\n\t")}:\n#{body}"
       end
     end
   end

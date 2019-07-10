@@ -290,8 +290,9 @@ class Letter
     start = Time.now
     Timeout.timeout(15) do
       mail.deliver
+      puts "Letter ##{@id} SMTP-sent to #{to} from \"#{recipient.list.title}\" \
+in #{format('%.02f', Time.now - start)}"
     end
-    puts "Letter ##{@id} SMTP-sent to #{to} from \"#{recipient.list.title}\""
     unless delivery.nil?
       decoy = delivery.campaign.decoy
       total = decoy['amount']

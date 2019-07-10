@@ -34,13 +34,15 @@ class Decoy
   end
 
   def fetch
+    start = Time.now
     pop = Net::POP3.new(@host)
     pop.start(@login, @password)
     total = 0
     pop.each_mail do
+      m.delete
       total += 1
     end
     pop.finish
-    puts "#{total} decoy emails processed"
+    puts "#{total} decoy emails processed in #{format('%.02f', Time.now - start)}s"
   end
 end
