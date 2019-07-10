@@ -121,7 +121,7 @@ class Recipient
   end
 
   def bounced?
-    d = @pgsql.exec('SELECT bounced FROM delivery WHERE recipient = $1', [@id])[0]
+    d = @pgsql.exec('SELECT bounced FROM delivery WHERE recipient = $1 AND bounced IS NOT NULL', [@id])[0]
     return false if d.nil?
     !d['bounced'].nil?
   end

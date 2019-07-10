@@ -111,6 +111,8 @@
       = d.relax ? "(relax is #{d.relax})" : ''
       = ':'
       &= d.details.empty? ? 'WAITING' : d.details
+      %br
+      %a.small.red{href: iri.cut('/delete-delivery').add(id: d.id), onclick: "return confirm('Are you sure?');"} Delete
 
 %p
   %a.red{href: iri.cut('/delete-recipient').add(list: list.id, id: recipient.id), onclick: "return confirm('Are you sure?');"} Delete
