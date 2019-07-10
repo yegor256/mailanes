@@ -78,6 +78,19 @@ class Bounces
         decoded = @codec.decrypt(sign).to_i
         raise "Invalid signature #{encrypted} for recipient ID ##{plain}" unless plain == decoded
         recipient = Recipient.new(id: plain, pgsql: @pgsql)
+        if recipient.bounced?
+          tbot.notify(
+            'error',
+            recipient.list.yaml,
+            '⚠️ Something is wrong! The recipient',
+            "[##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
+            'has already been bounced once,',
+            "but we just received a new bounce report to their email `#{recipient.email}`,",
+            "in the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id});",
+            'this may be happen due to some internal mistake,',
+            'please [report it](https://github.com/yegor256/mailanes)'
+          )
+        end
         recipient.toggle if recipient.active?
         if did
           Delivery.new(id: did.to_i, pgsql: @pgsql).bounce
