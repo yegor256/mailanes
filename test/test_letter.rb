@@ -142,7 +142,7 @@ class LetterTest < Minitest::Test
     recipient = list.recipients.add('test11@mailanes.com')
     lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
-    campaign.yaml = "title: hello\nspeed: 10\ndecoy:\n  amount: 2\n  address: fake***@mailanes.com"
+    campaign.yaml = "title: hello\nspeed: 10\ndecoy:\n  amount: 2\n  address: fake-decoy***@mailanes.com"
     letter = lane.letters.add
     delivery = Deliveries.new(pgsql: test_pgsql).add(campaign, letter, recipient)
     RandomPort::Pool::SINGLETON.acquire do |port|
@@ -170,6 +170,7 @@ class LetterTest < Minitest::Test
         end
         Dir[File.join(dir, 'messages/**/*.json')].each do |f|
           body = JSON.parse(File.read(f))['body'].join("\n")
+          next if body.include?('fake-decoy')
           assert(body.include?('X-Complaints-To: reply@mailanes.com'))
           assert(body.include?('List-Unsubscribe: '))
           assert(body.include?('Return-Path: <reply@mailanes.com>'))

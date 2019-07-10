@@ -302,6 +302,9 @@ class Letter
           fake.cc = nil
           fake.bcc = nil
           fake.html_part = nil
+          fake.header['X-Mailanes-Recipient'] = nil
+          fake.header['List-Unsubscribe'] = nil
+          fake.header['List-Id'] = nil
           fake.deliver
           puts "Fake letter SMTP-sent to #{fake.to} from \"#{recipient.list.title}\""
         end
