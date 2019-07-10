@@ -16,11 +16,12 @@
       %a{href: "/letter?id=#{letter.id}"}= "Letter ##{letter.id}"
     = "\"#{letter.title}\""
 
-%p
-  - campaign = delivery.campaign
-  = succeed ':' do
-    %a{href: "/campaign?id=#{campaign.id}"}= "Campaign ##{campaign.id}"
-  = "\"#{campaign.title}\""
+- if delivery.campaign?
+  %p
+    - campaign = delivery.campaign
+    = succeed ':' do
+      %a{href: "/campaign?id=#{campaign.id}"}= "Campaign ##{campaign.id}"
+    = "\"#{campaign.title}\""
 
 %p
   Opened:
