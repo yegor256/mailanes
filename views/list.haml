@@ -16,9 +16,9 @@
   %a.item{onclick: '$("#find").show();$("#query").focus();'} Find Recipient
   %a.item{onclick: '$("#upload").show();'} Upload CSV
   %a.item{onclick: '$("#absorb").show();'} Absorb
-  %a.item{href: "/download-recipients?id=#{list.id}"} Download CSV
+  %a.item{href: iri.cut('/download-recipients').add(id: list.id)} Download CSV
 
-%form.hidden{method: 'POST', action: '/save-list', id: 'save'}
+%form.hidden{method: 'POST', action: iri.cut('/save-list'), id: 'save'}
   %fieldset
     %input{type: 'hidden', name: 'id', value: list.id}
     %label
@@ -27,20 +27,20 @@
     %textarea{name: 'yaml', style: 'width:100%;height:12em;', required: 'true'}= list.yaml.to_yaml
     %input{type: 'submit', value: 'Save'}
 
-%form.hidden{method: 'POST', action: '/add-recipient', id: 'add'}
+%form.hidden{method: 'POST', action: iri.cut('/add-recipient'), id: 'add'}
   %input{type: 'hidden', name: 'id', value: list.id}
   %input{type: 'text', name: 'email', id: 'email', placeholder: 'Email', size: 20, required: 'true', autocomplete: 'off'}
   %input{type: 'text', name: 'first', placeholder: 'First name', size: 14, autocomplete: 'off'}
   %input{type: 'text', name: 'last', placeholder: 'Last name', size: 16, autocomplete: 'off'}
   %input{type: 'submit', value: 'Add Recipient'}
 
-%form.hidden{method: 'GET', action: '/list', id: 'find'}
+%form.hidden{method: 'GET', action: iri.cut('/list'), id: 'find'}
   %input{type: 'hidden', name: 'id', value: list.id}
   %input{type: 'text', name: 'query', id: 'query', placeholder: 'Email or name to find...', size: 32, required: 'true', autocomplete: 'off', value: (params[:query] || nil)}
   %input{type: 'submit', value: 'Find'}
   %label.small.gray Start with '=' if you are looking for an exact match.
 
-%form.hidden{method: 'POST', action: '/absorb', id: 'absorb'}
+%form.hidden{method: 'POST', action: iri.cut('/absorb'), id: 'absorb'}
   %input{type: 'hidden', name: 'id', value: list.id}
   %select{name: 'list'}
     - lists.all.each do |list|
@@ -53,7 +53,7 @@
     current list, will migrate here. Only the duplicates will move.
     All other recipients will stay untouched.
 
-%form.hidden{method: 'POST', action: '/upload-recipients', id: 'upload', enctype: 'multipart/form-data'}
+%form.hidden{method: 'POST', action: iri.cut('/upload-recipients'), id: 'upload', enctype: 'multipart/form-data'}
   %input{type: 'hidden', name: 'id', value: list.id}
   %input{name: 'file', type: 'file', accept: 'text/plain'}
   %input{type: 'submit', value: 'Upload'}
@@ -77,7 +77,7 @@
   = list.recipients.per_day(10)
   per day (last 10 days statistics).
   This is your
-  %a{href: "/weeks?id=#{list.id}"} weekly contribution
+  %a{href: iri.cut('/weeks').add(id: list.id)} weekly contribution
   summary.
 
 %p
@@ -93,9 +93,9 @@
   - else
     - campaigns.each do |c|
       = succeed ':' do
-        %a{href: "/campaign?id=#{c.id}"}= "C##{c.id}"
+        %a{href: iri.cut('/campaign').add(id: c.id)}= "C##{c.id}"
         = '/'
-        %a{href: "/lane?id=#{c.lane.id}"}= "L##{c.lane.id}"
+        %a{href: iri.cut('/lane').add(id: c.lane.id)}= "L##{c.lane.id}"
       &= "\"#{c.lane.title}\""
 
 - abs = list.absorb_counts
@@ -110,7 +110,7 @@
       %li
         %span.red= a[:total]
         in
-        %a{href: "/list?id=#{a[:list].id}"}= "##{a[:list].id}"
+        %a{href: iri.cut('/list').add(id: a[:list].id)}= "##{a[:list].id}"
         &= a[:list].title
 
 %p
@@ -142,5 +142,5 @@
 %p
   - list.recipients.all(query: params[:query] || '').each do |r|
     %span{class: ('cross' unless r.active?)}<
-      %a{href: "/recipient?id=#{r.id}"}<
+      %a{href: iri.cut('/recipient').add(id: r.id)}<
         = r.email

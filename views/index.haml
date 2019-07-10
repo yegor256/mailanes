@@ -1,17 +1,17 @@
 %p
   First, you keep your recipients in
   = succeed '.' do
-    %a{href: '/lists'} Lists
+    %a{href: iri.cut('/lists')} Lists
   Each list contains
   a collection of unique emails, which will receive your marketing emails.
   Then, you create Letters in
   = succeed '.' do
-    %a{href: '/lanes'} Lanes
+    %a{href: iri.cut('/lanes')} Lanes
   Then, you link your
-  %a{href: '/lists'} Lists
+  %a{href: iri.cut('/lists')} Lists
   with Lanes, by
   = succeed '.' do
-    %a{href: '/campaigns'} Campaigns
+    %a{href: iri.cut('/campaigns')} Campaigns
   Finally, you make your Letters and Campaigns
   active and they start sending emails.
 
@@ -25,12 +25,12 @@
   %p
     Total recipients in all lists:
     = succeed '.' do
-      %a{href: '/lists'}= total
+      %a{href: iri.cut('/lists')}= total
 
 - delivered = campaigns.total_deliveries(1)
 - if !delivered.zero?
   %p
-    %a{href: '/campaigns'}= delivered
+    %a{href: iri.cut('/campaigns')}= delivered
     letters delivered over the last 24 hours.
     - bounced = campaigns.total_bounced(1)
     - if !bounced.zero?
@@ -42,5 +42,5 @@
 
 %p
   Your
-  %a{href: '/months'} monthly contribution
+  %a{href: iri.cut('/months')} monthly contribution
   summary.

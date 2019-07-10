@@ -6,10 +6,10 @@
     %meta{name: 'viewport', content: 'width=device-width, initial-scale=1.0'}
     %meta{name: 'keywords', content: 'email newsletter marketing'}
     %meta{name: 'description', content: 'Email sending toolkit'}
-    %link{href: 'https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css', rel: 'stylesheet'}
-    %link{href: 'https://www.yegor256.com/css/icons.css', rel: 'stylesheet'}
-    %link{rel: 'shortcut icon', href: url('/logo-64.png')}
-    %script{src: 'https://code.jquery.com/jquery-3.3.1.min.js'}
+    %link{href: '//cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css', rel: 'stylesheet'}
+    %link{href: '//www.yegor256.com/css/icons.css', rel: 'stylesheet'}
+    %link{rel: 'shortcut icon', href: iri.cut('/logo-64.png')}
+    %script{src: '//code.jquery.com/jquery-3.3.1.min.js'}
     :css
       .item { margin-right: 1em; }
       .logo { width: 64px; height: 64px; }
@@ -26,7 +26,7 @@
         %nav
           %ul
             %li
-              %a{href: url('/')}
+              %a{href: iri.cut('/')}
                 %img.logo{src: url('/logo.svg')}
         %nav
           %ul
@@ -39,19 +39,19 @@
                   Login
             - if defined? user
               %li
-                %a{href: url('/lists')}
+                %a{href: iri.cut('/lists')}
                   Lists
               %li
-                %a{href: url('/lanes')}
+                %a{href: iri.cut('/lanes')}
                   Lanes
               %li
-                %a{href: url('/campaigns')}
+                %a{href: iri.cut('/campaigns')}
                   Campaigns
               %li
-                %a{href: url('/api')}
+                %a{href: iri.cut('/api')}
                   API
               %li
-                %a{href: '/logout'}
+                %a{href: iri.cut('/logout')}
                   Logout
         - if defined? flash_msg
           %p{style: 'background-color:' + flash_color + ';color:white;padding:.1em .5em;border-radius:4px;width:100%;'}
@@ -59,6 +59,11 @@
       %article
         = yield
       %footer.small.gray
+        - if defined? user
+          %nav
+            %ul
+              %li
+                %a{href: iri.cut('/sql')} SQL
         %nav
           %ul
             %li

@@ -1,7 +1,7 @@
 %h2
   Lanes
 
-%form{method: 'POST', action: '/add-lane'}
+%form{method: 'POST', action: iri.cut('/add-lane')}
   %input{type: 'text', name: 'title', placeholder: 'Lane title...', size: 45, required: 'true', autocomplete: 'off'}
   %input{type: 'submit', value: 'Add'}
 
@@ -11,6 +11,6 @@
 - lanes.all.each do |lane|
   %p
     = succeed ':' do
-      %a{href: url("/lane?id=#{lane.id}")}= "##{lane.id}"
+      %a{href: iri.cut('/lane').add(id: lane.id)}= "##{lane.id}"
     = lane.title
 

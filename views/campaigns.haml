@@ -12,7 +12,7 @@
   %p.red
     You have no lanes, can't have any campaigns.
 - else
-  %form.hidden{method: 'POST', action: '/add-campaign', id: 'add'}
+  %form.hidden{method: 'POST', action: iri.cut('/add-campaign'), id: 'add'}
     %fieldset
       %label Start a new campaign
       %input{type: 'text', name: 'title', id: 'title', placeholder: 'Campaign title...', size: 45, required: 'true', autocomplete: 'off'}
@@ -32,17 +32,17 @@
 - campaigns.all.each do |c|
   %p{class: ('cross' unless c.active?)}
     = succeed ':' do
-      %a{href: url("/campaign?id=#{c.id}")}= "##{c.id}"
+      %a{href: iri.cut('/campaign').add(id: c.id)}= "##{c.id}"
     = succeed ';' do
       &= c.title
     = succeed ':' do
-      %a{href: url("/lane?id=#{c.lane.id}")}= "Lane ##{c.lane.id}"
+      %a{href: iri.cut('/lane').add(id: c.lane.id)}= "Lane ##{c.lane.id}"
     &= c.lane.title
     - if c.exhausted?
       %span.red exhausted
     %br
     %span.small{style: 'display:inline-block'}
       - c.lists.each do |list|
-        %a{href: url("/list?id=#{list.id}")}= "List ##{list.id}"
+        %a{href: iri.cut('/list').add(id: list.id)}= "List ##{list.id}"
         = succeed ';' do
           &= list.title

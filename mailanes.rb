@@ -26,6 +26,7 @@ require 'geocoder'
 require 'glogin'
 require 'glogin/codec'
 require 'haml'
+require 'iri'
 require 'json'
 require 'pgtk/pool'
 require 'raven'
@@ -33,6 +34,7 @@ require 'loog'
 require 'sinatra'
 require 'sinatra/cookies'
 require 'time'
+require 'iri'
 require 'yaml'
 require_relative 'objects/ago'
 require_relative 'objects/bounces'
@@ -134,6 +136,7 @@ before '/*' do
   @locals = {
     ver: VERSION,
     http_start: Time.now,
+    iri: Iri.new(request.url),
     login_link: settings.glogin.login_uri,
     request_ip: request.ip
   }

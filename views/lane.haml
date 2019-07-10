@@ -10,7 +10,7 @@
   %a.item{onclick: '$("#add").show();$("#title").focus();'}
     Add letter
 
-%form.hidden{method: 'POST', action: '/save-lane', id: 'save'}
+%form.hidden{method: 'POST', action: iri.cut('/save-lane'), id: 'save'}
   %fieldset
     %input{type: 'hidden', name: 'id', value: lane.id}
     %label
@@ -19,7 +19,7 @@
     %textarea{name: 'yaml', id: 'yaml', style: 'width:100%;height:12em;', required: 'true'}= lane.yaml.to_yaml
     %input{type: 'submit', value: 'Save'}
 
-%form.hidden{method: 'POST', action: '/add-letter', id: 'add'}
+%form.hidden{method: 'POST', action: iri.cut('/add-letter'), id: 'add'}
   %input{type: 'hidden', name: 'id', value: lane.id}
   %input{type: 'text', id: 'title', name: 'title', placeholder: 'Letter title', size: 40, required: 'true', autocomplete: 'off'}
   %input{type: 'submit', value: 'Add Letter'}
@@ -40,11 +40,11 @@
 - letters.each_with_index do |r, idx|
   %p
     - unless idx.zero?
-      %a{href: "/letter-up?id=#{r.id}", title: 'Move it up'}= '⬆'
+      %a{href: iri.cut('/letter-up').add(id: r.id), title: 'Move it up'}= '⬆'
     - if idx < letters.count - 1
-      %a{href: "/letter-down?id=#{r.id}", title: 'Move it down'}= '⬇'
+      %a{href: iri.cut('/letter-down').add(id: r.id), title: 'Move it down'}= '⬇'
     = succeed ':' do
-      %a{href: "/letter?id=#{r.id}"}= "##{r.id}"
+      %a{href: iri.cut('/letter').add(id: r.id)}= "##{r.id}"
     %span{class: ('cross' unless r.active?), title: "Place: #{r.place}"}
       &= r.title
 

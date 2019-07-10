@@ -7,7 +7,7 @@
 - candidates.each do |c|
   %p
     From
-    %a{href: "/recipient?id=#{c[:from].id}"}= c[:from].email
+    %a{href: iri.cut('/recipient').add(id: c[:from].id)}= c[:from].email
     to
-    %a{href: "/recipient?id=#{c[:to].id}"}= c[:to].email
+    %a{href: iri.cut('/recipient').add(id: c[:to].id)}= c[:to].email
 

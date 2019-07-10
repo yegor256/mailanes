@@ -14,14 +14,14 @@
   - if current_user == list.owner || list.friend?(current_user)
     %p
       It was recipient
-      %a{href: "/recipient?id=#{recipient.id}"}
+      %a{href: iri.cut('/recipient').add(id: recipient.id)}
         = "##{recipient.id}"
       from the list
       = succeed ':' do
-        %a{href: "/list?id=#{list.id}"}= "##{list.id}"
+        %a{href: iri.cut('/list').add(id: list.id)}= "##{list.id}"
       &= "\"#{list.title}\"."
 
   - if current_user == list.owner
     %p
       Add this email to all block lists?
-      %a{href: "/block-recipient?id=#{recipient.id}&list=#{list.id}"} Yes!
+      %a{href: iri.cut('/block-recipient').add(id: recipient.id, list: list.id)} Yes!

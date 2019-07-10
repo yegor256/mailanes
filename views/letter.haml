@@ -17,7 +17,7 @@
   %a.item{onclick: '$("#add").show();'}
     Add Attachment
 
-%form.hidden{method: 'POST', action: '/save-letter', id: 'save'}
+%form.hidden{method: 'POST', action: iri.cut('/save-letter'), id: 'save'}
   %fieldset
     %input{type: 'hidden', name: 'id', value: letter.id}
     %label
@@ -30,7 +30,7 @@
     %textarea{name: 'liquid', style: 'width:100%;height:16em;', required: 'true'}= letter.liquid
     %input{type: 'submit', value: 'Save'}
 
-%form.hidden{method: 'POST', action: '/test-letter', id: 'test'}
+%form.hidden{method: 'POST', action: iri.cut('/test-letter'), id: 'test'}
   %input{type: 'hidden', name: 'id', value: letter.id}
   %select{name: 'list'}
     - lists.all.each do |list|
@@ -39,7 +39,7 @@
   %label.small.gray
     The email will be sent to a random recipient from the given list.
 
-%form.hidden{method: 'POST', action: '/copy-letter', id: 'copy'}
+%form.hidden{method: 'POST', action: iri.cut('/copy-letter'), id: 'copy'}
   %input{type: 'hidden', name: 'id', value: letter.id}
   %select{name: 'lane'}
     - lanes.all.each do |lane|
@@ -48,7 +48,7 @@
   %label.small.gray
     A duplicate letter will be created in this lane.
 
-%form.hidden{method: 'POST', action: '/attach', id: 'add', enctype: 'multipart/form-data'}
+%form.hidden{method: 'POST', action: iri.cut('/attach'), id: 'add', enctype: 'multipart/form-data'}
   %input{type: 'hidden', name: 'id', value: letter.id}
   %input{name: 'file', type: 'file', accept: '*/*'}
   %input{type: 'submit', value: 'Add'}
@@ -57,7 +57,7 @@
   It belongs to the lane
   - lane = letter.lane
   = succeed ':' do
-    %a{href: "/lane?id=#{lane.id}"}= "##{lane.id}"
+    %a{href: iri.cut('/lane').add(id: lane.id)}= "##{lane.id}"
   = "\"#{lane.title}\""
 
 %p
@@ -68,7 +68,7 @@
     - else
       %span.red not active
   = '/'
-  %a{href: "/toggle-letter?id=#{letter.id}", onclick: (letter.liquid.include?('{{unsubscribe}}') || letter.liquid.include?('{{unsubscribe_query}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')")}<
+  %a{href: iri.cut('/toggle-letter').add(id: letter.id), onclick: (letter.liquid.include?('{{unsubscribe}}') || letter.liquid.include?('{{unsubscribe_query}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')")}<
     - if letter.active?
       deactivate
     - else
@@ -79,10 +79,10 @@
   %p
     With attachments:
     - attachments.each do |a|
-      %a{href: "/download-attachment?letter=#{letter.id}&name=#{CGI.escape(a)}"}<
+      %a{href: iri.cut('/download-attachment').add(letter: letter.id, name: a)}<
         &= a
       = succeed ';' do
-        %a{href: "/detach?letter=#{letter.id}&name=#{CGI.escape(a)}", onclick: "return confirm('Are you sure?');"} delete
+        %a{href: iri.cut('/detach').add(letter: letter.id, name: a), onclick: "return confirm('Are you sure?');"} delete
 
 %p
   Delivered:

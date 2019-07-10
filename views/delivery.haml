@@ -6,21 +6,21 @@
 %p
   - recipient = delivery.recipient
   = succeed ':' do
-    %a{href: "/recipient?id=#{recipient.id}"}= "Recipient ##{recipient.id}"
+    %a{href: iri.cut('/recipient').add(id: recipient.id)}= "Recipient ##{recipient.id}"
   = "#{recipient.email}"
 
 - if delivery.letter?
   %p
     - letter = delivery.letter
     = succeed ':' do
-      %a{href: "/letter?id=#{letter.id}"}= "Letter ##{letter.id}"
+      %a{href: iri.cut('/letter').add(id: letter.id)}= "Letter ##{letter.id}"
     = "\"#{letter.title}\""
 
 - if delivery.campaign?
   %p
     - campaign = delivery.campaign
     = succeed ':' do
-      %a{href: "/campaign?id=#{campaign.id}"}= "Campaign ##{campaign.id}"
+      %a{href: iri.cut('/campaign').add(id: campaign.id)}= "Campaign ##{campaign.id}"
     = "\"#{campaign.title}\""
 
 %p
@@ -34,4 +34,4 @@
   &= delivery.details
 
 %p
-  %a.red{href: "/delete-delivery?id=#{delivery.id}", onclick: "return confirm('Are you sure?');"} Delete
+  %a.red{href: iri.cut('/delete-delivery').add(id: delivery.id), onclick: "return confirm('Are you sure?');"} Delete

@@ -5,11 +5,11 @@
   %a.item{onclick: '$("#add").show();$("#title").focus();'} Add List
   %a.item{onclick: '$("#find").show();$("#query").focus();'} Find Recipient
 
-%form.hidden{method: 'POST', action: '/add-list', id: 'add'}
+%form.hidden{method: 'POST', action: iri.cut('/add-list'), id: 'add'}
   %input{type: 'text', name: 'title', id: 'title', placeholder: 'List title...', size: 45, required: 'true', autocomplete: 'off'}
   %input{type: 'submit', value: 'Add'}
 
-%form.hidden{method: 'GET', action: '/lists', id: 'find'}
+%form.hidden{method: 'GET', action: iri.cut('/lists'), id: 'find'}
   %input{type: 'text', name: 'query', placeholder: 'Query', id: 'query', size: 45, required: 'true', autocomplete: 'off'}
   %input{type: 'submit', value: 'Find'}
 
@@ -23,10 +23,10 @@
     - found.each do |r|
       - list = r.list
       %li
-        %a{href: "/recipient?id=#{r.id}", class: (r.active? ? '' : 'cross')}= r.email
+        %a{href: iri.cut('/recipient').add(id: r.id), class: (r.active? ? '' : 'cross')}= r.email
         in
         = succeed ':' do
-          %a{href: url("/list?id=#{list.id}")}= "List ##{list.id}"
+          %a{href: iri.cut('/list').add(id: list.id)}= "List ##{list.id}"
         &= "\"#{list.title}\""
 
 - dups = lists.duplicates_count
@@ -48,7 +48,7 @@
   - lists.all.each do |list|
     %p
       = succeed ':' do
-        %a{href: url("/list?id=#{list.id}")}= "##{list.id}"
+        %a{href: iri.cut('/list').add(id: list.id)}= "##{list.id}"
       = list.title
       = "(#{list.recipients.count} recipients)"
       - if list.stop?

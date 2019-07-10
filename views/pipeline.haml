@@ -11,6 +11,6 @@
 
 - campaign.pipeline.each do |r|
   %p
-    %a{href: "/recipient?id=#{r['rid']}"}= r['email']
+    %a{href: iri.cut('/recipient').add(id: r['rid'])}= r['email']
     with letter
-    %a{href: "/letter?id=#{r['lid']}"}= "##{r['lid']}"
+    %a{href: iri.cut('/letter').add(id: r['lid'])}= "##{r['lid']}"

@@ -6,7 +6,7 @@
   %code= source
   to the
   = succeed ':' do
-    %a{href: "/add?list=#{list.id}"}= "List ##{list.id}"
+    %a{href: iri.cut('/add').add(list: list.id)}= "List ##{list.id}"
   = list.title
 
 %p
