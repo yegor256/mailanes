@@ -288,27 +288,29 @@ class Letter
       enable_starttls_auto: true
     )
     start = Time.now
-    Timeout.timeout(5) do
+    Timeout.timeout(15) do
       mail.deliver
-      puts "Letter ##{@id} SMTP-sent to #{to} from \"#{recipient.list.title}\""
-      unless delivery.nil?
-        decoy = delivery.campaign.decoy
-        total = decoy['amount']
-        total = (rand((1 / total).round).zero? ? 1 : 0) if total < 1 && !total.zero?
-        total.times do
-          fake = mail.dup
-          fake.without_attachments!
-          fake.to = decoy['address'].gsub('*') { rand(9).to_s }
-          fake.cc = nil
-          fake.bcc = nil
-          fake.html_part = nil
-          fake.header['X-Mailanes-Recipient'] = nil
-          fake.header['List-Id'] = nil
-          fake.header['List-Unsubscribe'] = nil
-          fake.header['List-Unsubscribe'] = 'https://www.mailanes.com/'
+    end
+    puts "Letter ##{@id} SMTP-sent to #{to} from \"#{recipient.list.title}\""
+    unless delivery.nil?
+      decoy = delivery.campaign.decoy
+      total = decoy['amount']
+      total = (rand((1 / total).round).zero? ? 1 : 0) if total < 1 && !total.zero?
+      total.times do
+        fake = mail.dup
+        fake.without_attachments!
+        fake.to = decoy['address'].gsub('*') { rand(9).to_s }
+        fake.cc = nil
+        fake.bcc = nil
+        fake.html_part = nil
+        fake.header['X-Mailanes-Recipient'] = nil
+        fake.header['List-Id'] = nil
+        fake.header['List-Unsubscribe'] = nil
+        fake.header['List-Unsubscribe'] = 'https://www.mailanes.com/'
+        Timeout.timeout(15) do
           fake.deliver
-          puts "Fake letter SMTP-sent to #{fake.to} from \"#{recipient.list.title}\""
         end
+        puts "Fake letter SMTP-sent to #{fake.to} from \"#{recipient.list.title}\""
       end
     end
     [
