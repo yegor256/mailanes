@@ -38,7 +38,7 @@ class Decoy
     pop = Net::POP3.new(@host)
     pop.start(@login, @password)
     total = 0
-    pop.each_mail do
+    pop.each_mail do |m|
       m.delete
       total += 1
     end
