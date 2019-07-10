@@ -32,10 +32,7 @@
 
 %p
   Bounced:
-  - if delivery.bounced?
-    Nope
-  - else
-    Yes
+  = delivery.bounced? ? 'Yes' : 'No'
 
 %p
   &= delivery.details
