@@ -90,6 +90,8 @@
 - else
   - deliveries.each do |d|
     %p
+      - if d.bounced?
+        %span= '👎 '
       - unless d.opened.empty?
         %span{title: d.opened}= '💌 '
       %a{href: iri.cut('/delivery').add(id: d.id)}= "##{d.id}"
