@@ -17,6 +17,10 @@
     - else
       activate
 
+- if recipient.bounced?
+  %p.red
+    It was bounced at least once!
+
 %p
   = succeed ':' do
     %a{href: iri.cut('/list').add(id: list.id)}= "List ##{list.id}"
