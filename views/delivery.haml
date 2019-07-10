@@ -31,6 +31,13 @@
     &= delivery.opened
 
 %p
+  Bounced:
+  - if delivery.bounced?
+    Nope
+  - else
+    Yes
+
+%p
   &= delivery.details
 
 %p
