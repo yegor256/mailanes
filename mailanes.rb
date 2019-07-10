@@ -811,7 +811,7 @@ get '/sql' do
   raise UserError, 'You are not allowed to see this' unless admin?
   query = params[:query] || 'SELECT * FROM list LIMIT 5'
   haml :sql, layout: :layout, locals: merged(
-    page_title: '/sql',
+    title: '/sql',
     query: query,
     result: settings.pgsql.exec(query)
   )
