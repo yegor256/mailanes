@@ -179,7 +179,7 @@ class PipelineTest < Minitest::Test
     tbot = Tbot::Fake.new
     Pipeline.new(tbot: tbot, pgsql: test_pgsql).fetch(Postman.new)
     assert_equal(1, campaign.deliveries.count)
-    assert_equal(1, tbot.sent.count)
+    assert(tbot.sent.count >= 1)
     delivery = campaign.deliveries[0]
     assert(1, delivery.details.include?('Telegram chat ID #1'))
   end

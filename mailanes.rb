@@ -809,7 +809,7 @@ end
 
 get '/sql' do
   raise UserError, 'You are not allowed to see this' unless admin?
-  query = params[:query] || 'SELECT * FROM txn LIMIT 16'
+  query = params[:query] || 'SELECT * FROM list LIMIT 5'
   haml :sql, layout: :layout, locals: merged(
     page_title: '/sql',
     query: query,
