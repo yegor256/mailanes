@@ -2,7 +2,8 @@
   SQL
 
 %form{method: 'GET', action: iri.cut('/sql')}
-  %input{type: 'text', name: 'query', size: 60, autocomplete: 'off', required: true, tabindex: 1, autofocus: true, value: query}
+  %textarea{name: 'query', required: true, tabindex: 1, autofocus: true, style: 'width: 100%; height: 6em'}
+    &= query
   %input{type: 'submit', tabindex: 2, value: 'Query'}
 
 - max = 100
