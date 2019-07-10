@@ -807,6 +807,16 @@ get '/api/campaigns/:id/deliveries_count.json' do
   )
 end
 
+get '/sql' do
+  raise UserError, 'You are not allowed to see this' unless admin?
+  query = params[:query] || 'SELECT * FROM txn LIMIT 16'
+  haml :sql, layout: :layout, locals: merged(
+    page_title: '/sql',
+    query: query,
+    result: settings.pgsql.exec(query)
+  )
+end
+
 get '/robots.txt' do
   content_type 'text/plain'
   "User-agent: *\nDisallow: /"
@@ -889,6 +899,10 @@ def shared_list(id)
     raise UserError, "@#{current_user} doesn't have access to the list ##{list.id}"
   end
   list
+end
+
+def admin?
+  @locals[:user] && current_user == 'yegor256'
 end
 
 def country

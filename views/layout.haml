@@ -59,7 +59,7 @@
       %article
         = yield
       %footer.small.gray
-        - if defined? user
+        - if admin?
           %nav
             %ul
               %li

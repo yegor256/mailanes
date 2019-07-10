@@ -35,6 +35,10 @@ class Tbot
       @sent = []
     end
 
+    def notify(_type, _yaml, *msg)
+      @sent << msg.join(' ')
+    end
+
     def post(chat, msg)
       @sent << "#{chat}: #{msg}"
     end
