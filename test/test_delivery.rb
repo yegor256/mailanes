@@ -40,5 +40,6 @@ class DeliveryTest < Minitest::Test
     assert(delivery.opened.empty?)
     delivery.just_opened
     assert(!delivery.opened.empty?)
+    delivery.unsubscribe
   end
 end
