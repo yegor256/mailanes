@@ -292,7 +292,7 @@ class Letter
     start = Time.now
     Timeout.timeout(15) do
       mail.deliver
-      @log.info("Letter ##{@id} SMTP-sent to #{to} from \"#{recipient.list.title}\" \
+      @log.debug("Letter ##{@id} SMTP-sent to #{to} from \"#{recipient.list.title}\" \
 in #{format('%.02f', Time.now - start)}")
     end
     unless delivery.nil?
@@ -313,7 +313,7 @@ in #{format('%.02f', Time.now - start)}")
         Timeout.timeout(15) do
           fake.deliver
         end
-        @log.info("Fake letter SMTP-sent to #{fake.to} from \"#{recipient.list.title}\"")
+        @log.debug("Fake letter SMTP-sent to #{fake.to} from \"#{recipient.list.title}\"")
       end
     end
     [
