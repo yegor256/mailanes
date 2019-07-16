@@ -156,7 +156,10 @@ class Recipients
       end
       line += 1
     end
+    pos = 0
     CSV.foreach(file) do |row|
+      pos += 1
+      GC.start if (pos % 1000).zero?
       next if row[0].nil?
       next if exists?(row[0])
       next unless row[0] =~ Recipients::REGEX
