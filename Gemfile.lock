@@ -49,6 +49,8 @@ GEM
       faraday (>= 0.7.4, < 1.0)
     ffi (1.11.1)
     geocoder (1.5.0)
+    get_process_mem (0.2.4)
+      ffi (~> 1.0)
     glogin (0.5.0)
     gserver (0.0.1)
     haml (5.1.0)
@@ -187,6 +189,7 @@ GEM
     tilt (2.0.9)
     time_difference (0.7.0)
       activesupport (~> 5.1)
+    total (0.3.0)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     unicode-display_width (1.4.1)
@@ -202,6 +205,7 @@ GEM
       nokogiri (~> 1.8)
       rainbow (~> 3.0)
       slop (~> 4.4)
+    zache (0.12.0)
 
 PLATFORMS
   ruby
@@ -213,6 +217,7 @@ DEPENDENCIES
   codecov (= 0.1.14)
   fakesmtpd (= 0.3.1)
   geocoder (= 1.5.0)
+  get_process_mem (~> 0.2)
   glogin (= 0.5.0)
   gserver (= 0.0.1)
   haml (= 5.1.0)
@@ -240,8 +245,10 @@ DEPENDENCIES
   telebot (= 0.1.2)
   threads (= 0.3.0)
   time_difference (= 0.7.0)
+  total (>= 0.2.0)
   uuidtools (= 2.1.5)
   xcop (= 0.6)
+  zache (>= 0.12.0)
 
 RUBY VERSION
    ruby 2.6.0p0

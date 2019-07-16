@@ -23,19 +23,21 @@
 STDOUT.sync = true
 
 require 'geocoder'
+require 'get_process_mem'
 require 'glogin'
 require 'glogin/codec'
 require 'haml'
 require 'iri'
 require 'json'
+require 'loog'
 require 'pgtk/pool'
 require 'raven'
-require 'loog'
 require 'sinatra'
 require 'sinatra/cookies'
 require 'time'
-require 'iri'
+require 'total'
 require 'yaml'
+require 'zache'
 require_relative 'objects/ago'
 require_relative 'objects/bounces'
 require_relative 'objects/hex'
@@ -87,6 +89,7 @@ configure do
   set :logging, true
   set :server_settings, timeout: 25
   set :log, Loog::REGULAR
+  set :zache, Zache.new(dirty: true)
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
     config['github']['client_secret'],
@@ -148,7 +151,9 @@ before '/*' do
     http_start: Time.now,
     iri: Iri.new(request.url),
     login_link: settings.glogin.login_uri,
-    request_ip: request.ip
+    request_ip: request.ip,
+    mem: settings.zache.get(:mem, lifetime: 60) { GetProcessMem.new.bytes.to_i },
+    total_mem: settings.zache.get(:total_mem, lifetime: 60) { Total::Mem.new.bytes }
   }
   cookies[:glogin] = params[:glogin] if params[:glogin]
   if cookies[:glogin]
@@ -351,7 +356,8 @@ post '/upload-recipients' do
     File.delete(params[:file][:tempfile])
     start = Time.now
     Thread.start do
-      settings.log.info("Uploading started with #{File.readlines(f.path).count} lines...")
+      settings.log.info("Uploading started with #{File.readlines(f.path).count} lines \
+in #{File.size(f.path)} bytes...")
       list.recipients.upload(f.path, source: params[:source] || '')
       settings.tbot.notify(
         'upload',

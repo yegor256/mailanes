@@ -78,6 +78,8 @@
                 = "#{request_ip}/#{country}"
             %li{title: 'The version of PostgreSQL server'}
               = "pg:#{settings.pgsql.version}"
+            %li{title: 'Currently consumed memory vs. total system memory, in Mb'}
+              = "#{(mem / (1024 * 1024)).round}/#{(total_mem / (1024 * 1024)).round}"
             %li
               = "#{((Time.now - http_start) * 1000).round}ms"
         %nav

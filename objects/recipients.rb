@@ -161,15 +161,14 @@ class Recipients
       next if exists?(row[0])
       next unless row[0] =~ Recipients::REGEX
       recipient = add(row[0], first: row[1] || '', last: row[2] || '', source: source)
-      if row[3]
-        row[3].strip.split(';').each do |dlv|
-          c, l = dlv.strip.split('/')
-          campaign = Campaign.new(id: c.to_i, pgsql: @pgsql)
-          raise "Campaign ##{c} doesn't exist" unless campaign.exists?
-          letter = Letter.new(id: l.to_i, pgsql: @pgsql)
-          raise "Letter ##{l} doesn't exist" unless letter.exists?
-          deliveries.add(campaign, letter, recipient).close('CSV upload')
-        end
+      next unless row[3]
+      row[3].strip.split(';').each do |dlv|
+        c, l = dlv.strip.split('/')
+        campaign = Campaign.new(id: c.to_i, pgsql: @pgsql)
+        raise "Campaign ##{c} doesn't exist" unless campaign.exists?
+        letter = Letter.new(id: l.to_i, pgsql: @pgsql)
+        raise "Letter ##{l} doesn't exist" unless letter.exists?
+        deliveries.add(campaign, letter, recipient).close('CSV upload')
       end
     rescue StandardError => e
       raise UserError, "Can't upload line ##{line}: #{e.message}"
