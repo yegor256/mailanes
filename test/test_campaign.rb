@@ -154,6 +154,6 @@ class CampaignTest < Minitest::Test
     letter.toggle
     start = Time.now
     assert_equal(total, campaign.pipeline_count)
-    puts "It took #{Time.now - start} seconds"
+    test_log.info("It took #{Time.now - start} seconds")
   end
 end

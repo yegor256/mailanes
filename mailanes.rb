@@ -111,7 +111,7 @@ configure do
   settings.pgsql.start(4)
   set :postman, Postman.new(settings.codec)
   set :tbot, Tbot.new(config['telegram_token'])
-  set :pipeline, Pipeline.new(pgsql: settings.pgsql, tbot: settings.tbot)
+  set :pipeline, Pipeline.new(pgsql: settings.pgsql, tbot: settings.tbot, log: settings.log)
   if ENV['RACK_ENV'] != 'test'
     Thread.new do
       settings.tbot.start
@@ -129,18 +129,20 @@ configure do
             settings.config['pop3']['login'],
             settings.config['pop3']['password'],
             settings.codec,
-            pgsql: settings.pgsql
+            pgsql: settings.pgsql,
+            log: settings.log
           ).fetch(tbot: settings.tbot)
           Decoy.new(
             settings.config['decoy_pop3']['host'],
             settings.config['decoy_pop3']['login'],
-            settings.config['decoy_pop3']['password']
+            settings.config['decoy_pop3']['password'],
+            log: settings.log
           ).fetch
         rescue StandardError => e
-          puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
+          settings.log.error("#{e.message}\n\t#{e.backtrace.join("\n\t")}")
           Raven.capture_exception(e)
         end
-        puts "Pipeline done in #{(Time.now - start).round(2)}s"
+        settings.log.info("Pipeline done in #{(Time.now - start).round(2)}s")
       end
     end
   end

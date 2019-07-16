@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'loog'
 require_relative 'campaign'
 require_relative 'letter'
 require_relative 'recipient'
@@ -31,9 +32,10 @@ require_relative 'tbot'
 # Copyright:: Copyright (c) 2018-2019 Yegor Bugayenko
 # License:: MIT
 class Pipeline
-  def initialize(pgsql:, tbot: Tbot.new)
+  def initialize(pgsql:, tbot: Tbot.new, log: Loog::NULL)
     @pgsql = pgsql
     @tbot = tbot
+    @log = log
   end
 
   def fetch(postman, cycles: 64)
@@ -154,7 +156,7 @@ class Pipeline
     done = false
     @pgsql.exec(Pipeline.query + ' LIMIT 1').each do |r|
       campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
-      letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql, tbot: @tbot)
+      letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql, tbot: @tbot, log: @log)
       recipient = Recipient.new(id: r['rid'].to_i, pgsql: @pgsql)
       delivery = deliveries.add(campaign, letter, recipient)
       if letter.yaml['relax']

@@ -41,11 +41,15 @@ module Minitest
       'u' + SecureRandom.hex[0..8]
     end
 
+    def test_log
+      @test_log ||= ENV['TEST_QUIET_LOG'] ? Loog::NULL : Loog::VERBOSE
+    end
+
     def test_pgsql
       # rubocop:disable Style/ClassVars
       @@test_pgsql ||= Pgtk::Pool.new(
         Pgtk::Wire::Yaml.new(File.join(__dir__, '../target/pgsql-config.yml')),
-        log: Loog::VERBOSE
+        log: test_log
       ).start
       # rubocop:enable Style/ClassVars
     end

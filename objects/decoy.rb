@@ -27,10 +27,11 @@ require 'net/pop'
 # Copyright:: Copyright (c) 2018-2019 Yegor Bugayenko
 # License:: MIT
 class Decoy
-  def initialize(host, login, password)
+  def initialize(host, login, password, log: Loog::NULL)
     @host = host
     @login = login
     @password = password
+    @log = log
   end
 
   def fetch
@@ -43,6 +44,6 @@ class Decoy
       total += 1
     end
     pop.finish
-    puts "#{total} decoy emails processed in #{format('%.02f', Time.now - start)}s"
+    @log.info("#{total} decoy emails processed in #{format('%.02f', Time.now - start)}s")
   end
 end

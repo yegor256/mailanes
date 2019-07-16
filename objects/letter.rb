@@ -26,6 +26,7 @@ require 'uuidtools'
 require 'timeout'
 require 'pg'
 require 'liquid'
+require 'loog'
 require 'redcarpet'
 require 'redcarpet/render_strip'
 require 'glogin/codec'
@@ -41,12 +42,13 @@ require_relative 'yaml_doc'
 class Letter
   attr_reader :id
 
-  def initialize(id:, pgsql:, hash: {}, tbot: Tbot.new)
+  def initialize(id:, pgsql:, hash: {}, tbot: Tbot.new, log: Loog::NULL)
     raise "Invalid ID: #{id} (#{id.class.name})" unless id.is_a?(Integer)
     @id = id
     @pgsql = pgsql
     @hash = hash.dup
     @tbot = tbot
+    @log = log
   end
 
   def lane
@@ -290,8 +292,8 @@ class Letter
     start = Time.now
     Timeout.timeout(15) do
       mail.deliver
-      puts "Letter ##{@id} SMTP-sent to #{to} from \"#{recipient.list.title}\" \
-in #{format('%.02f', Time.now - start)}"
+      @log.info("Letter ##{@id} SMTP-sent to #{to} from \"#{recipient.list.title}\" \
+in #{format('%.02f', Time.now - start)}")
     end
     unless delivery.nil?
       decoy = delivery.campaign.decoy
@@ -311,7 +313,7 @@ in #{format('%.02f', Time.now - start)}"
         Timeout.timeout(15) do
           fake.deliver
         end
-        puts "Fake letter SMTP-sent to #{fake.to} from \"#{recipient.list.title}\""
+        @log.info("Fake letter SMTP-sent to #{fake.to} from \"#{recipient.list.title}\"")
       end
     end
     [

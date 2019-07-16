@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'net/pop'
+require 'loog'
 require_relative 'recipient'
 require_relative 'tbot'
 require_relative 'hex'
@@ -30,12 +31,13 @@ require_relative 'hex'
 # Copyright:: Copyright (c) 2018-2019 Yegor Bugayenko
 # License:: MIT
 class Bounces
-  def initialize(host, login, password, codec, pgsql:)
+  def initialize(host, login, password, codec, pgsql:, log: Loog::NULL)
     @host = host
     @login = login
     @password = password
     @pgsql = pgsql
     @codec = codec
+    @log = log
   end
 
   def fetch(tbot: Tbot.new)
@@ -43,7 +45,7 @@ class Bounces
       body = m.pop
       match(body, /X-Mailanes-Recipient: (?<id>[0-9]+):(?<encrypted>[a-f0-9=\n]+)(?:(?<did>[0-9]+))?/, tbot)
       match(body, /Subject: MAILANES:(?<id>[0-9]+):(?<encrypted>[a-f0-9=\n]+)(?:(?<did>[0-9]+))?/, tbot)
-      puts "Message #{m.unique_id} processed and deleted"
+      @log.info("Message #{m.unique_id} processed and deleted")
       m.delete
     end
     @host.is_a?(String) ? fetch_pop(action) : fetch_array(action)
@@ -61,7 +63,7 @@ class Bounces
       total += 1
     end
     pop.finish
-    puts "#{total} bounce emails processed in #{format('%.02f', Time.now - start)}s"
+    @log.info("#{total} bounce emails processed in #{format('%.02f', Time.now - start)}s")
   end
 
   def fetch_array(action)
@@ -113,10 +115,10 @@ class Bounces
           "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id}).",
           "Bounce rate of the list is #{(rate * 100).round(2)}% (#{rate > 0.05 ? 'too high!' : 'it is OK'})."
         )
-        puts "Recipient ##{recipient.id}/#{recipient.email} from \"#{recipient.list.title}\" bounced :("
+        @log.info("Recipient ##{recipient.id}/#{recipient.email} from \"#{recipient.list.title}\" bounced :(")
       rescue StandardError => e
-        puts "Unclear message from ##{plain} in the inbox while matching against #{regex}: \
-#{e.message}\n\t#{e.backtrace.join("\n\t")}:\n#{body}"
+        @log.error("Unclear message from ##{plain} in the inbox while matching against #{regex}: \
+#{e.message}\n\t#{e.backtrace.join("\n\t")}:\n#{body}")
       end
     end
   end
