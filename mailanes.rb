@@ -846,10 +846,13 @@ end
 get '/sql' do
   raise UserError, 'You are not allowed to see this' unless admin?
   query = params[:query] || 'SELECT * FROM list LIMIT 5'
+  start = Time.now
+  result = settings.pgsql.exec(query)
   haml :sql, layout: :layout, locals: merged(
     title: '/sql',
     query: query,
-    result: settings.pgsql.exec(query)
+    result: result,
+    lag: Time.now - start
   )
 end
 

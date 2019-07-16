@@ -106,12 +106,12 @@ class Pipeline
 
   def self.query(campaign = 0)
     chistory = [
-      'SELECT COUNT(id) FROM delivery',
+      'SELECT COUNT(*) FROM delivery',
       'WHERE delivery.campaign=c.id',
       'AND delivery.created > NOW() - INTERVAL \'1 DAY\''
     ].join(' ')
     lhistory = [
-      'SELECT COUNT(id) FROM delivery',
+      'SELECT COUNT(*) FROM delivery',
       'WHERE delivery.letter=letter.id',
       'AND delivery.created > NOW() - INTERVAL \'1 DAY\''
     ].join(' ')

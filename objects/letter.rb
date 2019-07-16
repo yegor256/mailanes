@@ -75,19 +75,19 @@ class Letter
   end
 
   def deliveries_count
-    @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1', [@id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE letter=$1', [@id])[0]['count'].to_i
   end
 
   def opened_count
-    @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1 AND opened != \'\'', [@id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE letter=$1 AND opened != \'\'', [@id])[0]['count'].to_i
   end
 
   def bounce_count
-    @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1 AND bounced IS NOT NULL', [@id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE letter=$1 AND bounced IS NOT NULL', [@id])[0]['count'].to_i
   end
 
   def unsubscribe_count
-    @pgsql.exec('SELECT COUNT(id) FROM delivery WHERE letter=$1 AND unsubscribed IS NOT NULL', [@id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE letter=$1 AND unsubscribed IS NOT NULL', [@id])[0]['count'].to_i
   end
 
   def exists?

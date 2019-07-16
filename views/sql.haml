@@ -7,6 +7,10 @@
       &= query
     %input{type: 'submit', tabindex: 2, value: 'Query'}
 
+%p
+  Time:
+  = "#{format('%.02f', lag)}s"
+
 - max = 100
 
 - if result.empty?

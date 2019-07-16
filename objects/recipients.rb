@@ -63,11 +63,11 @@ class Recipients
   end
 
   def count
-    @pgsql.exec('SELECT COUNT(id) FROM recipient WHERE list=$1', [@list.id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM recipient WHERE list=$1', [@list.id])[0]['count'].to_i
   end
 
   def active_count
-    @pgsql.exec('SELECT COUNT(id) FROM recipient WHERE list=$1 AND active=true', [@list.id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM recipient WHERE list=$1 AND active=true', [@list.id])[0]['count'].to_i
   end
 
   def bounce_rate
@@ -82,7 +82,7 @@ class Recipients
   end
 
   def count_by_source(source)
-    @pgsql.exec('SELECT COUNT(id) FROM recipient WHERE list=$1 AND source=$2', [@list.id, source])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM recipient WHERE list=$1 AND source=$2', [@list.id, source])[0]['count'].to_i
   end
 
   def exists?(email)
