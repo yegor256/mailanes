@@ -351,6 +351,7 @@ post '/upload-recipients' do
     File.delete(params[:file][:tempfile])
     start = Time.now
     Thread.start do
+      settings.log.info("Uploading started with #{File.readlines(f.path).count} lines...")
       list.recipients.upload(f.path, source: params[:source] || '')
       settings.tbot.notify(
         'upload',
@@ -359,6 +360,7 @@ post '/upload-recipients' do
         "the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
         "by #{current_user} in #{format('%.02f', Time.now - start)}s."
       )
+      settings.log.info("Uploading finished with #{File.readlines(f.path).count} lines!")
     rescue StandardError => e
       settings.tbot.notify(
         'upload',
@@ -369,6 +371,7 @@ post '/upload-recipients' do
         "by #{current_user}:\n\n```\n#{e.class.name}: #{e.message}\n```",
         "\n\nYou may want to [try again](https://www.mailanes.com/list?id=#{list.id})."
       )
+      settings.log.info("Uploading failed with #{File.readlines(f.path).count} lines!")
     end
   end
   flash(
