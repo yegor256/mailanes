@@ -29,7 +29,6 @@
           %a{href: iri.cut('/list').add(id: list.id)}= "List ##{list.id}"
         &= "\"#{list.title}\""
 
-- dups = lists.duplicates_count
 - if !dups.zero?
   %p
     There are

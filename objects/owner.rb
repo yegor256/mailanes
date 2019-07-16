@@ -40,8 +40,8 @@ class Owner
       [
         'SELECT CONCAT(DATE_PART(\'year\', recipient.created), \'/\',',
         '  DATE_PART(\'month\', recipient.created)) AS month,',
-        'COUNT(recipient.*) AS total,',
-        'COUNT(recipient.*) FILTER (WHERE bounced IS NOT NULL) as bad',
+        'COUNT(1) AS total,',
+        'COUNT(1) FILTER (WHERE bounced IS NOT NULL) as bad',
         'FROM recipient',
         'LEFT JOIN delivery ON recipient.id = delivery.recipient',
         'WHERE source = $1',

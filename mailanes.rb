@@ -217,6 +217,7 @@ get '/lists' do
   haml :lists, layout: :layout, locals: merged(
     title: '/lists',
     lists: owner.lists,
+    dups: owner.lists.duplicates_count,
     found: params[:query] && !mine.empty? ? mine[0].recipients.all(query: params[:query], in_list_only: false) : nil
   )
 end

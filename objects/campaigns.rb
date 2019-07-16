@@ -66,7 +66,7 @@ class Campaigns
   def total_deliveries(days = 7)
     @pgsql.exec(
       [
-        'SELECT COUNT(delivery.id) FROM delivery',
+        'SELECT COUNT(1) FROM delivery',
         'JOIN campaign ON delivery.campaign = campaign.id',
         "WHERE campaign.owner = $1 AND delivery.created > NOW() - INTERVAL \'#{days} DAYS\'"
       ].join(' '),
@@ -77,7 +77,7 @@ class Campaigns
   def total_bounced(days = 7)
     @pgsql.exec(
       [
-        'SELECT COUNT(recipient.id) FROM recipient',
+        'SELECT COUNT(1) FROM recipient',
         'JOIN list ON recipient.list = list.id',
         'JOIN delivery ON recipient.id = delivery.recipient',
         "WHERE list.owner = $1 AND delivery.bounced > NOW() - INTERVAL \'#{days} DAYS\'"

@@ -119,7 +119,7 @@ class List
   def absorb_counts
     q = [
       'SELECT * FROM',
-      '  (SELECT *, (SELECT COUNT(s.id) FROM recipient AS s',
+      '  (SELECT *, (SELECT COUNT(1) FROM recipient AS s',
       '    JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
       '    AND s.list = list.id AND t.list = $2) AS total',
       '    FROM list',

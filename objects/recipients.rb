@@ -72,7 +72,7 @@ class Recipients
 
   def bounce_rate
     q = [
-      'SELECT COUNT(recipient.id) FROM recipient',
+      'SELECT COUNT(1) FROM recipient',
       'JOIN delivery ON delivery.recipient = recipient.id',
       'WHERE list = $1'
     ].join(' ')
@@ -125,8 +125,8 @@ class Recipients
       [
         'SELECT CONCAT(DATE_PART(\'year\', recipient.created), \'/\',',
         '  DATE_PART(\'week\', recipient.created)) AS week,',
-        'COUNT(recipient.*) AS total,',
-        'COUNT(recipient.*) FILTER (WHERE bounced IS NOT NULL) as bad',
+        'COUNT(1) AS total,',
+        'COUNT(1) FILTER (WHERE bounced IS NOT NULL) as bad',
         'FROM recipient',
         'LEFT JOIN delivery ON recipient.id = delivery.recipient',
         'WHERE list = $1 AND source = $2',
