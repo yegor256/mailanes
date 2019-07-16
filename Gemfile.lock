@@ -48,7 +48,10 @@ GEM
     faraday_middleware (0.13.1)
       faraday (>= 0.7.4, < 1.0)
     ffi (1.11.1)
-    geocoder (1.5.0)
+    geoplugin (0.3.1)
+      faraday
+      ipaddress
+      json
     get_process_mem (0.2.4)
       ffi (~> 1.0)
     glogin (0.5.0)
@@ -59,6 +62,7 @@ GEM
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
+    ipaddress (0.8.3)
     iri (0.4.2)
     jaro_winkler (1.5.3)
     json (2.2.0)
@@ -216,7 +220,7 @@ PLATFORMS
 DEPENDENCIES
   codecov (= 0.1.14)
   fakesmtpd (= 0.3.1)
-  geocoder (= 1.5.0)
+  geoplugin (= 0.3.1)
   get_process_mem (~> 0.2)
   glogin (= 0.5.0)
   gserver (= 0.0.1)

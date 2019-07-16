@@ -22,7 +22,7 @@
 
 STDOUT.sync = true
 
-require 'geocoder'
+require 'geoplugin'
 require 'get_process_mem'
 require 'glogin'
 require 'glogin/codec'
@@ -57,6 +57,7 @@ end
 configure do
   Haml::Options.defaults[:format] = :xhtml
   config = {
+    'geoplugin_token' => '?',
     'github' => {
       'client_id' => '?',
       'client_secret' => '?',
@@ -700,8 +701,6 @@ post '/subscribe' do
       last: params[:last] || '',
       source: params[:source] || ''
     )
-    country = Geocoder.search(request.ip).first
-    country = country.nil? ? '' : country.country.to_s
     recipient.yaml = {
       'request_ip' => request.ip.to_s,
       'country' => country,
@@ -940,7 +939,9 @@ def admin?
   @locals[:user] && current_user == 'yegor256'
 end
 
-def country
-  country = Geocoder.search(request.ip).first
-  country.nil? ? '??' : country.country.to_s
+def country(ip = request.ip)
+  settings.zache.get("ip_to_country:#{ip}") do
+    geo = Geoplugin.new(request.ip, ssl: true, key: settings.config['geoplugin_token'])
+    geo.nil? ? '??' : geo.countrycode
+  end
 end

@@ -24,7 +24,7 @@ ruby '2.6.0'
 
 gem 'codecov', '0.1.14'
 gem 'fakesmtpd', '0.3.1'
-gem 'geocoder', '1.5.0'
+gem 'geoplugin', '0.3.1'
 gem 'get_process_mem', '~>0.2'
 gem 'glogin', '0.5.0'
 gem 'gserver', '0.0.1'
