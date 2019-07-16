@@ -84,7 +84,9 @@
 %p
   In the pipeline:
   %a{href: iri.cut('/pipeline').add(id: campaign.id)}= campaign.pipeline_count
-  recipient(s).
+  letter(s).
+
+%p
   In all lists:
   = campaign.recipients_count
   recipient(s).

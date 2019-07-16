@@ -349,16 +349,32 @@ post '/upload-recipients' do
   Tempfile.open do |f|
     FileUtils.copy(params[:file][:tempfile], f.path)
     File.delete(params[:file][:tempfile])
-    list.recipients.upload(f.path, source: params[:source] || '')
-    settings.tbot.notify(
-      'upload',
-      list.yaml,
-      "#{File.readlines(f.path).count} recipients uploaded into",
-      "the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
-      "by #{current_user}."
-    )
+    start = Time.now
+    Thread.start do
+      list.recipients.upload(f.path, source: params[:source] || '')
+      settings.tbot.notify(
+        'upload',
+        list.yaml,
+        "📥 #{File.readlines(f.path).count} recipients uploaded into",
+        "the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
+        "by #{current_user} in #{format('%.02f', Time.now - start)}s."
+      )
+    rescue StandardError => e
+      settings.tbot.notify(
+        'upload',
+        list.yaml,
+        "⚠️ Failed to upload the file of #{File.readlines(f.path).count} lines into",
+        "the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})",
+        "in #{format('%.02f', Time.now - start)}s",
+        "by #{current_user}:\n\n```\n#{e.class.name}: #{e.message}\n```",
+        "\n\nYou may want to [try again](https://www.mailanes.com/list?id=#{list.id})."
+      )
+    end
   end
-  flash(params[:redirect] || "/list?id=#{list.id}", "The CSV has been uploaded to the list ##{list.id}")
+  flash(
+    params[:redirect] || "/list?id=#{list.id}",
+    "The CSV will be uploaded to the list ##{list.id}, it may take some time..."
+  )
 end
 
 get '/download-recipients' do

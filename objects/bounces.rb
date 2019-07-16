@@ -52,6 +52,7 @@ class Bounces
   private
 
   def fetch_pop(action)
+    start = Time.now
     pop = Net::POP3.new(@host)
     pop.start(@login, @password)
     total = 0
@@ -60,7 +61,7 @@ class Bounces
       total += 1
     end
     pop.finish
-    puts "#{total} bounce emails processed"
+    puts "#{total} bounce emails processed in #{format('%.02f', Time.now - start)}s"
   end
 
   def fetch_array(action)
