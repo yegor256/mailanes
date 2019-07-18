@@ -38,9 +38,15 @@ class Lists
   end
 
   def all
-    @pgsql.exec('SELECT * FROM list WHERE owner=$1 ORDER BY created DESC', [@owner]).map do |r|
-      List.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
-    end
+    @pgsql.exec(
+      [
+        'SELECT list.id, (SELECT COUNT(*) FROM recipient WHERE list = list.id) AS total_recipients',
+        'FROM list',
+        'WHERE owner = $1',
+        'ORDER BY list.created DESC'
+      ].join(' '),
+      [@owner]
+    ).map { |r| List.new(id: r['id'].to_i, pgsql: @pgsql, hash: r) }
   end
 
   def add(title = 'noname')

@@ -40,7 +40,9 @@ class List
   end
 
   def recipients
-    Recipients.new(list: self, pgsql: @pgsql)
+    hash = {}
+    hash['total'] = @hash['total_recipients'] if @hash['total_recipients']
+    Recipients.new(list: self, pgsql: @pgsql, hash: hash)
   end
 
   def title

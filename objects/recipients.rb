@@ -33,9 +33,10 @@ class Recipients
   # All emails have to match this
   REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i.freeze
 
-  def initialize(list:, pgsql:)
+  def initialize(list:, pgsql:, hash: {})
     @list = list
     @pgsql = pgsql
+    @hash = hash
   end
 
   def all(query: '', limit: 100, active_only: false, in_list_only: true)
@@ -63,6 +64,7 @@ class Recipients
   end
 
   def count
+    return @hash['total'].to_i if @hash['total']
     @pgsql.exec('SELECT COUNT(*) FROM recipient WHERE list=$1', [@list.id])[0]['count'].to_i
   end
 
