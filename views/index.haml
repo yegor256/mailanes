@@ -3,7 +3,7 @@
   = succeed '.' do
     %a{href: iri.cut('/lists')} Lists
   Each list contains
-  a collection of unique emails, which will receive your marketing emails.
+  a collection of unique emails, which will receive your marketing messages.
   Then, you create Letters in
   = succeed '.' do
     %a{href: iri.cut('/lanes')} Lanes
@@ -13,26 +13,23 @@
   = succeed '.' do
     %a{href: iri.cut('/campaigns')} Campaigns
   Finally, you make your Letters and Campaigns
-  active and they start sending emails.
+  active and they start delivering messages.
 
 %p
   More information about configuration options you can find in
   = succeed '.' do
     %a{href: 'https://github.com/yegor256/mailanes/blob/master/README.md'} README
 
-- total = lists.total_recipients
 - if !total.zero?
   %p
     Total recipients in all lists:
     = succeed '.' do
       %a{href: iri.cut('/lists')}= total
 
-- delivered = campaigns.total_deliveries(1)
 - if !delivered.zero?
   %p
     %a{href: iri.cut('/campaigns')}= delivered
     letters delivered over the last 24 hours.
-    - bounced = campaigns.total_bounced(1)
     - if !bounced.zero?
       = bounced
       of them bounced back, which is

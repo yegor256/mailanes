@@ -208,7 +208,10 @@ get '/' do
     title: '/',
     lists: owner.lists,
     lanes: owner.lanes,
-    campaigns: owner.campaigns
+    campaigns: owner.campaigns,
+    total: owner.lists.total_recipients,
+    delivered: owner.campaigns.total_deliveries(1),
+    bounced: owner.campaigns.total_bounced(1)
   )
 end
 
@@ -232,7 +235,12 @@ get '/list' do
   haml :list, layout: :layout, locals: merged(
     title: "##{list.id}",
     lists: owner.lists,
-    list: list
+    list: list,
+    campaigns: list.campaigns,
+    abs: list.absorb_counts,
+    rate: list.recipients.bounce_rate,
+    total: list.recipients.count,
+    active: list.recipients.active_count
   )
 end
 

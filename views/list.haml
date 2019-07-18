@@ -87,7 +87,6 @@
 
 %p
   Participates in:
-  - campaigns = list.campaigns
   - if campaigns.empty?
     %span.red no campaigns
   - else
@@ -98,7 +97,6 @@
         %a{href: iri.cut('/lane').add(id: c.lane.id)}= "L##{c.lane.id}"
       &= "\"#{c.lane.title}\""
 
-- abs = list.absorb_counts
 - if !abs.empty?
   %p
     There are
@@ -118,16 +116,13 @@
   = list.deliveries_count
   emails.
   Bounce rate:
-  - rate = list.recipients.bounce_rate
   = succeed '.' do
     %span{class: (rate > 0.05 ? 'red' : '')}= "#{(rate * 100).round(2)}%"
 
 %p
   There are
-  - total = list.recipients.count
   = total
   recipient(s),
-  - active = list.recipients.active_count
   = active
   = "(#{total.zero? ? 0 : 100 * active / total}%)"
   are active,

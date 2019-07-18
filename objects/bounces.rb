@@ -61,6 +61,7 @@ class Bounces
     pop.each_mail do |m|
       action.call(m)
       total += 1
+      GC.start if (total % 10).zero?
     end
     pop.finish
     @log.info("#{total} bounce emails processed in #{format('%.02f', Time.now - start)}s")

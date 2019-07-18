@@ -42,6 +42,7 @@ class Decoy
     pop.each_mail do |m|
       m.delete
       total += 1
+      GC.start if (total % 100).zero?
     end
     pop.finish
     @log.info("#{total} decoy emails processed in #{format('%.02f', Time.now - start)}s")
