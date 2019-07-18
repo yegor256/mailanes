@@ -34,7 +34,7 @@ gem 'liquid', '4.0.1'
 gem 'loog', '0.2.1'
 gem 'mail', '2.7.1'
 gem 'minitest', '5.11.3', require: false
-gem 'pgtk', '0.7.2'
+gem 'pgtk', '0.7.3'
 gem 'rack', '2.0.7'
 gem 'rack-ssl', '1.4.1'
 gem 'rack-test', '1.1.0'
