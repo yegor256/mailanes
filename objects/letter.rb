@@ -203,7 +203,8 @@ class Letter
       Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(content),
       delivery
     )
-    if cfg('on', 'tracking').downcase.strip == 'on' && !delivery.nil?
+    tracking = cfg('on', 'tracking') == true || cfg('on', 'tracking').downcase.strip == 'on'
+    if tracking && !delivery.nil?
       html += [
         "<img src=\"https://www.mailanes.com/opened?token=#{CGI.escape(codec.encrypt(delivery.id.to_s))}\"",
         'alt="" width="1" height="1" border="0"',
