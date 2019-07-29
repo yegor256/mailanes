@@ -341,6 +341,7 @@ in #{format('%.02f', Time.now - start)}")
       'last' => recipient.last.empty? ? nil : recipient.last,
       'unsubscribe_query' => query,
       'unsubscribe' => "https://www.mailanes.com/unsubscribe?#{query}",
+      'confirm' => "https://www.mailanes.com/confirm?#{query}",
       'profile' => "https://www.mailanes.com/recipient?id=#{recipient.id}"
     )
   end

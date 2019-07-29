@@ -1,0 +1,15 @@
+%h2
+  Confirmed!
+
+%p
+  Your participation in the mailing list has been confirmed, thanks!
+
+%p
+  Your email is
+  %code
+    = email
+
+%p
+  If you want to unsubscribe,
+  = succeed '.' do
+    %a{href: iri.cut('/unsubscribe').add(token: token)} click here

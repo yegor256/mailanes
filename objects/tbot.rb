@@ -66,7 +66,9 @@ class Tbot
   def notify(type, yaml, *msg)
     return unless yaml['notify'] && yaml['notify']['telegram']
     return if yaml['notify']['ignore'].is_a?(Array) && yaml['notify']['ignore'].include?(type)
-    post(yaml['notify']['telegram'].to_i, msg.flatten.join(' '))
+    chat = yaml['notify']['telegram'].to_i
+    return unless chat.positive?
+    post(chat, msg.flatten.join(' '))
   end
 
   def post(chat, msg, c: @client)
@@ -79,7 +81,7 @@ class Tbot
         text: msg
       )
     rescue Telebot::Error => e
-      raise "#{e.message}: \"#{msg}\""
+      raise "#{e.message} when trying to post to Telegram chat ##{chat}: \"#{msg}\""
     end
   end
 end

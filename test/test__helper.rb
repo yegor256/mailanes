@@ -30,6 +30,9 @@ if ENV['CI'] == 'true'
   SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end
 
+require 'minitest/reporters'
+Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
+
 require 'yaml'
 require 'minitest/autorun'
 require 'pgtk/pool'

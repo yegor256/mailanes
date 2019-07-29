@@ -51,6 +51,12 @@ friends:
 # If this is set to TRUE an email right after being added
 # to this list will be de-activated in all other lists
 exclusive: true
+# If this is TRUE, all new recipients that get into the list via the
+# /subscribe link, will be marked as non-yet-confirmed. They will have
+# to click the link, which is available in your Markdown template
+# as {{confirm}} (similar to the {{unsubsribe}} you have there).
+# The default is FALSE.
+confirmation_required: true
 ```
 
 ### Lane
@@ -155,7 +161,9 @@ Here is how your Liquid template may look like:
 Hi,
 {% endif %}
 
-How are you?
+How are you? Thanks for joining my list. Please
+[click here]({{confirm}}) to confirm that you are serious
+and want to stay.
 
 —<br/>
 Yegor Bugayenko<br/>

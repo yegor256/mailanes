@@ -35,6 +35,7 @@ task default: %i[clean test rubocop xcop copyright]
 
 require 'rake/testtask'
 Rake::TestTask.new(test: %i[pgsql liquibase]) do |test|
+  ENV['TEST_QUIET_LOG'] = 'true' if ARGV.include?('--quiet')
   Rake::Cleaner.cleanup_files(['coverage'])
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/test_*.rb'

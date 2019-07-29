@@ -63,6 +63,11 @@ class List
     @hash = {}
   end
 
+  # Confirm required for all new subscribers?
+  def confirmation_required?
+    yaml['confirmation_required']
+  end
+
   def owner
     @hash['owner'] || @pgsql.exec('SELECT owner FROM list WHERE id=$1', [@id])[0]['owner']
   end

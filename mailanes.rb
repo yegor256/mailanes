@@ -724,6 +724,10 @@ post '/subscribe' do
         @locals[:user] ? "It was done by #{current_user}." : ''
       ].join(' ')
     )
+    if list.confirmation_required?
+      recipient.confirm!(false)
+      recipient.post_event('The subscriber has to confirm their email, since the list requires so')
+    end
     notify += [
       "👍 A new subscriber [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
       "from #{country} just got into your list",
@@ -805,6 +809,32 @@ get '/opened' do
   delivery.just_opened("#{request.ip} (#{country}) by #{agent}")
   content_type 'image/png'
   IO.read(File.join(__dir__, 'public/logo-64.png'))
+end
+
+get '/confirm' do
+  token = params[:token]
+  raise UserError, 'Token is required in order to confirm you' if token.nil?
+  id = begin
+    settings.codec.decrypt(token).to_i
+  rescue OpenSSL::Cipher::CipherError => ex
+    raise UserError, "Token is invalid, can\'t confirm: #{ex.message}"
+  end
+  recipient = Recipient.new(id: id, pgsql: settings.pgsql)
+  recipient.confirm!
+  settings.tbot.notify(
+    'confirm',
+    list.yaml,
+    "😉 The recipient [##{recipient.id}](https://www.mailanes.com/recipient?id=#{recipient.id})",
+    "with the email `#{recipient.email}` just confirmed their participation in the list",
+    "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
+  )
+  recipient.post_event('Subscription confirmed' + (@locals[:user] ? " by @#{current_user}" : '') + '.')
+  haml :confirmed, layout: :layout, locals: merged(
+    title: '/confirmed',
+    list: recipient.list,
+    recipient: recipient,
+    token: settings.codec.encrypt(recipient.id.to_s)
+  )
 end
 
 get '/api' do

@@ -31,7 +31,6 @@ require_relative '../objects/postman'
 
 class RecipientTest < Minitest::Test
   def test_toggles_recipient
-    skip
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipient = Recipients.new(list: list, pgsql: test_pgsql).add('test@mailanes.com')
@@ -43,7 +42,6 @@ class RecipientTest < Minitest::Test
   end
 
   def test_deletes_recipient
-    skip
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipient = Recipients.new(list: list, pgsql: test_pgsql).add('test@mailanes.com')
@@ -51,8 +49,18 @@ class RecipientTest < Minitest::Test
     assert(list.recipients.count.zero?)
   end
 
+  def test_confirms
+    owner = random_owner
+    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    recipient = Recipients.new(list: list, pgsql: test_pgsql).add('test@mailanes.com')
+    assert(recipient.confirmed?)
+    recipient.confirm!(false)
+    assert(!recipient.confirmed?)
+    recipient.confirm!(true)
+    assert(recipient.confirmed?)
+  end
+
   def test_toggles_fetched_recipient
-    skip
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     id = Recipients.new(list: list, pgsql: test_pgsql).add('test98@mailanes.com').id
@@ -65,7 +73,6 @@ class RecipientTest < Minitest::Test
   end
 
   def test_posts_event
-    skip
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipient = Recipients.new(list: list, pgsql: test_pgsql).add('te99st@mailanes.com')
@@ -75,7 +82,6 @@ class RecipientTest < Minitest::Test
   end
 
   def test_moves
-    skip
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     target = Lists.new(owner: owner, pgsql: test_pgsql).add
@@ -87,7 +93,6 @@ class RecipientTest < Minitest::Test
   end
 
   def test_reads_relax
-    skip
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipient = Recipients.new(list: list, pgsql: test_pgsql).add('te89t@mailanes.com')
@@ -104,7 +109,6 @@ class RecipientTest < Minitest::Test
   end
 
   def test_saves_and_prints_yaml
-    skip
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: test_pgsql).add
     recipient = Recipients.new(list: list, pgsql: test_pgsql).add('te085@mailanes.com')
