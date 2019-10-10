@@ -259,6 +259,7 @@ class Letter
         body html
       end
     end
+    bounces = cfg('reply@mailanes.com', 'bounces')
     unless delivery.nil?
       rid = recipient.id
       did = delivery.id
@@ -266,14 +267,14 @@ class Letter
       mail.header['List-Unsubscribe'] = [
         '<https://www.mailanes.com/unsubscribe?',
         unsubscribe(codec, recipient, delivery),
-        '>, <mailto:reply@marecipientom?subject=',
+        ">, <mailto:#{bounces}?subject=",
         CGI.escape("MAILANES:#{rid}:#{codec.encrypt(rid.to_s)}:#{did}"),
         '>'
       ].join
       mail.header['List-Id'] = did.to_s
     end
-    mail.header['Return-Path'] = 'reply@mailanes.com'
-    mail.header['X-Complaints-To'] = 'reply@mailanes.com'
+    mail.header['Return-Path'] = bounces
+    mail.header['X-Complaints-To'] = bounces
     attachments.each do |a|
       Tempfile.open do |f|
         download(a, f.path)

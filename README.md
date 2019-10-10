@@ -77,6 +77,8 @@ bcc:
 # address is taken from the recipient details, but sometimes
 # you may need this.
 to: Yegor Bugayenko <yegor256@gmail.com>
+# The email to collect all bounces (the default is `reply@mailanes.com`)
+bounces: reply@mailanes.com
 # SMTP parameters of the email sending server
 smtp:
   host: email-smtp.us-east-1.amazonaws.com
