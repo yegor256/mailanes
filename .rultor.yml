@@ -26,7 +26,7 @@ release:
     export GEM_PATH=$GEM_HOME:$GEM_PATH
     ruby -v
     bundle exec rake
-    git remote add heroku git@heroku.com:mailanes.git
+    git remote add dokku dokku@dokku.mailanes.com:mailanes
     rm -rf ~/.ssh
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh
@@ -40,7 +40,7 @@ release:
     bundle exec rake config
     git add config.yml
     git commit -m 'config.yml'
-    git push -f heroku $(git symbolic-ref --short HEAD):master
+    git push -f dokku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
     rm -rf target
     bundle exec rake liquibase
