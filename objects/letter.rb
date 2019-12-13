@@ -329,6 +329,8 @@ in #{format('%.02f', Time.now - start)}")
       "from #{from}, with the subject line \"#{subject}\" via SMTP,",
       "in #{(Time.now - start).round(2)}s"
     ].join(' ')
+  rescue Timeout::Error => e
+    raise CantDeliver, e.message
   end
 
   def unsubscribe(codec, recipient, delivery)
