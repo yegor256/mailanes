@@ -40,6 +40,9 @@ require_relative 'yaml_doc'
 # Copyright:: Copyright (c) 2018-2019 Yegor Bugayenko
 # License:: MIT
 class Letter
+  # When can't deliver
+  class CantDeliver < StandardError; end
+
   attr_reader :id
 
   def initialize(id:, pgsql:, hash: {}, tbot: Tbot.new, log: Loog::NULL)
@@ -296,6 +299,8 @@ class Letter
       mail.deliver
       @log.debug("Letter ##{@id} SMTP-sent to #{to} from \"#{recipient.list.title}\" \
 in #{format('%.02f', Time.now - start)}")
+    rescue Net::SMTPAuthenticationError => e
+      raise CantDeliver, e.message
     end
     unless delivery.nil?
       decoy = delivery.campaign.decoy

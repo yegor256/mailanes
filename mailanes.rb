@@ -520,6 +520,8 @@ post '/test-letter' do
   raise UserError, "There are no recipients in the list ##{list.id}" if recipient.nil?
   letter.deliver(recipient, settings.codec)
   flash("/letter?id=#{letter.id}", "Test email has been sent to #{recipient.email}")
+rescue Letter::CantDeliver => e
+  flash("/letter?id=#{letter.id}", "The email is not sent: #{e.message}")
 end
 
 post '/copy-letter' do
