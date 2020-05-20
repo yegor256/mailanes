@@ -1,30 +1,21 @@
 readers:
   - "urn:github:526301"
 assets:
-  config.yml: zerocracy/home#assets/mailanes/config.yml
-  id_rsa: zerocracy/home#assets/heroku-key
-  id_rsa.pub: zerocracy/home#assets/heroku-key.pub
+  config.yml: yegor256/home#assets/mailanes/config.yml
+  id_rsa: yegor256/home#assets/heroku-key
+  id_rsa.pub: yegor256/home#assets/heroku-key.pub
 install: |-
   export PATH=$PATH:/usr/lib/postgresql/10/bin
   sudo apt-get -y update
   sudo apt-get -y install libpq-dev
-  sudo rvm install ruby-2.6.0
-  rvm use 2.6.0
   git config --global user.email "server@mailanes.com"
   git config --global user.name "mailanes.com"
-  export GEM_HOME=~/.ruby
-  export GEM_PATH=$GEM_HOME:$GEM_PATH
-  sudo gem install pdd
-  bundle install --no-color
-  export LC_ALL=en_US.UTF-8
+  sudo bundle install --no-color "--gemfile=$(pwd)/Gemfile"
+  pdd -f /dev/null
 release:
   sensitive:
     - config.yml
   script: |-
-    pdd -f /dev/null
-    export GEM_HOME=~/.ruby
-    export GEM_PATH=$GEM_HOME:$GEM_PATH
-    ruby -v
     bundle exec rake
     git remote add dokku dokku@dokku.mailanes.com:mailanes
     rm -rf ~/.ssh
@@ -48,7 +39,6 @@ release:
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 https://www.mailanes.com > /dev/null
 merge:
   script: |-
-    pdd -f /dev/null
     bundle exec rake
 deploy:
   script: |-
