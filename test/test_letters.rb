@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018-2019 Yegor Bugayenko
+# Copyright (c) 2018-2020 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -30,9 +30,9 @@ require_relative '../objects/letters'
 class LettersTest < Minitest::Test
   def test_creates_letters
     owner = random_owner
-    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
+    lanes = Lanes.new(owner: owner, pgsql: t_pgsql)
     lane = lanes.add
-    letters = Letters.new(lane: lane, pgsql: test_pgsql)
+    letters = Letters.new(lane: lane, pgsql: t_pgsql)
     letters.add('First')
     letters.add('Second')
     letter = letters.add('Third')

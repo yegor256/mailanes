@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018-2019 Yegor Bugayenko
+# Copyright (c) 2018-2020 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -33,27 +33,27 @@ class BouncesTest < Minitest::Test
   def test_deactives_recipients
     skip
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     list.recipients.add('test@mailanes.com')
     Bounces.new(
       'pop.secureserver.net',
       'reply@mailanes.com',
       '--',
       GLogin::Codec.new('--'),
-      pgsql: test_pgsql
+      pgsql: t_pgsql
     ).fetch
   end
 
   def test_deactives_recipients_with_fake_pop
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     recipient = list.recipients.add('test@mailanes.com')
-    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
-    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
-    Deliveries.new(pgsql: test_pgsql).add(campaign, lane.letters.add, recipient)
+    lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
+    Deliveries.new(pgsql: t_pgsql).add(campaign, lane.letters.add, recipient)
     codec = GLogin::Codec.new('some key')
     msg = FakeMsg.new(recipient, codec)
-    Bounces.new([msg], '', '', codec, pgsql: test_pgsql).fetch
+    Bounces.new([msg], '', '', codec, pgsql: t_pgsql).fetch
     assert(recipient.bounced?)
   end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018-2019 Yegor Bugayenko
+# Copyright (c) 2018-2020 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -34,9 +34,9 @@ require_relative '../objects/deliveries'
 class RecipientsTest < Minitest::Test
   def test_creates_recipients
     owner = random_owner
-    lists = Lists.new(owner: owner, pgsql: test_pgsql)
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
     list = lists.add
-    recipients = Recipients.new(list: list, pgsql: test_pgsql)
+    recipients = Recipients.new(list: list, pgsql: t_pgsql)
     recipient = recipients.add('tes.met@mailanes.com')
     assert(recipient.id.positive?)
     assert_equal(1, recipients.all.count)
@@ -44,8 +44,8 @@ class RecipientsTest < Minitest::Test
 
   def test_groups_recipients_by_weeks
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
-    recipients = Recipients.new(list: list, pgsql: test_pgsql)
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
+    recipients = Recipients.new(list: list, pgsql: t_pgsql)
     recipients.add('tiu-1@mailanes.com', source: owner)
     recipients.add('tiu-2@mailanes.com', source: owner)
     assert(1, recipients.weeks(owner).count)
@@ -56,18 +56,18 @@ class RecipientsTest < Minitest::Test
 
   def test_fetches_recipients
     owner = random_owner
-    lists = Lists.new(owner: owner, pgsql: test_pgsql)
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
     list = lists.add
-    recipients = Recipients.new(list: list, pgsql: test_pgsql)
+    recipients = Recipients.new(list: list, pgsql: t_pgsql)
     recipients.add('tes-t.0_0@mailanes.com', source: "@#{owner}")
     assert_equal(1, recipients.all(query: "=@#{owner}", limit: -1).count)
   end
 
   def test_count_by_source
     owner = random_owner
-    lists = Lists.new(owner: owner, pgsql: test_pgsql)
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
     list = lists.add
-    recipients = Recipients.new(list: list, pgsql: test_pgsql)
+    recipients = Recipients.new(list: list, pgsql: t_pgsql)
     source = 'xxx'
     recipients.add('tes-7@mailanes.com', source: source)
     assert_equal(1, recipients.count_by_source(source))
@@ -75,23 +75,23 @@ class RecipientsTest < Minitest::Test
 
   def test_count_per_day
     owner = random_owner
-    lists = Lists.new(owner: owner, pgsql: test_pgsql)
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
     list = lists.add
-    recipients = Recipients.new(list: list, pgsql: test_pgsql)
+    recipients = Recipients.new(list: list, pgsql: t_pgsql)
     recipients.add('tes-672@mailanes.com')
     assert_equal(0.25, recipients.per_day(4))
   end
 
   def test_bounce_rate
     owner = random_owner
-    lists = Lists.new(owner: owner, pgsql: test_pgsql)
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
     list = lists.add
-    recipients = Recipients.new(list: list, pgsql: test_pgsql)
+    recipients = Recipients.new(list: list, pgsql: t_pgsql)
     first = recipients.add('tes-109@mailanes.com')
-    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
-    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
+    lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
     letter = lane.letters.add
-    deliveries = Deliveries.new(pgsql: test_pgsql)
+    deliveries = Deliveries.new(pgsql: t_pgsql)
     deliveries.add(campaign, letter, first)
     second = recipients.add('tes-110@mailanes.com')
     deliveries.add(campaign, letter, second).bounce
@@ -100,9 +100,9 @@ class RecipientsTest < Minitest::Test
 
   def test_upload_recipients
     owner = random_owner
-    lists = Lists.new(owner: owner, pgsql: test_pgsql)
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
     list = lists.add
-    recipients = Recipients.new(list: list, pgsql: test_pgsql)
+    recipients = Recipients.new(list: list, pgsql: t_pgsql)
     Tempfile.open do |f|
       File.write(
         f.path,
@@ -121,9 +121,9 @@ class RecipientsTest < Minitest::Test
 
   def test_catches_invalid_encoding
     owner = random_owner
-    lists = Lists.new(owner: owner, pgsql: test_pgsql)
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
     list = lists.add
-    recipients = Recipients.new(list: list, pgsql: test_pgsql)
+    recipients = Recipients.new(list: list, pgsql: t_pgsql)
     assert_raises StandardError do
       Tempfile.open do |f|
         File.write(

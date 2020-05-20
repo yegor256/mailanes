@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018-2019 Yegor Bugayenko
+# Copyright (c) 2018-2020 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -33,16 +33,16 @@ require_relative '../objects/deliveries'
 class ListTest < Minitest::Test
   def test_reads_list
     owner = random_owner
-    lists = Lists.new(owner: owner, pgsql: test_pgsql)
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
     title = 'How are you?'
     id = lists.add(title).id
-    list = List.new(id: id, pgsql: test_pgsql)
+    list = List.new(id: id, pgsql: t_pgsql)
     assert_equal(title, list.title)
   end
 
   def test_finds_friends
     owner = random_owner
-    lists = Lists.new(owner: owner, pgsql: test_pgsql)
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
     list = lists.add
     list.yaml = "friends:\n- Jeff\n- john10"
     assert(list.friend?('jeff'))
@@ -51,7 +51,7 @@ class ListTest < Minitest::Test
 
   def test_sets_stop_status
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     assert(!list.stop?)
     list.yaml = 'stop: true'
     assert(list.stop?)
@@ -61,31 +61,31 @@ class ListTest < Minitest::Test
 
   def test_counts_deliveries
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     assert_equal(0, list.deliveries_count)
   end
 
   def test_counts_opens
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     assert_equal(0, list.opened_count)
   end
 
   def test_absorbs_duplicates
-    test_pgsql.exec('DELETE FROM delivery')
+    t_pgsql.exec('DELETE FROM delivery')
     owner = random_owner
-    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
+    lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
     letter = lane.letters.add
-    lists = Lists.new(owner: random_owner, pgsql: test_pgsql)
+    lists = Lists.new(owner: random_owner, pgsql: t_pgsql)
     first = lists.add
-    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(first, lane)
+    campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(first, lane)
     second = lists.add
     campaign.add(second)
     dup = 'ab1@mailanes.com'
     recipient = first.recipients.add(dup)
-    deliveries = Deliveries.new(pgsql: test_pgsql)
+    deliveries = Deliveries.new(pgsql: t_pgsql)
     deliveries.add(campaign, letter, recipient)
-    deliveries.add(Campaigns.new(owner: owner, pgsql: test_pgsql).add(first, lane), letter, recipient)
+    deliveries.add(Campaigns.new(owner: owner, pgsql: t_pgsql).add(first, lane), letter, recipient)
     deliveries.add(campaign, letter, second.recipients.add(dup))
     deliveries.add(campaign, letter, second.recipients.add('ab2@mailanes.com'))
     assert_equal(1, first.absorb_candidates(second).count)

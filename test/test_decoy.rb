@@ -14,37 +14,24 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'net/pop'
+require 'minitest/autorun'
+require_relative 'test__helper'
+require_relative '../objects/decoy'
 
-# Just delete all emails from POP3 decoy account.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018-2020 Yegor Bugayenko
-# License:: MIT
-class Decoy
-  def initialize(host, login, password, log: Loog::NULL)
-    @host = host
-    @login = login
-    @password = password
-    @log = log
-  end
-
-  def fetch
-    start = Time.now
-    pop = Net::POP3.new(@host)
-    pop.start(@login, @password)
-    total = 0
-    pop.each_mail do |m|
-      m.delete
-      total += 1
-      GC.start if (total % 100).zero?
-    end
-    pop.finish
-    @log.info("#{total} decoy emails processed in #{format('%.02f', Time.now - start)}s")
+class DecoyTest < Minitest::Test
+  def test_pop3
+    skip
+    decoy = Decoy.new(
+      'pop.secureserver.net',
+      'decoy@mailanes.com',
+      '----'
+    )
+    decoy.fetch
   end
 end

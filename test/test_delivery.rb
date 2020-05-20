@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018-2019 Yegor Bugayenko
+# Copyright (c) 2018-2020 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -30,12 +30,12 @@ require_relative '../objects/deliveries'
 class DeliveryTest < Minitest::Test
   def test_creates_delivery
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     recipient = list.recipients.add('test@mailanes.com')
-    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
-    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
+    lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
     letter = lane.letters.add
-    deliveries = Deliveries.new(pgsql: test_pgsql)
+    deliveries = Deliveries.new(pgsql: t_pgsql)
     delivery = deliveries.add(campaign, letter, recipient)
     assert(delivery.opened.empty?)
     delivery.just_opened

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018-2019 Yegor Bugayenko
+# Copyright (c) 2018-2020 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -39,9 +39,9 @@ require_relative '../objects/campaigns'
 class LetterTest < Minitest::Test
   def test_sets_active_to_false
     owner = random_owner
-    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
+    lanes = Lanes.new(owner: owner, pgsql: t_pgsql)
     lane = lanes.add
-    letters = Letters.new(lane: lane, pgsql: test_pgsql)
+    letters = Letters.new(lane: lane, pgsql: t_pgsql)
     letter = letters.add
     assert(letter.exists?)
     assert_equal(false, letter.active?)
@@ -49,7 +49,7 @@ class LetterTest < Minitest::Test
 
   def test_moves_up_and_down
     owner = random_owner
-    letters = Letters.new(lane: Lanes.new(owner: owner, pgsql: test_pgsql).add, pgsql: test_pgsql)
+    letters = Letters.new(lane: Lanes.new(owner: owner, pgsql: t_pgsql).add, pgsql: t_pgsql)
     a = letters.add
     assert_equal(1, a.place)
     b = letters.add
@@ -68,7 +68,7 @@ class LetterTest < Minitest::Test
 
   def test_attach_and_detach
     owner = random_owner
-    letters = Letters.new(lane: Lanes.new(owner: owner, pgsql: test_pgsql).add, pgsql: test_pgsql)
+    letters = Letters.new(lane: Lanes.new(owner: owner, pgsql: t_pgsql).add, pgsql: t_pgsql)
     letter = letters.add
     name = 'hey-123.pdf'
     body = "hey \xAD"
@@ -86,9 +86,9 @@ class LetterTest < Minitest::Test
 
   def test_toggles_active_status
     owner = random_owner
-    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
+    lanes = Lanes.new(owner: owner, pgsql: t_pgsql)
     lane = lanes.add
-    letters = Letters.new(lane: lane, pgsql: test_pgsql)
+    letters = Letters.new(lane: lane, pgsql: t_pgsql)
     letter = letters.add
     letter.toggle
     assert_equal(true, letter.active?)
@@ -98,9 +98,9 @@ class LetterTest < Minitest::Test
 
   def test_creates_and_updates_letter
     owner = random_owner
-    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
+    lanes = Lanes.new(owner: owner, pgsql: t_pgsql)
     lane = lanes.add
-    letters = Letters.new(lane: lane, pgsql: test_pgsql)
+    letters = Letters.new(lane: lane, pgsql: t_pgsql)
     letter = letters.add('Hi, dude!')
     %w[first second third].each do |text|
       letter.yaml = "test: #{text}"
@@ -112,9 +112,9 @@ class LetterTest < Minitest::Test
 
   def test_updates_letter_from_fetch
     owner = random_owner
-    lanes = Lanes.new(owner: owner, pgsql: test_pgsql)
+    lanes = Lanes.new(owner: owner, pgsql: t_pgsql)
     lane = lanes.add
-    letters = Letters.new(lane: lane, pgsql: test_pgsql)
+    letters = Letters.new(lane: lane, pgsql: t_pgsql)
     letters.add
     letter = letters.all[0]
     %w[first second third].each do |text|
@@ -127,10 +127,10 @@ class LetterTest < Minitest::Test
 
   def test_fetches_campaigns
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     list.recipients.add('test@mailanes.com')
-    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
-    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
+    lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
     campaign.toggle
     letter = lane.letters.add
     assert_equal(1, letter.campaigns.count)
@@ -138,13 +138,13 @@ class LetterTest < Minitest::Test
 
   def test_sends_via_smtp
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     recipient = list.recipients.add('test11@mailanes.com')
-    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
-    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
+    lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
     campaign.yaml = "title: hello\nspeed: 10\ndecoy:\n  amount: 2\n  address: fake-decoy***@mailanes.com"
     letter = lane.letters.add
-    delivery = Deliveries.new(pgsql: test_pgsql).add(campaign, letter, recipient)
+    delivery = Deliveries.new(pgsql: t_pgsql).add(campaign, letter, recipient)
     RandomPort::Pool::SINGLETON.acquire do |port|
       Dir.mktmpdir do |dir|
         smtpd = FakeSMTPd::Runner.new(
@@ -188,13 +188,13 @@ class LetterTest < Minitest::Test
 
   def test_sends_with_no_decoy
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     recipient = list.recipients.add('test11@mailanes.com')
-    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
-    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
+    lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
     campaign.yaml = "title: hello\nspeed: 10"
     letter = lane.letters.add
-    delivery = Deliveries.new(pgsql: test_pgsql).add(campaign, letter, recipient)
+    delivery = Deliveries.new(pgsql: t_pgsql).add(campaign, letter, recipient)
     RandomPort::Pool::SINGLETON.acquire do |port|
       Dir.mktmpdir do |dir|
         smtpd = FakeSMTPd::Runner.new(
@@ -224,9 +224,9 @@ class LetterTest < Minitest::Test
 
   def test_sends_via_telegram
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     recipient = list.recipients.add('tes-t11@mailanes.com')
-    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
+    lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
     lane.yaml = [
       'telegram:',
       '  chat_id: 0'

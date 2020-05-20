@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018-2019 Yegor Bugayenko
+# Copyright (c) 2018-2020 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -28,10 +28,10 @@ class OwnerTest < Minitest::Test
   def test_monthly_contribution
     login = random_owner
     source = "src-#{rand(999)}"
-    owner = Owner.new(pgsql: test_pgsql, login: login)
+    owner = Owner.new(pgsql: t_pgsql, login: login)
     assert_equal(0, owner.months(source).count)
-    list = Lists.new(owner: login, pgsql: test_pgsql).add
-    recipients = Recipients.new(list: list, pgsql: test_pgsql)
+    list = Lists.new(owner: login, pgsql: t_pgsql).add
+    recipients = Recipients.new(list: list, pgsql: t_pgsql)
     total = 3
     total.times do |i|
       recipients.add("test#{i}@mailanes.com", source: source)

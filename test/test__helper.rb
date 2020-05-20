@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018-2019 Yegor Bugayenko
+# Copyright (c) 2018-2020 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -44,15 +44,15 @@ module Minitest
       'u' + SecureRandom.hex[0..8]
     end
 
-    def test_log
-      @test_log ||= ENV['TEST_QUIET_LOG'] ? Loog::NULL : Loog::VERBOSE
+    def t_log
+      @t_log ||= ENV['TEST_QUIET_LOG'] ? Loog::NULL : Loog::VERBOSE
     end
 
-    def test_pgsql
+    def t_pgsql
       # rubocop:disable Style/ClassVars
-      @@test_pgsql ||= Pgtk::Pool.new(
+      @@t_pgsql ||= Pgtk::Pool.new(
         Pgtk::Wire::Yaml.new(File.join(__dir__, '../target/pgsql-config.yml')),
-        log: test_log
+        log: t_log
       ).start
       # rubocop:enable Style/ClassVars
     end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018-2019 Yegor Bugayenko
+# Copyright (c) 2018-2020 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -66,7 +66,7 @@ class AppTest < Minitest::Test
   end
 
   def test_subscribes_and_unsubscribes
-    list = Lists.new(owner: random_owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: random_owner, pgsql: t_pgsql).add
     email = "0-#{SecureRandom.hex[0..8]}@mailanes.com"
     post("/subscribe?list=#{list.id}&email=#{email}", 'reason=Just+%3A%0Alove+you')
     assert_equal(200, last_response.status, last_response.body)
@@ -88,7 +88,7 @@ class AppTest < Minitest::Test
 
   def test_adds_new_recipient
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     list.yaml = "friends:\n- jeff"
     login('jeff')
     email = "#{SecureRandom.hex[0..8]}@mailanes.com"
@@ -99,7 +99,7 @@ class AppTest < Minitest::Test
 
   def test_downloads_friends_list
     owner = random_owner
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     list.yaml = "friends:\n- jeff"
     login('jeff')
     get("/download-list?list=#{list.id}")
@@ -109,7 +109,7 @@ class AppTest < Minitest::Test
   def test_some_pages
     owner = random_owner
     login(owner)
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     get('/lists')
     assert_equal(200, last_response.status, last_response.body)
     get("/list?id=#{list.id}")
@@ -121,15 +121,15 @@ class AppTest < Minitest::Test
     recipient = list.recipients.add('test-me1@mailanes.com')
     get("/recipient?id=#{recipient.id}")
     assert_equal(200, last_response.status, last_response.body)
-    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
+    lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
     get('/lanes')
     assert_equal(200, last_response.status, last_response.body)
     get("/lane?id=#{lane.id}")
     assert_equal(200, last_response.status, last_response.body)
-    letter = Letters.new(lane: lane, pgsql: test_pgsql).add
+    letter = Letters.new(lane: lane, pgsql: t_pgsql).add
     get("/letter?id=#{letter.id}")
     assert_equal(200, last_response.status, last_response.body)
-    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
+    campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
     get('/campaigns')
     assert_equal(200, last_response.status, last_response.body)
     get("/campaign?id=#{campaign.id}")
@@ -141,13 +141,13 @@ class AppTest < Minitest::Test
     auth = Hex::FromText.new(owner).to_s
     get("/api?auth=#{auth}")
     assert_equal(200, last_response.status, last_response.body)
-    list = Lists.new(owner: owner, pgsql: test_pgsql).add
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
     get("/api/lists/#{list.id}/active_count.json?auth=#{auth}")
     assert_equal(200, last_response.status, last_response.body)
     get("/api/lists/#{list.id}/per_day.json?auth=#{auth}")
     assert_equal(200, last_response.status, last_response.body)
-    lane = Lanes.new(owner: owner, pgsql: test_pgsql).add
-    campaign = Campaigns.new(owner: owner, pgsql: test_pgsql).add(list, lane)
+    lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
     get("/api/campaigns/#{campaign.id}/deliveries_count.json?auth=#{auth}")
     assert_equal(200, last_response.status, last_response.body)
   end
