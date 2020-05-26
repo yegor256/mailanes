@@ -40,7 +40,7 @@ class Lists
   def all
     @pgsql.exec(
       [
-        'SELECT list.id, (SELECT COUNT(*) FROM recipient WHERE list = list.id) AS total_recipients',
+        'SELECT list.id, (SELECT COUNT(*) FROM (SELECT id FROM recipient WHERE list = list.id) x) AS total_recipients',
         'FROM list',
         'WHERE owner = $1',
         'ORDER BY list.created DESC'
