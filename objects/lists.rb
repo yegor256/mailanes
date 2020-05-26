@@ -38,16 +38,22 @@ class Lists
   end
 
   def all
-    @pgsql.exec(
+    found = @pgsql.exec(
       [
-        # see https://stackoverflow.com/questions/55018986/postgresql-select-count-query-takes-long-time
-        'SELECT list.id, (SELECT COUNT(*) FROM (SELECT id FROM recipient WHERE list = list.id) x) AS total_recipients',
-        'FROM list',
-        'WHERE owner = $1',
+        'SELECT list.id, COUNT(recipient.id) AS total_recipients',
+        'FROM recipient',
+        'JOIN list ON list.id = recipient.list',
+        'WHERE list.owner = $1',
+        'GROUP BY list.id',
         'ORDER BY list.created DESC'
       ].join(' '),
       [@owner]
     ).map { |r| List.new(id: r['id'].to_i, pgsql: @pgsql, hash: r) }
+    ids = @pgsql.exec('SELECT list.id FROM list WHERE owner=$1', [@owner]).map { |r| r['id'].to_i }
+    ids.each do |id|
+      found << List.new(id: id, pgsql: @pgsql) unless found.find { |l| l.id == id }
+    end
+    found
   end
 
   def add(title = 'noname')

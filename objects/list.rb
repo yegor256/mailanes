@@ -41,7 +41,7 @@ class List
 
   def recipients
     hash = {}
-    hash['total'] = @hash['total_recipients'] if @hash['total_recipients']
+    hash['total'] = @hash['total_recipients'].to_i if @hash.key?('total_recipients')
     Recipients.new(list: self, pgsql: @pgsql, hash: hash)
   end
 
