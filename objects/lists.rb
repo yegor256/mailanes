@@ -40,6 +40,7 @@ class Lists
   def all
     @pgsql.exec(
       [
+        # see https://stackoverflow.com/questions/55018986/postgresql-select-count-query-takes-long-time
         'SELECT list.id, (SELECT COUNT(*) FROM (SELECT id FROM recipient WHERE list = list.id) x) AS total_recipients',
         'FROM list',
         'WHERE owner = $1',
