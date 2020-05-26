@@ -97,11 +97,9 @@ class Lists
   def total_recipients
     @pgsql.exec(
       [
-        'SELECT COUNT(*) FROM',
-        '(SELECT recipient.email FROM recipient',
+        'SELECT COUNT(recipient.email) FROM recipient',
         'JOIN list ON recipient.list = list.id',
-        'WHERE list.owner = $1 AND list.stop = false',
-        'GROUP BY recipient.email) AS x'
+        'WHERE list.owner = $1 AND list.stop = false'
       ].join(' '),
       [@owner]
     )[0]['count'].to_i
