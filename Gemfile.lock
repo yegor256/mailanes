@@ -223,6 +223,7 @@ PLATFORMS
   x86_64-darwin-17
   x86_64-darwin-18
   x86_64-darwin-19
+  x86_64-darwin-20
 
 DEPENDENCIES
   codecov (= 0.6.0)
@@ -263,7 +264,7 @@ DEPENDENCIES
   zache (>= 0.12.0)
 
 RUBY VERSION
-   ruby 2.7.0p0
+   ruby 2.7.7p221
 
 BUNDLED WITH
    2.3.22
