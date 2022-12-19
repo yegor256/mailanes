@@ -32,7 +32,7 @@ gem 'iri', '0.5.1'
 gem 'liquid', '4.0.1'
 gem 'loog', '0.2.1'
 gem 'mail', '2.7.1'
-gem 'minitest', '5.11.3', require: false
+gem 'minitest', '5.16.3', require: false
 gem 'minitest-reporters', '1.3.6', require: false
 gem 'pgtk', '0.7.5'
 gem 'rack', '2.1.4'
