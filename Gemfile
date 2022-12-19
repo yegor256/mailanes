@@ -21,7 +21,7 @@
 
 source 'https://rubygems.org'
 
-gem 'codecov', '0.1.14'
+gem 'codecov', '0.6.0'
 gem 'fakesmtpd', '0.3.1'
 gem 'geoplugin', '0.3.1'
 gem 'get_process_mem', '~>0.2'
