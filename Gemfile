@@ -20,7 +20,6 @@
 # SOFTWARE.
 
 source 'https://rubygems.org'
-ruby '2.6.0'
 
 gem 'codecov', '0.1.14'
 gem 'fakesmtpd', '0.3.1'
