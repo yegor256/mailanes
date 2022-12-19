@@ -40,7 +40,7 @@ gem 'rack-ssl', '1.4.1'
 gem 'rack-test', '1.1.0'
 gem 'rake', '12.3.3', require: false
 gem 'random-port', '0.3.1', require: false
-gem 'redcarpet', '3.4.0'
+gem 'redcarpet', '3.5.1'
 gem 'rerun', '0.13.1', require: false
 gem 'rspec-rails', '3.8.1', require: false
 gem 'rubocop', '0.62.0', require: false
