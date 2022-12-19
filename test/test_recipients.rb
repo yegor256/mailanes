@@ -42,6 +42,16 @@ class RecipientsTest < Minitest::Test
     assert_equal(1, recipients.all.count)
   end
 
+  def test_add_exclusive_recipient
+    owner = random_owner
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
+    list = lists.add
+    list.yaml = 'exclusive: true'
+    recipients = Recipients.new(list: list, pgsql: t_pgsql)
+    recipient = recipients.add('t32@mailanes.com')
+    assert(recipient.id.positive?)
+  end
+
   def test_groups_recipients_by_weeks
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add

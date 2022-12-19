@@ -100,12 +100,12 @@ class Recipients
       )[0]['id'].to_i,
       pgsql: @pgsql
     )
-    if @list.yaml['exclusive'] && @list.yaml['exclusive'] == 'true'
+    if @list.yaml['exclusive']
       @pgsql.exec(
         [
           'UPDATE recipient SET active = false',
-          'JOIN list ON list.id = recipient.list',
-          'WHERE list.owner = $1 AND list.id != $2'
+          'FROM list',
+          'WHERE list.id = recipient.list AND list.owner = $1 AND list.id != $2'
         ],
         [@list.owner, @list.id]
       )
