@@ -7,6 +7,7 @@ assets:
   id_rsa: yegor256/home#assets/heroku-key
   id_rsa.pub: yegor256/home#assets/heroku-key.pub
 install: |-
+  sudo rvm use ruby-3.0.1
   export PATH=$PATH:/usr/lib/postgresql/10/bin
   sudo apt-get -y update
   sudo apt-get -y install libpq-dev
