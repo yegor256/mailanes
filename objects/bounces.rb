@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018-2020 Yegor Bugayenko
+# Copyright (c) 2018-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -28,7 +28,7 @@ require_relative 'hex'
 
 # Fetch all bounces and deactivate recipients.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018-2020 Yegor Bugayenko
+# Copyright:: Copyright (c) 2018-2022 Yegor Bugayenko
 # License:: MIT
 class Bounces
   def initialize(host, login, password, codec, pgsql:, log: Loog::NULL)
