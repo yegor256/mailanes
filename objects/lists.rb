@@ -46,7 +46,7 @@ class Lists
         'WHERE list.owner = $1',
         'GROUP BY list.id',
         'ORDER BY list.created DESC'
-      ].join(' '),
+      ],
       [@owner]
     ).map { |r| List.new(id: r['id'].to_i, pgsql: @pgsql, hash: r) }
     ids = @pgsql.exec('SELECT list.id FROM list WHERE owner=$1', [@owner]).map { |r| r['id'].to_i }
@@ -89,7 +89,7 @@ class Lists
         'WHERE list.owner = $1 AND list.stop = false',
         'GROUP BY recipient.email) x',
         'WHERE x.dups > 1'
-      ].join(' '),
+      ],
       [@owner]
     )[0]['count'].to_i
   end
@@ -100,8 +100,22 @@ class Lists
         'SELECT COUNT(recipient.email) FROM recipient',
         'JOIN list ON recipient.list = list.id',
         'WHERE list.owner = $1 AND list.stop = false'
-      ].join(' '),
+      ],
       [@owner]
     )[0]['count'].to_i
+  end
+
+  # Deactivate them all
+  def deactivate_recipients(emails)
+    @pgsql.exec(
+      [
+        'UPDATE recipient SET active = false',
+        'FROM list',
+        'WHERE list.owner = $1 AND recipient.email IN (',
+        emails.map { |e| "'#{e.gsub(/'/, '\\\'')}'" }.join(', '),
+        ')'
+      ],
+      [@owner]
+    )
   end
 end

@@ -65,6 +65,12 @@ class AppTest < Minitest::Test
     assert_equal(200, last_response.status, last_response.body)
   end
 
+  def test_deactivates_many_recipients
+    login
+    post('/deactivate-many', 'emails=a@gmail.com%0A2@gmail.com')
+    assert_equal(302, last_response.status, last_response.body)
+  end
+
   def test_subscribes_and_unsubscribes
     list = Lists.new(owner: random_owner, pgsql: t_pgsql).add
     email = "0-#{SecureRandom.hex[0..8]}@mailanes.com"

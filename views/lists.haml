@@ -4,6 +4,11 @@
 %p
   %a.item{onclick: '$("#add").show();$("#title").focus();'} Add List
   %a.item{onclick: '$("#find").show();$("#query").focus();'} Find Recipient
+  %a.item{onclick: '$("#many").show();$("#emails").focus();'} Deactivate Many
+
+%form.hidden{method: 'POST', action: iri.cut('/deactivate-many'), id: 'many'}
+  %textarea{name: 'emails', id: 'emails', style: 'width:100%;height:12em;', required: 'true'}
+  %input{type: 'submit', value: 'Deactivate'}
 
 %form.hidden{method: 'POST', action: iri.cut('/add-list'), id: 'add'}
   %input{type: 'text', name: 'title', id: 'title', placeholder: 'List title...', size: 45, required: 'true', autocomplete: 'off'}

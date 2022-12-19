@@ -57,7 +57,7 @@ class Tbot
         [
           "Here is your chat ID: #{message.chat.id}.",
           'Use it in your [YAML configs](https://github.com/yegor256/mailanes).'
-        ].join(' '),
+        ],
         c: client
       )
     end

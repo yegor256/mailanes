@@ -143,7 +143,7 @@ class Campaign
       'WHERE campaign = $1',
       'ORDER BY delivery.created DESC',
       'LIMIT $2'
-    ].join(' ')
+    ]
     @pgsql.exec(q, [@id, limit]).map do |r|
       Delivery.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
@@ -155,7 +155,7 @@ class Campaign
         'SELECT COUNT(*) FROM delivery',
         'WHERE campaign=$1',
         days.positive? ? "AND delivery.created > NOW() - INTERVAL '#{days} DAYS'" : ''
-      ].join(' '),
+      ],
       [@id]
     )[0]['count'].to_i
   end
@@ -174,7 +174,7 @@ class Campaign
         'JOIN recipient ON delivery.recipient = recipient.id',
         'WHERE campaign = $1 AND bounced IS NOT NULL',
         days.positive? ? "AND delivery.created > NOW() - INTERVAL '#{days} DAYS'" : ''
-      ].join(' '),
+      ],
       [@id]
     )[0]['count'].to_i
   end
@@ -186,7 +186,7 @@ class Campaign
         'JOIN recipient ON delivery.recipient = recipient.id',
         'WHERE campaign = $1 AND unsubscribed IS NOT NULL',
         days.positive? ? "AND delivery.created > NOW() - INTERVAL '#{days} DAYS'" : ''
-      ].join(' '),
+      ],
       [@id]
     )[0]['count'].to_i
   end
@@ -196,6 +196,6 @@ class Campaign
   end
 
   def pipeline_count
-    @pgsql.exec('SELECT COUNT(*) FROM (' + Pipeline.query(@id) + ') x')[0]['count'].to_i
+    @pgsql.exec(['SELECT COUNT(*) FROM ('] + Pipeline.query(@id) + [') x'])[0]['count'].to_i
   end
 end

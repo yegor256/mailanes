@@ -63,7 +63,7 @@ class Lane
         'SELECT COUNT(*) FROM delivery',
         'JOIN letter ON letter.id = delivery.letter',
         'WHERE letter.lane = $1'
-      ].join(' '),
+      ],
       [@id]
     )[0]['count'].to_i
   end

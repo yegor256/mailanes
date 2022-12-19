@@ -55,7 +55,7 @@ class Recipients
       active_only ? 'AND recipient.active = true' : '',
       'ORDER BY recipient.created DESC',
       limit.positive? ? 'LIMIT $3' : ''
-    ].join(' ')
+    ]
     like = "%#{query}%"
     like = query[1..-1] if query.start_with?('=')
     @pgsql.exec(q, [@list.owner, like] + (limit.positive? ? [limit] : [])).map do |r|
@@ -77,9 +77,9 @@ class Recipients
       'SELECT COUNT(1) FROM recipient',
       'JOIN delivery ON delivery.recipient = recipient.id',
       'WHERE list = $1'
-    ].join(' ')
+    ]
     sent = @pgsql.exec(q, [@list.id])[0]['count'].to_i
-    bounced = @pgsql.exec(q + ' AND bounced IS NOT NULL', [@list.id])[0]['count'].to_i
+    bounced = @pgsql.exec(q + [' AND bounced IS NOT NULL'], [@list.id])[0]['count'].to_i
     sent.zero? ? 0 : bounced.to_f / sent
   end
 
@@ -106,7 +106,7 @@ class Recipients
           'UPDATE recipient SET active = false',
           'JOIN list ON list.id = recipient.list',
           'WHERE list.owner = $1 AND list.id != $2'
-        ].join(' '),
+        ],
         [@list.owner, @list.id]
       )
     end
@@ -134,7 +134,7 @@ class Recipients
         'WHERE list = $1 AND source = $2',
         'GROUP BY week',
         'ORDER BY week DESC'
-      ].join(' '),
+      ],
       [@list.id, source.downcase.strip]
     ).map { |r| { week: r['week'], total: r['total'].to_i, bad: r['bad'].to_i } }
   end

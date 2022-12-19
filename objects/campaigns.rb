@@ -69,7 +69,7 @@ class Campaigns
         'SELECT COUNT(1) FROM delivery',
         'JOIN campaign ON delivery.campaign = campaign.id',
         "WHERE campaign.owner = $1 AND delivery.created > NOW() - INTERVAL \'#{days} DAYS\'"
-      ].join(' '),
+      ],
       [@owner]
     )[0]['count'].to_i
   end
@@ -81,7 +81,7 @@ class Campaigns
         'JOIN list ON recipient.list = list.id',
         'JOIN delivery ON recipient.id = delivery.recipient',
         "WHERE list.owner = $1 AND delivery.bounced > NOW() - INTERVAL \'#{days} DAYS\'"
-      ].join(' '),
+      ],
       [@owner]
     )[0]['count'].to_i
   end

@@ -61,6 +61,17 @@ class ListsTest < Minitest::Test
     assert_equal(3, lists.total_recipients)
   end
 
+  def test_deactivate_many_recipients
+    lists = Lists.new(owner: random_owner, pgsql: t_pgsql)
+    r1 = lists.add.recipients.add('dm1@mailanes.com')
+    r2 = lists.add.recipients.add('dm2@mailanes.com')
+    r3 = lists.add.recipients.add('dm3@mailanes.com')
+    lists.deactivate_recipients(['dm1@mailanes.com', 'dm2@mailanes.com'])
+    assert(!r1.active?)
+    assert(!r2.active?)
+    assert(r3.active?)
+  end
+
   def test_counts_duplicates
     lists = Lists.new(owner: random_owner, pgsql: t_pgsql)
     first = lists.add

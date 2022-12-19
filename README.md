@@ -210,7 +210,7 @@ If it's clean and you don't see any error messages, submit your pull request.
 To run a single unit test you should first do this:
 
 ```bash
-$ bundle exec rake pgsql liquibase sleep
+$ bundle exec rake pgsql liquibase run
 ```
 
 And then, in another terminal (for example):

@@ -94,7 +94,7 @@ class List
       'JOIN source ON source.campaign = campaign.id',
       'WHERE source.list = $1',
       'ORDER BY campaign.created DESC'
-    ].join(' ')
+    ]
     @pgsql.exec(q, [@id]).map do |r|
       Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
@@ -107,7 +107,7 @@ class List
         'JOIN recipient ON recipient.id=delivery.recipient',
         'JOIN list ON recipient.list=list.id',
         'WHERE list.id=$1'
-      ].join(' '),
+      ],
       [@id]
     )[0]['count'].to_i
   end
@@ -118,7 +118,7 @@ class List
         'SELECT COUNT(*) FROM recipient',
         'JOIN delivery ON recipient.id = delivery.recipient AND delivery.opened != \'\'',
         'WHERE recipient.list = $1'
-      ].join(' '),
+      ],
       [@id]
     )[0]['count'].to_i
   end
@@ -132,7 +132,7 @@ class List
       '    FROM list',
       '    WHERE owner = $1 AND list.stop = false) AS x',
       'WHERE total > 0'
-    ].join(' ')
+    ]
     @pgsql.exec(q, [owner, @id]).map do |r|
       {
         list: List.new(id: r['id'].to_i, pgsql: @pgsql, hash: r),
@@ -148,7 +148,7 @@ class List
       'FROM recipient AS s',
       'JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
       'AND s.list = $1 AND t.list = $2'
-    ].join(' ')
+    ]
     @pgsql.exec(q, [list.id, @id]).map do |r|
       {
         from: Recipient.new(
@@ -185,7 +185,7 @@ class List
           '    WHERE d.campaign = delivery.campaign',
           '    AND d.letter = delivery.letter',
           '    AND d.recipient = r.from) > 0)'
-        ].join(' '),
+        ],
         [list.id, @id]
       )
       t.exec(
@@ -195,7 +195,7 @@ class List
           '  JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
           '  AND s.list = $1 AND t.list = $2) AS alt',
           'WHERE recipient = alt.from'
-        ].join(' '),
+        ],
         [list.id, @id]
       )
       t.exec(
@@ -204,7 +204,7 @@ class List
           '(SELECT s.id FROM recipient AS s',
           '  JOIN recipient AS t ON s.email = t.email AND s.list != t.list',
           '  AND s.list = $1 AND t.list = $2)'
-        ].join(' '),
+        ],
         [list.id, @id]
       )
     end

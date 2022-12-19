@@ -73,7 +73,7 @@ class Lanes
         'SELECT letter.* FROM letter',
         'JOIN lane ON letter.lane = lane.id',
         'WHERE lane.owner=$1 AND letter.id=$2'
-      ].join(' '),
+      ],
       [@owner, id]
     )[0]
     raise UserError, "Letter ##{id} not found in any lanes owned by @#{@owner}" if hash.nil?

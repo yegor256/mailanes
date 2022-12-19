@@ -147,7 +147,7 @@ class Pipeline
       campaign.zero? ? "AND (#{chistory}) < c.speed" : "AND c.id = #{campaign}",
       campaign.zero? ? "AND (#{lhistory}) < letter.speed" : '',
       'ORDER BY letter.place'
-    ].join(' ')
+    ]
   end
 
   private
@@ -155,7 +155,7 @@ class Pipeline
   def fetch_one(postman)
     deliveries = Deliveries.new(pgsql: @pgsql)
     done = false
-    @pgsql.exec(Pipeline.query + ' LIMIT 1').each do |r|
+    @pgsql.exec(Pipeline.query + [' LIMIT 1']).each do |r|
       campaign = Campaign.new(id: r['cid'].to_i, pgsql: @pgsql)
       letter = Letter.new(id: r['lid'].to_i, pgsql: @pgsql, tbot: @tbot, log: @log)
       recipient = Recipient.new(id: r['rid'].to_i, pgsql: @pgsql)

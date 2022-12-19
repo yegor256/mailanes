@@ -279,6 +279,12 @@ post '/add-recipient' do
   flash("/list?id=#{list.id}", "The recipient ##{recipient.id} has been added to the list ##{list.id}")
 end
 
+post '/deactivate-many' do
+  emails = params[:emails].split("\r")
+  owner.lists.deactivate_recipients(emails)
+  flash('/lists', "Deactivated #{emails.count} recipients")
+end
+
 get '/recipient' do
   recipient = Recipient.new(id: params[:id].to_i, pgsql: settings.pgsql)
   list = shared_list(recipient.list.id)

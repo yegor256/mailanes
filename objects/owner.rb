@@ -47,7 +47,7 @@ class Owner
         'WHERE source = $1',
         'GROUP BY month',
         'ORDER BY month DESC'
-      ].join(' '),
+      ],
       [source.downcase.strip]
     ).map { |r| { month: r['month'], total: r['total'].to_i, bad: r['bad'].to_i } }
   end

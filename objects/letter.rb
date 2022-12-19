@@ -67,7 +67,7 @@ class Letter
       'SELECT * FROM campaign',
       'JOIN letter ON letter.lane=campaign.lane',
       'WHERE letter.id=$1'
-    ].join(' ')
+    ]
     @pgsql.exec(q, [@id]).map do |r|
       Campaign.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
@@ -128,7 +128,7 @@ class Letter
           'SELECT id, place FROM letter',
           "WHERE place #{inc.positive? ? '>' : '<'} $1 AND lane = $2",
           "ORDER BY place #{inc.positive? ? 'ASC' : 'DESC'}"
-        ].join(' '),
+        ],
         [place, lane.id]
       )[0]
       raise UserError, 'Can\'t move in this direction' if other.nil?
