@@ -1,5 +1,5 @@
 docker:
-  image: yegor256/rultor-image:1.17.0
+  image: yegor256/rultor-image:1.17.1
 readers:
   - "urn:github:526301"
 assets:
@@ -7,8 +7,6 @@ assets:
   id_rsa: yegor256/home#assets/heroku-key
   id_rsa.pub: yegor256/home#assets/heroku-key.pub
 install: |-
-  rvm use 3.0.1
-  ruby -v
   export PATH=$PATH:/usr/lib/postgresql/10/bin
   sudo apt-get -y update
   sudo apt-get -y install libpq-dev
