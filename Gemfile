@@ -44,7 +44,7 @@ gem 'redcarpet', '3.5.1'
 gem 'rerun', '0.13.1', require: false
 gem 'rspec-rails', '3.9.1', require: false
 gem 'rubocop', '0.62.0', require: false
-gem 'rubocop-rspec', '1.30.1', require: false
+gem 'rubocop-rspec', '1.44.1', require: false
 gem 'sass', '3.7.4'
 gem 'sentry-raven', '2.7.4'
 gem 'sinatra', '2.0.5'
