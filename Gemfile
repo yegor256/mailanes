@@ -44,7 +44,7 @@ gem 'random-port', '0.5.1', require: false
 gem 'redcarpet', '3.5.1'
 gem 'rerun', '0.14.0', require: false
 gem 'rspec-rails', '3.9.1', require: false
-gem 'rubocop', '1.50.0', require: false
+gem 'rubocop', '1.50.2', require: false
 gem 'rubocop-rspec', '2.20.0', require: false
 gem 'sass', '3.7.4'
 gem 'sentry-raven', '2.7.4'
