@@ -47,7 +47,7 @@ gem 'rspec-rails', '3.9.1', require: false
 gem 'rubocop', '1.50.0', require: false
 gem 'rubocop-rspec', '2.20.0', require: false
 gem 'sass', '3.7.4'
-gem 'sentry-raven', '2.7.4'
+gem 'sentry-raven', '2.13.0'
 gem 'simplecov', '0.22.0', require: false
 gem 'sinatra', '3.0.6'
 gem 'sinatra-contrib', '3.0.6'
