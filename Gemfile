@@ -28,7 +28,7 @@ gem 'glogin', '0.10.0'
 gem 'gserver', '0.0.1'
 gem 'haml', '5.2.2'
 gem 'iri', '0.5.1'
-gem 'liquid', '4.0.1'
+gem 'liquid', '4.0.4'
 gem 'loog', '0.2.1'
 gem 'mail', '2.7.1'
 gem 'minitest', '5.16.3', require: false
