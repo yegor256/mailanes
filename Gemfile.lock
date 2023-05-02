@@ -70,7 +70,7 @@ GEM
     loofah (2.20.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    loog (0.2.1)
+    loog (0.3.1)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
@@ -253,7 +253,7 @@ DEPENDENCIES
   haml (= 5.2.2)
   iri (= 0.5.1)
   liquid (= 4.0.4)
-  loog (= 0.2.1)
+  loog (= 0.3.1)
   mail (= 2.8.1)
   minitest (= 5.16.3)
   minitest-reporters (= 1.5.0)
