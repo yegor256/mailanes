@@ -25,10 +25,6 @@ ENV['RACK_ENV'] = 'test'
 require 'simplecov'
 SimpleCov.root(File.expand_path(File.join(__dir__, '..')))
 SimpleCov.start
-if ENV['CI'] == 'true'
-  require 'codecov'
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
-end
 
 require 'minitest/reporters'
 Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
