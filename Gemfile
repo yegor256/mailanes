@@ -38,7 +38,7 @@ gem 'net-smtp', '0.3.3'
 gem 'pgtk', '0.8.0'
 gem 'rack', '2.2.4'
 gem 'rack-ssl', '1.4.1'
-gem 'rack-test', '1.1.0'
+gem 'rack-test', '2.1.0'
 gem 'rake', '12.3.3', require: false
 gem 'random-port', '0.5.1', require: false
 gem 'redcarpet', '3.5.1'
