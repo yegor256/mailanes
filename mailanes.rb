@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-STDOUT.sync = true
+$stdout.sync = true
 
 require 'geoplugin'
 require 'get_process_mem'
@@ -166,7 +166,7 @@ before '/*' do
         settings.config['github']['encryption_secret'],
         context
       ).to_user
-    rescue OpenSSL::Cipher::CipherError => _
+    rescue OpenSSL::Cipher::CipherError => _e
       cookies.delete(:glogin)
     end
   end
@@ -175,7 +175,7 @@ before '/*' do
       @locals[:user] = {
         login: settings.codec.decrypt(Hex::ToText.new(params[:auth]).to_s)
       }
-    rescue OpenSSL::Cipher::CipherError => _
+    rescue OpenSSL::Cipher::CipherError => _e
       redirect to('/')
     end
   end
@@ -625,7 +625,7 @@ end
 
 get '/weeks' do
   list = shared_list(params[:id].to_i)
-  source = '@' + (params[:user] || current_user)
+  source = "@#{params[:user] || current_user}"
   haml :weeks, layout: :layout, locals: merged(
     title: '/weekly',
     list: list,
@@ -635,7 +635,7 @@ get '/weeks' do
 end
 
 get '/months' do
-  source = '@' + (params[:user] || current_user)
+  source = "@#{params[:user] || current_user}"
   haml :months, layout: :layout, locals: merged(
     title: '/monthly',
     source: source,
@@ -685,7 +685,7 @@ post '/subscribe' do
   email = params[:email].downcase.strip
   notify = []
   if list.recipients.exists?(email)
-    recipient = list.recipients.all(query: '=' + email)[0]
+    recipient = list.recipients.all(query: "=#{email}")[0]
     if recipient.active?
       recipient.post_event(
         [
@@ -733,7 +733,7 @@ post '/subscribe' do
       ].join(' ')
     )
     if list.confirmation_required?
-      recipient.confirm!(false)
+      recipient.confirm!(set: false)
       recipient.post_event('The subscriber has to confirm their email, since the list requires so')
     end
     notify += [
@@ -766,8 +766,8 @@ get '/unsubscribe' do
   raise UserError, 'Token is required in order to unsubscribe you' if token.nil?
   id = begin
     settings.codec.decrypt(token).to_i
-  rescue OpenSSL::Cipher::CipherError => ex
-    raise UserError, "Token is invalid, can\'t unsubscribe: #{ex.message}"
+  rescue OpenSSL::Cipher::CipherError => e
+    raise UserError, "Token is invalid, can't unsubscribe: #{e.message}"
   end
   recipient = Recipient.new(id: id, pgsql: settings.pgsql)
   list = recipient.list
@@ -787,7 +787,7 @@ get '/unsubscribe' do
       "out of #{list.recipients.count} total.",
       "This is what we know about the recipient:\n\n```\n#{recipient.yaml.to_yaml}\n```"
     )
-    recipient.post_event('Unsubscribed' + (@locals[:user] ? " by @#{current_user}" : '') + '.')
+    recipient.post_event("Unsubscribed#{@locals[:user] ? " by @#{current_user}" : ''}.")
   else
     recipient.post_event(
       [
@@ -807,16 +807,17 @@ end
 get '/opened' do
   token = params[:token]
   return 'The URL is broken' if token.nil?
-  id = begin
-    settings.codec.decrypt(token).to_i
-  rescue OpenSSL::Cipher::CipherError => ex
-    return "Token is invalid, can\'t use it: #{ex.message}"
+  id = 0
+  begin
+    id = settings.codec.decrypt(token).to_i
+  rescue OpenSSL::Cipher::CipherError => e
+    return "Token is invalid, can't use it: #{e.message}"
   end
   delivery = Delivery.new(id: id, pgsql: settings.pgsql)
   agent = request.env['USER_AGENT'] || 'unknown User-Agent'
   delivery.just_opened("#{request.ip} (#{country}) by #{agent}")
   content_type 'image/png'
-  IO.read(File.join(__dir__, 'public/logo-64.png'))
+  File.read(File.join(__dir__, 'public/logo-64.png'))
 end
 
 get '/confirm' do
@@ -824,8 +825,8 @@ get '/confirm' do
   raise UserError, 'Token is required in order to confirm you' if token.nil?
   id = begin
     settings.codec.decrypt(token).to_i
-  rescue OpenSSL::Cipher::CipherError => ex
-    raise UserError, "Token is invalid, can\'t confirm: #{ex.message}"
+  rescue OpenSSL::Cipher::CipherError => e
+    raise UserError, "Token is invalid, can't confirm: #{e.message}"
   end
   recipient = Recipient.new(id: id, pgsql: settings.pgsql)
   recipient.confirm!
@@ -836,7 +837,7 @@ get '/confirm' do
     "with the email `#{recipient.email}` just confirmed their participation in the list",
     "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
   )
-  recipient.post_event('Subscription confirmed' + (@locals[:user] ? " by @#{current_user}" : '') + '.')
+  recipient.post_event("Subscription confirmed#{@locals[:user] ? " by @#{current_user}" : ''}.")
   haml :confirmed, layout: :layout, locals: merged(
     title: '/confirmed',
     list: recipient.list,
@@ -856,10 +857,10 @@ get '/api/lists/:id/active_count.json' do
   content_type 'application/json'
   JSON.pretty_generate(
     "list_#{list.id}": {
-      'type': 'integer',
-      'value': list.recipients.active_count,
-      'label': list.title,
-      'strategy': 'continuous'
+      type: 'integer',
+      value: list.recipients.active_count,
+      label: list.title,
+      strategy: 'continuous'
     }
   )
 end
@@ -869,10 +870,10 @@ get '/api/lists/:id/per_day.json' do
   content_type 'application/json'
   JSON.pretty_generate(
     "list_#{list.id}": {
-      'type': 'integer',
-      'value': list.recipients.per_day(params[:days] ? params[:days].to_i : 10).round(2),
-      'label': list.title,
-      'strategy': 'interval'
+      type: 'integer',
+      value: list.recipients.per_day(params[:days] ? params[:days].to_i : 10).round(2),
+      label: list.title,
+      strategy: 'interval'
     }
   )
 end
@@ -882,10 +883,10 @@ get '/api/campaigns/:id/deliveries_count.json' do
   content_type 'application/json'
   JSON.pretty_generate(
     "campaign_#{campaign.id}": {
-      'type': 'float',
-      'value': campaign.deliveries_count(days: params[:days] ? params[:days].to_i : 1),
-      'label': campaign.title,
-      'strategy': 'interval'
+      type: 'float',
+      value: campaign.deliveries_count(days: params[:days] ? params[:days].to_i : 1),
+      label: campaign.title,
+      strategy: 'interval'
     }
   )
 end

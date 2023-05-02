@@ -41,7 +41,7 @@ module Minitest
   class Test
     def random_owner
       require 'securerandom'
-      'u' + SecureRandom.hex[0..8]
+      "u#{SecureRandom.hex[0..8]}"
     end
 
     def t_log

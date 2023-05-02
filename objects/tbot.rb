@@ -31,6 +31,7 @@ class Tbot
   # Fake one
   class Fake
     attr_reader :sent
+
     def initialize
       @sent = []
     end

@@ -80,7 +80,7 @@ class Bounces
       next if id.nil? || encrypted.nil?
       begin
         plain = id.to_i
-        sign = Hex::ToText.new(encrypted.gsub("=\n", '').gsub(/\=.+/, '')).to_s
+        sign = Hex::ToText.new(encrypted.gsub("=\n", '').gsub(/=.+/, '')).to_s
         decoded = @codec.decrypt(sign).to_i
         raise "Invalid signature #{encrypted} for recipient ID ##{plain}" unless plain == decoded
         recipient = Recipient.new(id: plain, pgsql: @pgsql)

@@ -21,11 +21,10 @@
 
 source 'https://rubygems.org'
 
-gem 'codecov', '0.6.0'
 gem 'fakesmtpd', '0.3.1'
 gem 'geoplugin', '0.3.1'
 gem 'get_process_mem', '~>0.2'
-gem 'glogin', '0.9.0'
+gem 'glogin', '0.10.0'
 gem 'gserver', '0.0.1'
 gem 'haml', '5.2.2'
 gem 'iri', '0.5.1'
@@ -34,6 +33,8 @@ gem 'loog', '0.2.1'
 gem 'mail', '2.7.1'
 gem 'minitest', '5.16.3', require: false
 gem 'minitest-reporters', '1.5.0', require: false
+gem 'net-pop', '0.1.2'
+gem 'net-smtp', '0.3.3'
 gem 'pgtk', '0.7.5'
 gem 'rack', '2.2.4'
 gem 'rack-ssl', '1.4.1'
@@ -41,14 +42,15 @@ gem 'rack-test', '1.1.0'
 gem 'rake', '12.3.3', require: false
 gem 'random-port', '0.5.1', require: false
 gem 'redcarpet', '3.5.1'
-gem 'rerun', '0.13.1', require: false
+gem 'rerun', '0.14.0', require: false
 gem 'rspec-rails', '3.9.1', require: false
-gem 'rubocop', '0.62.0', require: false
-gem 'rubocop-rspec', '1.30.1', require: false
+gem 'rubocop', '1.50.0', require: false
+gem 'rubocop-rspec', '2.20.0', require: false
 gem 'sass', '3.7.4'
 gem 'sentry-raven', '2.7.4'
-gem 'sinatra', '2.0.5'
-gem 'sinatra-contrib', '2.0.5'
+gem 'simplecov', '0.22.0', require: false
+gem 'sinatra', '3.0.6'
+gem 'sinatra-contrib', '3.0.6'
 gem 'sprockets', '3.7.2'
 gem 'telebot', '0.1.2'
 gem 'threads', '0.3.0'

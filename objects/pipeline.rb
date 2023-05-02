@@ -41,7 +41,7 @@ class Pipeline
   def fetch(postman, cycles: 64)
     @pgsql.exec(
       'DELETE FROM delivery WHERE created < $1 AND details = $2',
-      [(Time.now - 60 * 60).strftime('%Y-%m-%d %H:%M:%S'), '']
+      [(Time.now - (60 * 60)).strftime('%Y-%m-%d %H:%M:%S'), '']
     )
     total = 0
     loop do
@@ -132,7 +132,7 @@ class Pipeline
       'LEFT JOIN delivery AS r',
       '  ON r.recipient = recipient.id',
       '    AND r.campaign = c.id',
-      '    AND r.relax ' + (campaign.zero? ? '> NOW()' : '!= r.relax'),
+      "    AND r.relax #{campaign.zero? ? '> NOW()' : '!= r.relax'}",
       'LEFT JOIN recipient AS stop',
       '  ON recipient.email = stop.email',
       '    AND stop.id != recipient.id',
@@ -162,12 +162,13 @@ class Pipeline
       delivery = deliveries.add(campaign, letter, recipient)
       if letter.yaml['relax']
         time = Time.now
-        if letter.yaml['relax'].is_a?(Integer)
+        case letter.yaml['relax']
+        when Integer
           time += letter.yaml['relax']
-        elsif /^[0-9]+:[0-9]+:[0-9]+$/.match?(letter.yaml['relax'])
+        when /^[0-9]+:[0-9]+:[0-9]+$/
           days, hours, minutes = letter.yaml['relax'].split(':')
-          time += (days.to_i * 24 * 60 + hours.to_i * 60 + minutes.to_i) * 60
-        elsif /^[0-9]{2}-[0-9]{2}-[0-9]{4}$/.match?(letter.yaml['relax'])
+          time += ((days.to_i * 24 * 60) + (hours.to_i * 60) + minutes.to_i) * 60
+        when /^[0-9]{2}-[0-9]{2}-[0-9]{4}$/
           time = Time.parse(letter.yaml['relax'])
         end
         delivery.save_relax(time)

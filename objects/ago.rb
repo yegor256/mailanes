@@ -38,7 +38,7 @@ class Ago
     if diff.nil?
       'just now'
     else
-      diff.split(' ', 3).take(2).join(' ').downcase.gsub(/[^a-z0-9 ]/, '') + ' ago'
+      "#{diff.split(' ', 3).take(2).join(' ').downcase.gsub(/[^a-z0-9 ]/, '')} ago"
     end
   end
 end

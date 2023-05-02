@@ -31,6 +31,7 @@ class Postman
   # Doing nothing, just closing
   class Fake
     attr_reader :deliveries
+
     def initialize
       @deliveries = []
     end

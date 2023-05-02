@@ -161,7 +161,7 @@ class AppTest < Minitest::Test
   private
 
   def login(name = 'tester')
-    set_cookie('glogin=' + name)
+    set_cookie("glogin=#{name}")
     get('/')
     assert_equal(200, last_response.status, last_response.location)
   end

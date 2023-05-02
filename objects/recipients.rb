@@ -31,7 +31,7 @@ require_relative 'user_error'
 # License:: MIT
 class Recipients
   # All emails have to match this
-  REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i.freeze
+  REGEX = /\A[\w+\-.]+@[a-z\d-]+(\.[a-z\d-]+)*\.[a-z]+\z/i.freeze
 
   def initialize(list:, pgsql:, hash: {})
     @list = list
@@ -44,20 +44,22 @@ class Recipients
       'SELECT recipient.* FROM recipient',
       'JOIN list ON list.id = recipient.list AND list.owner = $1',
       'WHERE',
-      /^=\d+$/.match?(query) ? 'recipient.id = $2 :: INTEGER' : '(' + [
+      /^=\d+$/.match?(query) ? 'recipient.id = $2 :: INTEGER' : [
+        '(',
         'email LIKE $2',
         'OR first LIKE $2',
         'OR last LIKE $2',
         'OR recipient.yaml LIKE $2',
-        'OR source LIKE $2'
-      ].join(' ') + ')',
+        'OR source LIKE $2',
+        ')'
+      ].join(' '),
       in_list_only ? "AND recipient.list = #{@list.id}" : '',
       active_only ? 'AND recipient.active = true' : '',
       'ORDER BY recipient.created DESC',
       limit.positive? ? 'LIMIT $3' : ''
     ]
     like = "%#{query}%"
-    like = query[1..-1] if query.start_with?('=')
+    like = query[1..] if query.start_with?('=')
     @pgsql.exec(q, [@list.owner, like] + (limit.positive? ? [limit] : [])).map do |r|
       Recipient.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
@@ -141,7 +143,7 @@ class Recipients
 
   def per_day(days = 10)
     total = @pgsql.exec(
-      "SELECT COUNT(*) FROM recipient WHERE list=$1 AND created > NOW() - INTERVAL \'#{days} DAYS\'",
+      "SELECT COUNT(*) FROM recipient WHERE list=$1 AND created > NOW() - INTERVAL '#{days} DAYS'",
       [@list.id]
     )[0]['count'].to_f
     total.zero? ? 0 : total / days

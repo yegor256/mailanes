@@ -153,16 +153,16 @@ class List
       {
         from: Recipient.new(
           id: r['s_id'].to_i, pgsql: @pgsql, hash: {
-            'id': r['s_id'].to_i,
-            'list': r['s_list'].to_i,
-            'email': r['s_email']
+            id: r['s_id'].to_i,
+            list: r['s_list'].to_i,
+            email: r['s_email']
           }
         ),
         to: Recipient.new(
           id: r['t_id'].to_i, pgsql: @pgsql, hash: {
-            'id': r['t_id'].to_i,
-            'list': r['t_list'].to_i,
-            'email': r['t_email']
+            id: r['t_id'].to_i,
+            list: r['t_list'].to_i,
+            email: r['t_email']
           }
         )
       }

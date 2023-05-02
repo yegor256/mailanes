@@ -54,9 +54,9 @@ class RecipientTest < Minitest::Test
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
     recipient = Recipients.new(list: list, pgsql: t_pgsql).add('test@mailanes.com')
     assert(recipient.confirmed?)
-    recipient.confirm!(false)
+    recipient.confirm!(set: false)
     assert(!recipient.confirmed?)
-    recipient.confirm!(true)
+    recipient.confirm!(set: true)
     assert(recipient.confirmed?)
   end
 

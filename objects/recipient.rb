@@ -72,7 +72,7 @@ class Recipient
     @hash['email'] || @pgsql.exec('SELECT email FROM recipient WHERE id=$1', [@id])[0]['email']
   end
 
-  def confirm!(set = true)
+  def confirm!(set: true)
     @pgsql.exec('UPDATE recipient SET confirmed = $1 WHERE id=$2', [set, @id])
     @hash = {}
   end

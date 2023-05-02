@@ -229,7 +229,7 @@ class Letter
     if yaml['quote']
       quote = lane.letters.letter(yaml['quote'].to_i)
       appendix = markdown(quote.liquid, codec, recipient, delivery)
-      time = Time.now - 60 * 60 * 24 * 7
+      time = Time.now - (60 * 60 * 24 * 7)
       html += [
         "On #{time.strftime('%a %b %e')} at #{time.strftime('%I:%M %p')} #{from} wrote:<br/>",
         '<blockquote style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">',
@@ -242,9 +242,9 @@ class Letter
       text += with_utm(
         Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(appendix),
         delivery
-      ).split("\n").map { |t| '> ' + t }.join("\n")
+      ).split("\n").map { |t| "> #{t}" }.join("\n")
       raise "There is no subject in the letter ##{quote.id}" unless quote.yaml['subject']
-      subject = 'Re: ' + quote.yaml['subject'].strip
+      subject = "Re: #{quote.yaml['subject'].strip}"
     end
     mail = Mail.new do
       from from
@@ -281,7 +281,7 @@ class Letter
     attachments.each do |a|
       Tempfile.open do |f|
         download(a, f.path)
-        mail.add_file(filename: a, content: IO.read(f.path))
+        mail.add_file(filename: a, content: File.read(f.path))
       end
     end
     mail.delivery_method(

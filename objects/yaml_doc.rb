@@ -44,6 +44,6 @@ class YamlDoc
     raise 'Invalid YAML document' unless hash.is_a?(Hash)
     hash.to_yaml
   rescue StandardError => e
-    raise UserError, "Can\'t parse the provided YAML: #{e.message}"
+    raise UserError, "Can't parse the provided YAML: #{e.message}"
   end
 end
