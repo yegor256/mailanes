@@ -39,7 +39,7 @@ gem 'pgtk', '0.8.0'
 gem 'rack', '2.2.7'
 gem 'rack-ssl', '1.4.1'
 gem 'rack-test', '2.1.0'
-gem 'rake', '12.3.3', require: false
+gem 'rake', '13.0.6', require: false
 gem 'random-port', '0.5.1', require: false
 gem 'redcarpet', '3.6.0'
 gem 'rerun', '0.14.0', require: false
