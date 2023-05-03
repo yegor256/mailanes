@@ -166,7 +166,7 @@ before '/*' do
         settings.config['github']['encryption_secret'],
         context
       ).to_user
-    rescue OpenSSL::Cipher::CipherError => _e
+    rescue OpenSSL::Cipher::CipherError, GLogin::Codec::DecodingError => _e
       cookies.delete(:glogin)
     end
   end
@@ -175,7 +175,7 @@ before '/*' do
       @locals[:user] = {
         login: settings.codec.decrypt(Hex::ToText.new(params[:auth]).to_s)
       }
-    rescue OpenSSL::Cipher::CipherError => _e
+    rescue OpenSSL::Cipher::CipherError, GLogin::Codec::DecodingError => _e
       redirect to('/')
     end
   end

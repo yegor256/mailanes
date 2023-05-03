@@ -1,5 +1,5 @@
 docker:
-  image: yegor256/rultor-image:1.17.2
+  image: yegor256/rultor-image:1.19.0
 readers:
   - "urn:github:526301"
 assets:
@@ -42,7 +42,3 @@ release:
 merge:
   script: |-
     bundle exec rake
-deploy:
-  script: |-
-    echo Nothing to deploy here
-    exit -1
