@@ -37,7 +37,7 @@ module Minitest
   class Test
     def random_owner
       require 'securerandom'
-      "u#{SecureRandom.hex[0..8]}"
+      "u#{SecureRandom.hex[0..8]}-#{(Time.now.to_f * 1000).to_i}"
     end
 
     def t_log
