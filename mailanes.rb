@@ -994,10 +994,11 @@ end
 
 def country(ip = request.ip)
   settings.zache.get("ip_to_country:#{ip}") do
-    # geo = Geoplugin.new(request.ip, ssl: true, key: settings.config['geoplugin_token'])
-    # geo.nil? ? '??' : geo.countrycode
-
-    # see this https://github.com/davidesantangelo/geoplugin/issues/1
-    '??'
+    json = JSON.parse(Net::HTTP.get(URI("http://ip-api.com/json/#{ip}")))
+    if json['status'] == 'fail'
+      '??'
+    else
+      json['countryCode']
+    end
   end
 end
