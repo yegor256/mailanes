@@ -1000,5 +1000,7 @@ def country(ip = request.ip)
     else
       json['countryCode']
     end
+  rescue SocketError => _e
+    '??'
   end
 end
