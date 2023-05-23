@@ -1000,7 +1000,7 @@ def country(ip = request.ip)
     else
       json['countryCode']
     end
-  rescue SocketError => _e
+  rescue SocketError, JSON::ParserError => _e
     '??'
   end
 end
