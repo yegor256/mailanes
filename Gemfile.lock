@@ -136,7 +136,7 @@ GEM
       pg (~> 1.1)
       random-port (~> 0.3)
     racc (1.6.2)
-    rack (2.2.7)
+    rack (2.2.8)
     rack-protection (3.0.6)
       rack
     rack-ssl (1.4.1)
@@ -283,7 +283,7 @@ DEPENDENCIES
   net-pop (= 0.1.2)
   net-smtp (= 0.3.3)
   pgtk (= 0.8.0)
-  rack (= 2.2.7)
+  rack (= 2.2.8)
   rack-ssl (= 1.4.1)
   rack-test (= 2.1.0)
   rake (= 13.0.6)
