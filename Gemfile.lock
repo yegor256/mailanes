@@ -257,7 +257,7 @@ GEM
       nokogiri (~> 1.10)
       rainbow (~> 3.0)
       slop (~> 4.4)
-    zache (0.13.0)
+    zache (0.13.1)
 
 PLATFORMS
   ruby
