@@ -33,7 +33,7 @@ class RecipientTest < Minitest::Test
   def test_toggles_recipient
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
-    recipient = Recipients.new(list: list, pgsql: t_pgsql).add('test@mailanes.com')
+    recipient = Recipients.new(list: list, pgsql: t_pgsql).add('test-98772@mailanes.com')
     assert(recipient.active?)
     recipient.toggle
     assert(!recipient.active?)
@@ -44,7 +44,7 @@ class RecipientTest < Minitest::Test
   def test_deletes_recipient
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
-    recipient = Recipients.new(list: list, pgsql: t_pgsql).add('test@mailanes.com')
+    recipient = Recipients.new(list: list, pgsql: t_pgsql).add('test-01284@mailanes.com')
     recipient.delete
     assert(list.recipients.count.zero?)
   end
@@ -52,7 +52,7 @@ class RecipientTest < Minitest::Test
   def test_confirms
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
-    recipient = Recipients.new(list: list, pgsql: t_pgsql).add('test@mailanes.com')
+    recipient = Recipients.new(list: list, pgsql: t_pgsql).add('test-04492@mailanes.com')
     assert(recipient.confirmed?)
     recipient.confirm!(set: false)
     assert(!recipient.confirmed?)
