@@ -16,7 +16,7 @@ jobs:
         ruby: [2.7]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: |
           sudo apt-get update
           sudo apt-get install -y postgresql-14
