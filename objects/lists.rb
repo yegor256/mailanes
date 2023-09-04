@@ -112,7 +112,7 @@ class Lists
         'UPDATE recipient SET active = false',
         'FROM list',
         'WHERE list.owner = $1 AND recipient.email IN (',
-        emails.map { |e| "'#{e.gsub(/'/, '\\\'')}'" }.join(', '),
+        emails.map { |e| "'#{e.gsub("'", '\\\'')}'" }.join(', '),
         ')'
       ],
       [@owner]
