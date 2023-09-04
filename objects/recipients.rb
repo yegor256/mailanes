@@ -111,6 +111,7 @@ class Recipients
         ],
         [@list.owner, @list.id]
       )
+      recipient.post_event("Deactivated because of EXCLUSIVE flag in the list ##{@list.id}")
     end
     recipient
   end
