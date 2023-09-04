@@ -133,7 +133,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.4)
-    pgtk (0.8.0)
+    pgtk (0.8.1)
       backtrace (~> 0.3)
       loog (~> 0.2)
       pg (~> 1.1)
@@ -292,7 +292,7 @@ DEPENDENCIES
   minitest-reporters (= 1.6.0)
   net-pop (= 0.1.2)
   net-smtp (= 0.3.3)
-  pgtk (= 0.8.0)
+  pgtk (= 0.8.1)
   rack (= 2.2.8)
   rack-ssl (= 1.4.1)
   rack-test (= 2.1.0)

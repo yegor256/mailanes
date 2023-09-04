@@ -107,13 +107,23 @@ class Lists
 
   # Deactivate them all
   def deactivate_recipients(emails)
+    raise UserError, "List of emails can't be empty" if emails.empty?
+    values = emails.map { |e| "'#{e.gsub("'", '\\\'')}'" }.join(', ')
     @pgsql.exec(
       [
         'UPDATE recipient SET active = false',
         'FROM list',
-        'WHERE list.owner = $1 AND recipient.email IN (',
-        emails.map { |e| "'#{e.gsub("'", '\\\'')}'" }.join(', '),
-        ')'
+        'WHERE list.owner = $1 AND recipient.email',
+        'IN (', values, ')'
+      ],
+      [@owner]
+    )
+    @pgsql.exec(
+      [
+        'INSERT INTO delivery (recipient, details)',
+        'SELECT recipient.id, \'Deactivated by the owner of the list\' AS details',
+        'FROM recipient, list WHERE recipient.email IN (', values, ')',
+        'AND list.owner = $1'
       ],
       [@owner]
     )
