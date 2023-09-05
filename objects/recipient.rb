@@ -73,7 +73,10 @@ class Recipient
   end
 
   def confirm!(set: true)
-    @pgsql.exec('UPDATE recipient SET confirmed = $1 WHERE id=$2', [set, @id])
+    @pgsql.transaction do |t|
+      t.exec('UPDATE recipient SET confirmed = $1 WHERE id=$2', [set, @id])
+      t.exec('INSERT INTO delivery (recipient, details) VALUES ($1, $2)', [@id, 'Confirmed'])
+    end
     @hash = {}
   end
 
@@ -82,7 +85,13 @@ class Recipient
   end
 
   def toggle
-    @pgsql.exec('UPDATE recipient SET active=NOT(active) WHERE id=$1', [@id])
+    @pgsql.transaction do |t|
+      t.exec('UPDATE recipient SET active=NOT(active) WHERE id=$1', [@id])
+      t.exec(
+        'INSERT INTO delivery (recipient, details) VALUES ($1, $2)',
+        [@id, "#{active? ? 'Dectivated' : 'Activated'} by the owner of the list"]
+      )
+    end
     @hash = {}
   end
 
@@ -125,8 +134,14 @@ class Recipient
     @pgsql.exec('INSERT INTO delivery (recipient, details) VALUES ($1, $2)', [@id, msg.strip])
   end
 
-  def move_to(list)
-    @pgsql.exec('UPDATE recipient SET list = $1 WHERE id = $2', [list.id, @id])
+  def move_to(target)
+    @pgsql.transaction do |t|
+      t.exec('UPDATE recipient SET list = $1 WHERE id = $2', [target.id, @id])
+      t.exec(
+        'INSERT INTO delivery (recipient, details) VALUES ($1, $2)',
+        [@id, "Moved from list ##{list.id} to list ##{target.id}"]
+      )
+    end
   end
 
   def bounced?
