@@ -98,7 +98,7 @@
         %a{ href: iri.cut('/lane').add(id: c.lane.id) }= "L##{c.lane.id}"
       &= "\"#{c.lane.title}\""
 
-- if !abs.empty?
+- unless abs.empty?
   %p
     There are
     %span.red= abs.map { |a| a[:total] }.inject(&:+)

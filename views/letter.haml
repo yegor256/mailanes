@@ -3,7 +3,7 @@
   = "##{letter.id}:"
   = letter.title
 
-- if !letter.liquid.include?('{{unsubscribe}}') && !letter.liquid.include?('{{unsubscribe_query}}')
+- unless letter.liquid.include?('{{unsubscribe}}') && !letter.liquid.include?('{{unsubscribe_query}}')
   %p.red
     The Liquid template doesn't have the {{unsubsribe}} link!
 
@@ -75,7 +75,7 @@
       activate
 
 - attachments = letter.attachments
-- if !attachments.empty?
+- unless attachments.empty?
   %p
     With attachments:
     - attachments.each do |a|

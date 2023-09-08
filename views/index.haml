@@ -20,17 +20,17 @@
   = succeed '.' do
     %a{ href: 'https://github.com/yegor256/mailanes/blob/master/README.md' } README
 
-- if !total.zero?
+- unless total.zero?
   %p
     Total recipients in all lists:
     = succeed '.' do
       %a{ href: iri.cut('/lists') }= total
 
-- if !delivered.zero?
+- unless delivered.zero?
   %p
     %a{ href: iri.cut('/campaigns') }= delivered
     letters delivered over the last 24 hours.
-    - if !bounced.zero?
+    - unless bounced.zero?
       = bounced
       of them bounced back, which is
       - rate = bounced.to_f / delivered

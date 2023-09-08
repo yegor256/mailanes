@@ -18,7 +18,7 @@
   %input{ type: 'text', name: 'query', placeholder: 'Query', id: 'query', size: 45, required: 'true', autocomplete: 'off' }
   %input{ type: 'submit', value: 'Find' }
 
-- if !found.nil?
+- unless found.nil?
   %p
     Found
     = found.count
@@ -34,7 +34,7 @@
           %a{ href: iri.cut('/list').add(id: list.id) }= "List ##{list.id}"
         &= "\"#{list.title}\""
 
-- if !dups.zero?
+- unless dups.zero?
   %p
     There are
     %span.red= "#{dups} duplicate emails"
