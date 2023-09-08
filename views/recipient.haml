@@ -40,12 +40,12 @@
   %input{ type: 'email', name: 'email', size: 50, required: 'true', value: recipient.email }
   %input{ type: 'submit', value: 'Change' }
 
-- if !recipient.first.empty?
+- unless recipient.first.empty?
   %p
     First:
     &= recipient.first
 
-- if !recipient.last.empty?
+- unless recipient.last.empty?
   %p
     Last:
     &= recipient.last
@@ -55,19 +55,19 @@
   = recipient.created.utc.iso8601
   = "(#{Ago.new(recipient.created)})"
 
-- if !recipient.source.empty?
+- unless recipient.source.empty?
   %p
     Source:
     &= recipient.source
 
 - relax = recipient.relax
-- if !relax.zero?
+- unless relax.zero?
   %p
     Relax:
     = relax
     days.
 
-- if !recipient.yaml.to_a.empty?
+- unless recipient.yaml.to_a.empty?
   %pre
     &= recipient.yaml.to_yaml
 
@@ -77,7 +77,7 @@
   %input{ type: 'text', name: 'comment', placeholder: 'What just happened?...', size: 50, required: 'true', autocomplete: 'off' }
   %input{ type: 'submit', value: 'Comment' }
 
-- if !targets.empty? && list.owner == current_user
+- unless targets.empty? && list.owner == current_user
   %form{ method: 'POST', action: iri.cut('/move-recipient') }
     %input{ type: 'hidden', name: 'list', value: list.id }
     %input{ type: 'hidden', name: 'id', value: recipient.id }
