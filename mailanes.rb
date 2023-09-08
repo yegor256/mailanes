@@ -785,7 +785,7 @@ get '/unsubscribe' do
   list = recipient.list
   email = recipient.email
   if recipient.active?
-    recipient.toggle
+    recipient.toggle(msg: 'The user decided to /unsubscribe')
     Delivery.new(id: params[:d].to_i, pgsql: settings.pgsql).unsubscribe if params[:d]
     settings.tbot.notify(
       'unsubscribe',
