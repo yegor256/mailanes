@@ -123,7 +123,7 @@ class AppTest < Minitest::Test
     get("/toggle-recipient?list=#{list.id}&id=#{list.recipients.all.first.id}")
     assert_equal(302, last_response.status, last_response.body)
     assert_equal(0, list.recipients.all(active_only: true).count)
-    post("/activate-all?id=#{list.id}")
+    get("/activate-all?id=#{list.id}")
     assert_equal(302, last_response.status, last_response.body)
     assert_equal(1, list.recipients.all(active_only: true).count)
   end

@@ -285,7 +285,7 @@ post '/deactivate-many' do
   flash('/lists', "Deactivated #{emails.count} recipients")
 end
 
-post '/activate-all' do
+get '/activate-all' do
   list = owner.lists.list(params[:id].to_i)
   recipients = list.recipients
   before = recipients.active_count

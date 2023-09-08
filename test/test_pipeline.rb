@@ -76,7 +76,7 @@ class PipelineTest < Minitest::Test
   def test_sends_one_recipient_at_a_time
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
-    list.recipients.add('test2893024@mailanes.com')
+    list.recipients.add('test2893--4@mailanes.com')
     lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
     campaign.toggle
