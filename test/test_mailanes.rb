@@ -92,7 +92,7 @@ class AppTest < Minitest::Test
     assert(recipient.active?)
   end
 
-  def test_adds_new_recipient
+  def test_adds_new_recipient_for_friend
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
     list.yaml = "friends:\n- jeff"
@@ -101,6 +101,31 @@ class AppTest < Minitest::Test
     post("/do-add?id=#{list.id}&email=#{email}")
     assert_equal(302, last_response.status, last_response.body)
     assert_equal(1, list.recipients.count)
+  end
+
+  def test_adds_new_recipient
+    owner = random_owner
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
+    email = 'kf04hsy@mailanes.com'
+    login(owner)
+    post("/do-add?id=#{list.id}&email=#{email}")
+    assert_equal(302, last_response.status, last_response.body)
+    assert_equal(1, list.recipients.count)
+  end
+
+  def test_activate_all_recipients
+    owner = random_owner
+    login(owner)
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
+    post("/do-add?id=#{list.id}&email=ut7209@mailanes.com")
+    assert_equal(302, last_response.status, last_response.body)
+    assert_equal(1, list.recipients.all.size)
+    get("/toggle-recipient?list=#{list.id}&id=#{list.recipients.all.first.id}")
+    assert_equal(302, last_response.status, last_response.body)
+    assert_equal(0, list.recipients.all(active_only: true).count)
+    post("/activate-all?id=#{list.id}")
+    assert_equal(302, last_response.status, last_response.body)
+    assert_equal(1, list.recipients.all(active_only: true).count)
   end
 
   def test_downloads_friends_list

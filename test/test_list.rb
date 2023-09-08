@@ -40,6 +40,19 @@ class ListTest < Minitest::Test
     assert_equal(title, list.title)
   end
 
+  def test_checks_for_existence
+    owner = random_owner
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
+    id = lists.add('boom').id
+    list = List.new(id: id, pgsql: t_pgsql)
+    assert(list.exists?)
+  end
+
+  def test_checks_for_non_existence
+    list = List.new(id: 99_999, pgsql: t_pgsql)
+    assert(!list.exists?)
+  end
+
   def test_finds_friends
     owner = random_owner
     lists = Lists.new(owner: owner, pgsql: t_pgsql)

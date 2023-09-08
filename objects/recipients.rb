@@ -74,6 +74,10 @@ class Recipients
     @pgsql.exec('SELECT COUNT(*) FROM recipient WHERE list=$1 AND active=true', [@list.id])[0]['count'].to_i
   end
 
+  def activate_all
+    @pgsql.exec('UPDATE recipient SET active=true WHERE list=$1', [@list.id])
+  end
+
   def bounce_rate
     q = [
       'SELECT COUNT(1) FROM recipient',

@@ -80,6 +80,19 @@ class RecipientsTest < Minitest::Test
     assert_equal(1, recipients.all(query: "=@#{owner}", limit: -1).count)
   end
 
+  def test_activate_all
+    owner = random_owner
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
+    list = lists.add
+    recipients = Recipients.new(list: list, pgsql: t_pgsql)
+    recipients.add('boom3301@mailanes.com').toggle
+    recipients.add('boom3302@mailanes.com')
+    recipients.add('boom3303@mailanes.com').toggle
+    assert_equal(1, recipients.all(active_only: true).count)
+    recipients.activate_all
+    assert_equal(3, recipients.all(active_only: true).count)
+  end
+
   def test_count_by_source
     owner = random_owner
     lists = Lists.new(owner: owner, pgsql: t_pgsql)

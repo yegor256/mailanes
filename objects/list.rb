@@ -39,6 +39,10 @@ class List
     @hash = hash.dup
   end
 
+  def exists?
+    @pgsql.exec('SELECT COUNT(id) FROM list WHERE id=$1', [@id])[0]['count'].to_i == 1
+  end
+
   def recipients
     hash = {}
     hash['total'] = @hash['total_recipients'].to_i if @hash.key?('total_recipients')

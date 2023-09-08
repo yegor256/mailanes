@@ -285,6 +285,18 @@ post '/deactivate-many' do
   flash('/lists', "Deactivated #{emails.count} recipients")
 end
 
+post '/activate-all' do
+  list = owner.lists.list(params[:id].to_i)
+  recipients = list.recipients
+  before = recipients.active_count
+  recipients.activate_all
+  flash(
+    "/list?id=#{list.id}",
+    "#{recipients.active_count} recipient(s) are now active in the list ##{list.id}, \
+there were #{before} of them before"
+  )
+end
+
 get '/recipient' do
   recipient = Recipient.new(id: params[:id].to_i, pgsql: settings.pgsql)
   list = shared_list(recipient.list.id)
@@ -980,8 +992,10 @@ def owner
   Owner.new(login: current_user, pgsql: settings.pgsql)
 end
 
+# This list may not belong to the currently logged in user
 def shared_list(id)
   list = List.new(id: id, pgsql: settings.pgsql)
+  raise UserError, "There is no list ##{list.id}" unless list.exists?
   if list.owner != current_user && !list.friend?(current_user)
     raise UserError, "@#{current_user} doesn't have access to the list ##{list.id}"
   end
