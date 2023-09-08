@@ -17,7 +17,7 @@
   %a.item{onclick: '$("#upload").show();'} Upload CSV
   %a.item{onclick: '$("#absorb").show();'} Absorb
   %a.item{href: iri.cut('/download-recipients').add(id: list.id)} Download CSV
-  %a.item{href: iri.cut('/activate-all').add(id: list.id), oclick: "return confirm('Are you sure? All recipients will be activated in this list!');"} Activate All
+  %a.item{href: iri.cut('/activate-all').add(id: list.id), onclick: "return confirm('Are you sure? All recipients will be activated in this list!');"} Activate All
 
 %form.hidden{method: 'POST', action: iri.cut('/save-list'), id: 'save'}
   %fieldset
