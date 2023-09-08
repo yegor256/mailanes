@@ -108,29 +108,32 @@ class Recipients
     )
     if @list.yaml['exclusive']
       @pgsql.transaction do |t|
-        t.exec(
+        updated = t.exec(
           [
             'UPDATE recipient SET active = false',
             'FROM list',
             'WHERE list.id = recipient.list AND list.owner = $1 AND list.id != $2',
-            'AND recipient.email = $3'
+            'AND recipient.email = $3',
+            'RETURNING recipient.id'
           ],
           [@list.owner, @list.id, email]
         )
-        t.exec(
-          [
-            'INSERT INTO delivery (recipient, details)',
-            'SELECT recipient.id, $4 AS details',
-            'FROM recipient JOIN list',
-            'ON list.id = recipient.list AND list.owner = $1 AND list.id != $2',
-            'AND recipient.email = $3'
-          ],
-          [
-            @list.owner, @list.id, email,
-            "This recipient was deactivated because another recipient with the same email '#{email}' \
-was added to the list ##{@list.id}, which has EXCLUSIVE flag set"
-          ]
-        )
+        unless updated.empty?
+          t.exec(
+            [
+              'INSERT INTO delivery (recipient, details)',
+              'SELECT recipient.id, $4 AS details',
+              'FROM recipient JOIN list',
+              'ON list.id = recipient.list AND list.owner = $1 AND list.id != $2',
+              'AND recipient.email = $3'
+            ],
+            [
+              @list.owner, @list.id, email,
+              "This recipient was deactivated because another recipient ##{updated[0]['id']} \
+with the same email '#{email}' was added to the list ##{@list.id}, which has EXCLUSIVE flag set"
+            ]
+          )
+        end
       end
       recipient.post_event("Deactivated because of EXCLUSIVE flag in the list ##{@list.id}")
     end
