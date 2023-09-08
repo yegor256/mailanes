@@ -120,12 +120,16 @@ class Recipients
         t.exec(
           [
             'INSERT INTO delivery (recipient, details)',
-            "SELECT recipient.id, 'Deactivated because of EXCLUSIVE flag in the list ##{@list.id}' AS details",
+            'SELECT recipient.id, $4 AS details',
             'FROM recipient JOIN list',
             'ON list.id = recipient.list AND list.owner = $1 AND list.id != $2',
             'AND recipient.email = $3'
           ],
-          [@list.owner, @list.id, email]
+          [
+            @list.owner, @list.id, email,
+            "This recipient was deactivated because another recipient \
+was added to the list ##{@list.id}, which has EXCLUSIVE flag set"
+          ]
         )
       end
       recipient.post_event("Deactivated because of EXCLUSIVE flag in the list ##{@list.id}")
