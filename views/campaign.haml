@@ -110,7 +110,7 @@
   - deliveries.each do |d|
     %p
       - if d.bounced?
-        %span{ title: "The recipient #{d.recipient.id } was bounced"}= '👎'
+        %span{ title: "The recipient #{d.recipient.id} was bounced" }= '👎'
       - unless d.opened.empty?
         %span{ title: d.opened }= '💌 '
       %a{ href: iri.cut('/delivery').add(id: d.id) }= "##{d.id}"

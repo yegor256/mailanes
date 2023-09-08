@@ -20,12 +20,12 @@
   %table.compact
     %thead
       %tr
-        - result[0].keys.each do |k|
+        - result[0].each_key do |k|
           %th= k
     %tbody
       - result.take(max).each do |r|
         %tr
-          - r.each do |k, v|
+          - r.each do |_k, v|
             %td
               - if v.nil?
                 = '&mdash;'

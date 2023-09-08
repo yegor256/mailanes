@@ -16,8 +16,8 @@
 
 %form.hidden{ method: 'POST', action: iri.cut('/upload-recipients'), id: 'upload', enctype: 'multipart/form-data' }
   %input{ type: 'hidden', name: 'id', value: list.id }
-  %input{ type: 'hidden', name: 'source', value: "@#{current_user }"}
-  %input{ type: 'hidden', name: 'redirect', value: "/add?list=#{list.id }"}
+  %input{ type: 'hidden', name: 'source', value: "@#{current_user}" }
+  %input{ type: 'hidden', name: 'redirect', value: "/add?list=#{list.id}" }
   %input{ name: 'file', type: 'file', accept: 'text/plain' }
   %input{ type: 'submit', value: 'Upload' }
   %br

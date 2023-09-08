@@ -25,8 +25,7 @@
   = succeed ':' do
     %a{ href: iri.cut('/list').add(id: list.id) }= "List ##{list.id}"
   &= "\"#{list.title}\""
-  - if current_user != list.owner
-    = "(owned by @#{current_user})"
+  = "(owned by @#{current_user})" unless current_user == list.owner
 
 %p
   Email:

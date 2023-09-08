@@ -68,7 +68,7 @@
     - else
       %span.red not active
   = '/'
-  %a{ href: iri.cut('/toggle-letter').add(id: letter.id), onclick: (letter.liquid.include?('{{unsubscribe }}') || letter.liquid.include?('{{unsubscribe_query}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')")}<
+  %a{ href: iri.cut('/toggle-letter').add(id: letter.id), onclick: (letter.liquid.include?('{{unsubscribe }}') || letter.liquid.include?('{{unsubscribe_query}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')") }<
     - if letter.active?
       deactivate
     - else
@@ -96,18 +96,14 @@
     - opened = letter.opened_count
     = opened
     times
-    - unless delivered.zero?
-      = "/ #{format('%.02f', 100.0 * opened / delivered)}%"
+    = "/ #{format('%.02f', 100.0 * opened / delivered)}%" unless delivered.zero?
   = succeed ';' do
     bounced:
     - bounced = letter.bounce_count
     = bounced
-    - unless delivered.zero?
-      = "/ #{format('%.02f', 100.0 * bounced / delivered)}%"
+    = "/ #{format('%.02f', 100.0 * bounced / delivered)}%" unless delivered.zero?
   = succeed '.' do
     unsubscribed:
     - unsubscribed = letter.unsubscribe_count
     = unsubscribed
-    - unless delivered.zero?
-      = "/ #{format('%.02f', 100.0 * unsubscribed / delivered)}%"
-
+    = "/ #{format('%.02f', 100.0 * unsubscribed / delivered)}%" unless delivered.zero?

@@ -7,7 +7,7 @@
   - recipient = delivery.recipient
   = succeed ':' do
     %a{ href: iri.cut('/recipient').add(id: recipient.id) }= "Recipient ##{recipient.id}"
-  = "#{recipient.email}"
+  = recipient.email
 
 - if delivery.letter?
   %p

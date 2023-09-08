@@ -45,6 +45,5 @@
       %a{ href: iri.cut('/letter-down').add(id: r.id), title: 'Move it down' }= '⬇'
     = succeed ':' do
       %a{ href: iri.cut('/letter').add(id: r.id) }= "##{r.id}"
-    %span{ class: ('cross' unless r.active?), title: "Place: #{r.place }"}
+    %span{ class: ('cross' unless r.active?), title: "Place: #{r.place}" }
       &= r.title
-
