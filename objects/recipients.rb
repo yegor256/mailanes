@@ -75,7 +75,18 @@ class Recipients
   end
 
   def activate_all
-    @pgsql.exec('UPDATE recipient SET active=true WHERE list=$1', [@list.id])
+    @pgsql.transaction do |t|
+      t.exec('UPDATE recipient SET active=true WHERE list=$1', [@list.id])
+      t.exec(
+        [
+          'INSERT INTO delivery (recipient, details)',
+          'SELECT recipient.id, $2 AS details',
+          'FROM recipient JOIN list',
+          'ON list.id = recipient.list AND list.id = $1 AND recipient.active = false'
+        ],
+        [@list.id, 'Re-activated on request of the list owner']
+      )
+    end
   end
 
   def bounce_rate
