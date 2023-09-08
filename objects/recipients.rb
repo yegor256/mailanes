@@ -127,7 +127,7 @@ class Recipients
           ],
           [
             @list.owner, @list.id, email,
-            "This recipient was deactivated because another recipient \
+            "This recipient was deactivated because another recipient with the same email '#{email}' \
 was added to the list ##{@list.id}, which has EXCLUSIVE flag set"
           ]
         )
