@@ -24,6 +24,6 @@
   - weeks.each do |w|
     %tr
       %td= w[:week]
-      %td{ style: 'text-align:right' }= sprintf('%+d', w[:total])
-      %td{ style: 'text-align:right' }= sprintf('%+d', w[:bad])
-      %td{ style: 'text-align:right' }= sprintf('%+d', w[:total] - w[:bad])
+      %td{ style: 'text-align:right' }= format('%+d', w[:total])
+      %td{ style: 'text-align:right' }= format('%+d', w[:bad])
+      %td{ style: 'text-align:right' }= format('%+d', w[:total] - w[:bad])
