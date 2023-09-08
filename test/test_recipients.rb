@@ -26,6 +26,7 @@ require 'yaml'
 require 'tempfile'
 require_relative 'test__helper'
 require_relative '../objects/lists'
+require_relative '../objects/recipient'
 require_relative '../objects/recipients'
 require_relative '../objects/lanes'
 require_relative '../objects/campaigns'
@@ -45,11 +46,17 @@ class RecipientsTest < Minitest::Test
   def test_add_exclusive_recipient
     owner = random_owner
     lists = Lists.new(owner: owner, pgsql: t_pgsql)
-    list = lists.add
-    list.yaml = 'exclusive: true'
-    recipients = Recipients.new(list: list, pgsql: t_pgsql)
-    recipient = recipients.add('t32@mailanes.com')
-    assert(recipient.id.positive?)
+    first = lists.add
+    jeff = 'jeff7383@mailanes.com'
+    sarah = 'sarah8484@mailanes.com'
+    j1 = Recipients.new(list: first, pgsql: t_pgsql).add(jeff).id
+    s1 = Recipients.new(list: first, pgsql: t_pgsql).add(sarah).id
+    second = lists.add
+    second.yaml = 'exclusive: true'
+    j2 = Recipients.new(list: second, pgsql: t_pgsql).add(jeff).id
+    assert(!Recipient.new(id: j1, pgsql: t_pgsql).active?)
+    assert(Recipient.new(id: j2, pgsql: t_pgsql).active?)
+    assert(Recipient.new(id: s1, pgsql: t_pgsql).active?)
   end
 
   def test_groups_recipients_by_weeks

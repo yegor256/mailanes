@@ -108,9 +108,10 @@ class Recipients
           [
             'UPDATE recipient SET active = false',
             'FROM list',
-            'WHERE list.id = recipient.list AND list.owner = $1 AND list.id != $2'
+            'WHERE list.id = recipient.list AND list.owner = $1 AND list.id != $2',
+            'AND recipient.email = $3'
           ],
-          [@list.owner, @list.id]
+          [@list.owner, @list.id, email]
         )
         t.exec(
           [
