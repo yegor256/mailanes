@@ -84,12 +84,13 @@ class Recipient
     (@hash['confirmed'] || @pgsql.exec('SELECT confirmed FROM recipient WHERE id=$1', [@id])[0]['confirmed']) == 't'
   end
 
-  def toggle
+  def toggle(msg: nil)
+    msg = "#{active? ? 'Dectivated' : 'Activated'} by the owner of the list" if msg.nil?
     @pgsql.transaction do |t|
       t.exec('UPDATE recipient SET active=NOT(active) WHERE id=$1', [@id])
       t.exec(
         'INSERT INTO delivery (recipient, details) VALUES ($1, $2)',
-        [@id, "#{active? ? 'Dectivated' : 'Activated'} by the owner of the list"]
+        [@id, msg]
       )
     end
     @hash = {}

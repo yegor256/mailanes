@@ -97,7 +97,7 @@ class Bounces
             'please [report it](https://github.com/yegor256/mailanes)'
           )
         end
-        recipient.toggle if recipient.active?
+        recipient.toggle(msg: 'Deactivated because the email bounced back') if recipient.active?
         if did
           Delivery.new(id: did.to_i, pgsql: @pgsql).bounce
           recipient.post_event("SMTP delivery ##{did} bounced back:\n#{body[0..1024]}")
