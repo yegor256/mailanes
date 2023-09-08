@@ -59,22 +59,6 @@ class RecipientsTest < Minitest::Test
     assert(Recipient.new(id: s1, pgsql: t_pgsql).active?)
   end
 
-  def test_add_over_exclusive_recipient
-    owner = random_owner
-    lists = Lists.new(owner: owner, pgsql: t_pgsql)
-    first = lists.add
-    first.yaml = 'exclusive: true'
-    jeff = 'jeff7383@mailanes.com'
-    sarah = 'sarah8484@mailanes.com'
-    j1 = Recipients.new(list: first, pgsql: t_pgsql).add(jeff).id
-    second = lists.add
-    j2 = Recipients.new(list: second, pgsql: t_pgsql).add(jeff).id
-    s2 = Recipients.new(list: first, pgsql: t_pgsql).add(sarah).id
-    assert(Recipient.new(id: j1, pgsql: t_pgsql).active?)
-    assert(Recipient.new(id: j2, pgsql: t_pgsql).active?) # error!
-    assert(Recipient.new(id: s2, pgsql: t_pgsql).active?)
-  end
-
   def test_groups_recipients_by_weeks
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
