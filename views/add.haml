@@ -5,21 +5,21 @@
   = list.title
 
 %p
-  %a.item{onclick: '$("#upload").show();'} Upload CSV
+  %a.item{ onclick: '$("#upload").show();' } Upload CSV
 
-%form{method: 'POST', action: iri.cut('/do-add')}
-  %input{type: 'hidden', name: 'id', value: list.id}
-  %input{type: 'text', name: 'email', placeholder: 'Email', size: 20, required: 'true', autocomplete: 'off', autofocus: 'true', tabindex: 1}
-  %input{type: 'text', name: 'first', placeholder: 'First name', size: 14, autocomplete: 'off', tabindex: 2}
-  %input{type: 'text', name: 'last', placeholder: 'Last name', size: 16, autocomplete: 'off', tabindex: 3}
-  %input{type: 'submit', value: 'Add', tabindex: 4}
+%form{ method: 'POST', action: iri.cut('/do-add') }
+  %input{ type: 'hidden', name: 'id', value: list.id }
+  %input{ type: 'text', name: 'email', placeholder: 'Email', size: 20, required: 'true', autocomplete: 'off', autofocus: 'true', tabindex: 1 }
+  %input{ type: 'text', name: 'first', placeholder: 'First name', size: 14, autocomplete: 'off', tabindex: 2 }
+  %input{ type: 'text', name: 'last', placeholder: 'Last name', size: 16, autocomplete: 'off', tabindex: 3 }
+  %input{ type: 'submit', value: 'Add', tabindex: 4 }
 
-%form.hidden{method: 'POST', action: iri.cut('/upload-recipients'), id: 'upload', enctype: 'multipart/form-data'}
-  %input{type: 'hidden', name: 'id', value: list.id}
-  %input{type: 'hidden', name: 'source', value: "@#{current_user}"}
-  %input{type: 'hidden', name: 'redirect', value: "/add?list=#{list.id}"}
-  %input{name: 'file', type: 'file', accept: 'text/plain'}
-  %input{type: 'submit', value: 'Upload'}
+%form.hidden{ method: 'POST', action: iri.cut('/upload-recipients'), id: 'upload', enctype: 'multipart/form-data' }
+  %input{ type: 'hidden', name: 'id', value: list.id }
+  %input{ type: 'hidden', name: 'source', value: "@#{current_user }"}
+  %input{ type: 'hidden', name: 'redirect', value: "/add?list=#{list.id }"}
+  %input{ name: 'file', type: 'file', accept: 'text/plain' }
+  %input{ type: 'submit', value: 'Upload' }
   %br
   %label.small.gray
     Make sure it's a headerless CSV file,
@@ -34,12 +34,12 @@
   = list.recipients.count_by_source("@#{current_user}")
   of them.
   This is your
-  %a{href: iri.cut('/weeks').add(id: list.id)} weekly contribution
+  %a{ href: iri.cut('/weeks').add(id: list.id) } weekly contribution
   summary.
 
 %p
   You can
-  %a{href: iri.cut('/download-list').add(list: list.id)} download
+  %a{ href: iri.cut('/download-list').add(list: list.id) } download
   your part of the list in CSV format.
 
 %p

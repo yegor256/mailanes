@@ -16,6 +16,6 @@
   - months.each do |m|
     %tr
       %td= m[:month]
-      %td{style: 'text-align:right'}= sprintf('%+d', m[:total])
-      %td{style: 'text-align:right'}= sprintf('%+d', m[:bad])
-      %td{style: 'text-align:right'}= sprintf('%+d', m[:total] - m[:bad])
+      %td{ style: 'text-align:right' }= sprintf('%+d', m[:total])
+      %td{ style: 'text-align:right' }= sprintf('%+d', m[:bad])
+      %td{ style: 'text-align:right' }= sprintf('%+d', m[:total] - m[:bad])

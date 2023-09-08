@@ -8,56 +8,56 @@
     The Liquid template doesn't have the {{unsubsribe}} link!
 
 %p
-  %a.item{onclick: '$("#save").show();'}
+  %a.item{ onclick: '$("#save").show();' }
     Edit YAML and Liquid
-  %a.item{onclick: '$("#test").show();'}
+  %a.item{ onclick: '$("#test").show();' }
     Test Email
-  %a.item{onclick: '$("#copy").show();'}
+  %a.item{ onclick: '$("#copy").show();' }
     Copy
-  %a.item{onclick: '$("#add").show();'}
+  %a.item{ onclick: '$("#add").show();' }
     Add Attachment
 
-%form.hidden{method: 'POST', action: iri.cut('/save-letter'), id: 'save'}
+%form.hidden{ method: 'POST', action: iri.cut('/save-letter'), id: 'save' }
   %fieldset
-    %input{type: 'hidden', name: 'id', value: letter.id}
+    %input{ type: 'hidden', name: 'id', value: letter.id }
     %label
-      %a{href: 'https://github.com/yegor256/mailanes#letter'} YAML
+      %a{ href: 'https://github.com/yegor256/mailanes#letter' } YAML
       config:
-    %textarea{name: 'yaml', style: 'width:100%;height:12em;', required: 'true'}= letter.yaml.to_yaml
+    %textarea{ name: 'yaml', style: 'width:100%;height:12em;', required: 'true' }= letter.yaml.to_yaml
     %label
-      %a{href: 'https://shopify.github.io/liquid/'} Liquid
+      %a{ href: 'https://shopify.github.io/liquid/' } Liquid
       template:
-    %textarea{name: 'liquid', style: 'width:100%;height:16em;', required: 'true'}= letter.liquid
-    %input{type: 'submit', value: 'Save'}
+    %textarea{ name: 'liquid', style: 'width:100%;height:16em;', required: 'true' }= letter.liquid
+    %input{ type: 'submit', value: 'Save' }
 
-%form.hidden{method: 'POST', action: iri.cut('/test-letter'), id: 'test'}
-  %input{type: 'hidden', name: 'id', value: letter.id}
-  %select{name: 'list'}
+%form.hidden{ method: 'POST', action: iri.cut('/test-letter'), id: 'test' }
+  %input{ type: 'hidden', name: 'id', value: letter.id }
+  %select{ name: 'list' }
     - lists.all.each do |list|
-      %option{value: list.id}= "##{list.id}: #{list.title}"
-  %input{type: 'submit', value: 'Test'}
+      %option{ value: list.id }= "##{list.id}: #{list.title}"
+  %input{ type: 'submit', value: 'Test' }
   %label.small.gray
     The email will be sent to a random recipient from the given list.
 
-%form.hidden{method: 'POST', action: iri.cut('/copy-letter'), id: 'copy'}
-  %input{type: 'hidden', name: 'id', value: letter.id}
-  %select{name: 'lane'}
+%form.hidden{ method: 'POST', action: iri.cut('/copy-letter'), id: 'copy' }
+  %input{ type: 'hidden', name: 'id', value: letter.id }
+  %select{ name: 'lane' }
     - lanes.all.each do |lane|
-      %option{value: lane.id}= "##{lane.id}: #{lane.title}"
-  %input{type: 'submit', value: 'Copy'}
+      %option{ value: lane.id }= "##{lane.id}: #{lane.title}"
+  %input{ type: 'submit', value: 'Copy' }
   %label.small.gray
     A duplicate letter will be created in this lane.
 
-%form.hidden{method: 'POST', action: iri.cut('/attach'), id: 'add', enctype: 'multipart/form-data'}
-  %input{type: 'hidden', name: 'id', value: letter.id}
-  %input{name: 'file', type: 'file', accept: '*/*'}
-  %input{type: 'submit', value: 'Add'}
+%form.hidden{ method: 'POST', action: iri.cut('/attach'), id: 'add', enctype: 'multipart/form-data' }
+  %input{ type: 'hidden', name: 'id', value: letter.id }
+  %input{ name: 'file', type: 'file', accept: '*/*' }
+  %input{ type: 'submit', value: 'Add' }
 
 %p
   It belongs to the lane
   - lane = letter.lane
   = succeed ':' do
-    %a{href: iri.cut('/lane').add(id: lane.id)}= "##{lane.id}"
+    %a{ href: iri.cut('/lane').add(id: lane.id) }= "##{lane.id}"
   = "\"#{lane.title}\""
 
 %p
@@ -68,7 +68,7 @@
     - else
       %span.red not active
   = '/'
-  %a{href: iri.cut('/toggle-letter').add(id: letter.id), onclick: (letter.liquid.include?('{{unsubscribe}}') || letter.liquid.include?('{{unsubscribe_query}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')")}<
+  %a{ href: iri.cut('/toggle-letter').add(id: letter.id), onclick: (letter.liquid.include?('{{unsubscribe }}') || letter.liquid.include?('{{unsubscribe_query}}') ? '' : "return confirm('There is no UNSUBSCRIBE link, are you sure?')")}<
     - if letter.active?
       deactivate
     - else
@@ -79,10 +79,10 @@
   %p
     With attachments:
     - attachments.each do |a|
-      %a{href: iri.cut('/download-attachment').add(letter: letter.id, name: a)}<
+      %a{ href: iri.cut('/download-attachment').add(letter: letter.id, name: a) }<
         &= a
       = succeed ';' do
-        %a{href: iri.cut('/detach').add(letter: letter.id, name: a), onclick: "return confirm('Are you sure?');"} delete
+        %a{ href: iri.cut('/detach').add(letter: letter.id, name: a), onclick: "return confirm('Are you sure?');" } delete
 
 %p
   Delivered:

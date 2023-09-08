@@ -12,11 +12,11 @@
 - if redirect
   %p
     Click
-    %a{href: redirect} here
+    %a{ href: redirect } here
     to get back to where you came from.
 
 %p
   If you want to unsubscribe,
   = succeed '.' do
-    %a{href: iri.cut('/unsubscribe').add(token: token)} click here
+    %a{ href: iri.cut('/unsubscribe').add(token: token) } click here
 

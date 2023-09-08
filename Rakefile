@@ -31,7 +31,7 @@ raise "Invalid encoding \"#{Encoding.default_external}\"" unless Encoding.defaul
 
 ENV['RACK_ENV'] = 'test'
 
-task default: %i[clean test rubocop xcop copyright]
+task default: %i[clean test rubocop haml_lint xcop copyright]
 
 require 'rake/testtask'
 Rake::TestTask.new(test: %i[pgsql liquibase]) do |test|
@@ -71,6 +71,9 @@ Pgtk::LiquibaseTask.new(:liquibase) do |t|
   t.master = 'liquibase/master.xml'
   t.yaml = ['target/pgsql-config.yml', 'config.yml']
 end
+
+require 'haml_lint/rake_task'
+HamlLint::RakeTask.new
 
 desc 'Check the quality of config file'
 task(:config) do

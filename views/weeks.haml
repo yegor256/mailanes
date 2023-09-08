@@ -6,7 +6,7 @@
   %code= source
   to the
   = succeed ':' do
-    %a{href: iri.cut('/add').add(list: list.id)}= "List ##{list.id}"
+    %a{ href: iri.cut('/add').add(list: list.id) }= "List ##{list.id}"
   = list.title
 
 %p
@@ -24,6 +24,6 @@
   - weeks.each do |w|
     %tr
       %td= w[:week]
-      %td{style: 'text-align:right'}= sprintf('%+d', w[:total])
-      %td{style: 'text-align:right'}= sprintf('%+d', w[:bad])
-      %td{style: 'text-align:right'}= sprintf('%+d', w[:total] - w[:bad])
+      %td{ style: 'text-align:right' }= sprintf('%+d', w[:total])
+      %td{ style: 'text-align:right' }= sprintf('%+d', w[:bad])
+      %td{ style: 'text-align:right' }= sprintf('%+d', w[:total] - w[:bad])

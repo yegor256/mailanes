@@ -2,7 +2,7 @@
   Campaigns
 
 %p
-  %a.item{onclick: '$("#add").show();$("#title").focus();'}
+  %a.item{ onclick: '$("#add").show();$("#title").focus();' }
     Start a Campaign
 
 - if lists.count.zero?
@@ -12,37 +12,37 @@
   %p.red
     You have no lanes, can't have any campaigns.
 - else
-  %form.hidden{method: 'POST', action: iri.cut('/add-campaign'), id: 'add'}
+  %form.hidden{ method: 'POST', action: iri.cut('/add-campaign'), id: 'add' }
     %fieldset
       %label Start a new campaign
-      %input{type: 'text', name: 'title', id: 'title', placeholder: 'Campaign title...', size: 45, required: 'true', autocomplete: 'off'}
+      %input{ type: 'text', name: 'title', id: 'title', placeholder: 'Campaign title...', size: 45, required: 'true', autocomplete: 'off' }
       %label List:
-      %select{name: 'list'}
+      %select{ name: 'list' }
         - lists.all.each do |list|
-          %option{value: list.id}= "##{list.id}: #{list.title}"
+          %option{ value: list.id }= "##{list.id}: #{list.title}"
       %label Lane:
-      %select{name: 'lane'}
+      %select{ name: 'lane' }
         - lanes.all.each do |lane|
-          %option{value: lane.id}= "##{lane.id}: #{lane.title}"
-      %input{type: 'submit', value: 'Add'}
+          %option{ value: lane.id }= "##{lane.id}: #{lane.title}"
+      %input{ type: 'submit', value: 'Add' }
 
 %p
   All your campaigns:
 
 - campaigns.all.each do |c|
-  %p{class: ('cross' unless c.active?)}
+  %p{ class: ('cross' unless c.active?) }
     = succeed ':' do
-      %a{href: iri.cut('/campaign').add(id: c.id)}= "##{c.id}"
+      %a{ href: iri.cut('/campaign').add(id: c.id) }= "##{c.id}"
     = succeed ';' do
       &= c.title
     = succeed ':' do
-      %a{href: iri.cut('/lane').add(id: c.lane.id)}= "Lane ##{c.lane.id}"
+      %a{ href: iri.cut('/lane').add(id: c.lane.id) }= "Lane ##{c.lane.id}"
     &= c.lane.title
     - if c.exhausted?
       %span.red exhausted
     %br
-    %span.small{style: 'display:inline-block'}
+    %span.small{ style: 'display:inline-block' }
       - c.lists.each do |list|
-        %a{href: iri.cut('/list').add(id: list.id)}= "List ##{list.id}"
+        %a{ href: iri.cut('/list').add(id: list.id) }= "List ##{list.id}"
         = succeed ';' do
           &= list.title

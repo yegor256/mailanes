@@ -11,7 +11,7 @@
     - else
       %span.red not active
   = '/'
-  %a{href: iri.cut('/toggle-recipient').add(list: list.id, id: recipient.id)}
+  %a{ href: iri.cut('/toggle-recipient').add(list: list.id, id: recipient.id) }
     - if recipient.active?
       deactivate
     - else
@@ -23,7 +23,7 @@
 
 %p
   = succeed ':' do
-    %a{href: iri.cut('/list').add(id: list.id)}= "List ##{list.id}"
+    %a{ href: iri.cut('/list').add(id: list.id) }= "List ##{list.id}"
   &= "\"#{list.title}\""
   - if current_user != list.owner
     = "(owned by @#{current_user})"
@@ -32,13 +32,13 @@
   Email:
   %code
     = recipient.email
-  %a.item{onclick: '$("#change").show();$("email").focus();'} Change
+  %a.item{ onclick: '$("#change").show();$("email").focus();' } Change
 
-%form.hidden{method: 'POST', action: iri.cut('/change-email'), id: 'change'}
-  %input{type: 'hidden', name: 'list', value: list.id}
-  %input{type: 'hidden', name: 'id', value: recipient.id}
-  %input{type: 'email', name: 'email', size: 50, required: 'true', value: recipient.email}
-  %input{type: 'submit', value: 'Change'}
+%form.hidden{ method: 'POST', action: iri.cut('/change-email'), id: 'change' }
+  %input{ type: 'hidden', name: 'list', value: list.id }
+  %input{ type: 'hidden', name: 'id', value: recipient.id }
+  %input{ type: 'email', name: 'email', size: 50, required: 'true', value: recipient.email }
+  %input{ type: 'submit', value: 'Change' }
 
 - if !recipient.first.empty?
   %p
@@ -71,21 +71,21 @@
   %pre
     &= recipient.yaml.to_yaml
 
-%form{method: 'POST', action: iri.cut('/comment-recipient')}
-  %input{type: 'hidden', name: 'list', value: list.id}
-  %input{type: 'hidden', name: 'id', value: recipient.id}
-  %input{type: 'text', name: 'comment', placeholder: 'What just happened?...', size: 50, required: 'true', autocomplete: 'off'}
-  %input{type: 'submit', value: 'Comment'}
+%form{ method: 'POST', action: iri.cut('/comment-recipient') }
+  %input{ type: 'hidden', name: 'list', value: list.id }
+  %input{ type: 'hidden', name: 'id', value: recipient.id }
+  %input{ type: 'text', name: 'comment', placeholder: 'What just happened?...', size: 50, required: 'true', autocomplete: 'off' }
+  %input{ type: 'submit', value: 'Comment' }
 
 - if !targets.empty? && list.owner == current_user
-  %form{method: 'POST', action: iri.cut('/move-recipient')}
-    %input{type: 'hidden', name: 'list', value: list.id}
-    %input{type: 'hidden', name: 'id', value: recipient.id}
-    %select{name: 'target'}
+  %form{ method: 'POST', action: iri.cut('/move-recipient') }
+    %input{ type: 'hidden', name: 'list', value: list.id }
+    %input{ type: 'hidden', name: 'id', value: recipient.id }
+    %select{ name: 'target' }
       - targets.each do |t|
-        %option{value: t.id}
+        %option{ value: t.id }
           &= "##{t.id}: #{t.title}"
-    %input{type: 'submit', value: 'Move'}
+    %input{ type: 'submit', value: 'Move' }
 
 - deliveries = recipient.deliveries
 - if deliveries.empty?
@@ -97,22 +97,22 @@
       - if d.bounced?
         %span= '👎 '
       - unless d.opened.empty?
-        %span{title: d.opened}= '💌 '
-      %a{href: iri.cut('/delivery').add(id: d.id)}= "##{d.id}"
+        %span{ title: d.opened }= '💌 '
+      %a{ href: iri.cut('/delivery').add(id: d.id) }= "##{d.id}"
       = '/'
       = d.created.utc.iso8601
       = "(#{Ago.new(d.created)})"
       - if d.letter?
         with letter
-        %a{href: iri.cut('/letter').add(id: d.letter.id)}= "##{d.letter.id}"
+        %a{ href: iri.cut('/letter').add(id: d.letter.id) }= "##{d.letter.id}"
       - if d.campaign?
         in campaign
-        %a{href: iri.cut('/campaign').add(id: d.campaign.id)}= "##{d.campaign.id}"
+        %a{ href: iri.cut('/campaign').add(id: d.campaign.id) }= "##{d.campaign.id}"
       = d.relax ? "(relax is #{d.relax})" : ''
       = ':'
       &= d.details.empty? ? 'WAITING' : d.details
       %br
-      %a.small.red{href: iri.cut('/delete-delivery').add(id: d.id), onclick: "return confirm('Are you sure?');"} Delete
+      %a.small.red{ href: iri.cut('/delete-delivery').add(id: d.id), onclick: "return confirm('Are you sure?');" } Delete
 
 %p
-  %a.red{href: iri.cut('/delete-recipient').add(list: list.id, id: recipient.id), onclick: "return confirm('Are you sure?');"} Delete
+  %a.red{ href: iri.cut('/delete-recipient').add(list: list.id, id: recipient.id), onclick: "return confirm('Are you sure?');" } Delete

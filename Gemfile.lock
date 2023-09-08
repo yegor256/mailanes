@@ -80,6 +80,12 @@ GEM
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
+    haml_lint (0.50.0)
+      haml (>= 4.0, < 6.2)
+      parallel (~> 1.10)
+      rainbow
+      rubocop (>= 1.0)
+      sysexits (~> 1.1)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
@@ -239,6 +245,7 @@ GEM
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
+    sysexits (1.2.0)
     telebot (0.1.2)
       faraday
       faraday_middleware
@@ -284,6 +291,7 @@ DEPENDENCIES
   glogin (= 0.13.0)
   gserver (= 0.0.1)
   haml (= 5.2.2)
+  haml_lint (= 0.50.0)
   iri (= 0.7.0)
   liquid (= 4.0.4)
   loog (= 0.5.1)

@@ -5,35 +5,35 @@
   &= campaign.title
 
 %p
-  %a.item{onclick: '$("#save").show();'}
+  %a.item{ onclick: '$("#save").show();' }
     Edit YAML
-  %a.item{onclick: '$("#add").show();'}
+  %a.item{ onclick: '$("#add").show();' }
     Add List
-  %a.item{onclick: '$("#merge").show();'}
+  %a.item{ onclick: '$("#merge").show();' }
     Merge Into
 
-%form.hidden{method: 'POST', action: iri.cut('/save-campaign'), id: 'save'}
+%form.hidden{ method: 'POST', action: iri.cut('/save-campaign'), id: 'save' }
   %fieldset
-    %input{type: 'hidden', name: 'id', value: campaign.id}
+    %input{ type: 'hidden', name: 'id', value: campaign.id }
     %label
-      %a{href: 'https://github.com/yegor256/mailanes#campaign'} YAML
+      %a{ href: 'https://github.com/yegor256/mailanes#campaign' } YAML
       config:
-    %textarea{name: 'yaml', style: 'width:100%;height:8em;', required: 'true'}= campaign.yaml.to_yaml
-    %input{type: 'submit', value: 'Save'}
+    %textarea{ name: 'yaml', style: 'width:100%;height:8em;', required: 'true' }= campaign.yaml.to_yaml
+    %input{ type: 'submit', value: 'Save' }
 
-%form.hidden{method: 'POST', action: iri.cut('/add-source'), id: 'add'}
-  %input{type: 'hidden', name: 'id', value: campaign.id}
-  %select{name: 'list'}
+%form.hidden{ method: 'POST', action: iri.cut('/add-source'), id: 'add' }
+  %input{ type: 'hidden', name: 'id', value: campaign.id }
+  %select{ name: 'list' }
     - lists.all.each do |list|
-      %option{value: list.id}= "##{list.id}: #{list.title}"
-  %input{type: 'submit', value: 'Add'}
+      %option{ value: list.id }= "##{list.id}: #{list.title}"
+  %input{ type: 'submit', value: 'Add' }
 
-%form.hidden{method: 'POST', action: iri.cut('/merge-campaign'), id: 'merge'}
-  %input{type: 'hidden', name: 'id', value: campaign.id}
-  %select{name: 'target'}
+%form.hidden{ method: 'POST', action: iri.cut('/merge-campaign'), id: 'merge' }
+  %input{ type: 'hidden', name: 'id', value: campaign.id }
+  %select{ name: 'target' }
     - campaigns.all.each do |c|
-      %option{value: c.id}= "##{c.id}: #{c.title}"
-  %input{type: 'submit', value: 'Merge Into', onclick: "return confirm('Are you sure? This campaign will be deleted.');"}
+      %option{ value: c.id }= "##{c.id}: #{c.title}"
+  %input{ type: 'submit', value: 'Merge Into', onclick: "return confirm('Are you sure? This campaign will be deleted.');" }
 
 %p
   It is
@@ -43,7 +43,7 @@
     - else
       %span.red not active
   = '/'
-  %a{href: iri.cut('/toggle-campaign').add(id: campaign.id)}
+  %a{ href: iri.cut('/toggle-campaign').add(id: campaign.id) }
     - if campaign.active?
       deactivate
     - else
@@ -52,7 +52,7 @@
 %p
   - lane = campaign.lane
   = succeed ':' do
-    %a{href: iri.cut('/lane').add(id: lane.id)}= "Lane ##{lane.id}"
+    %a{ href: iri.cut('/lane').add(id: lane.id) }= "Lane ##{lane.id}"
   &= "\"#{lane.title}\""
 
 %p
@@ -62,9 +62,9 @@
   - campaign.lists.each do |list|
     %li
       = succeed ':' do
-        %a{href: iri.cut('/list').add(id: list.id)}= "List ##{list.id}"
+        %a{ href: iri.cut('/list').add(id: list.id) }= "List ##{list.id}"
       &= "\"#{list.title}\""
-      %a.item{href: iri.cut('/delete-source').add(campaign: campaign.id, list: list.id), onclick: "return confirm('Are you sure?');"} delete
+      %a.item{ href: iri.cut('/delete-source').add(campaign: campaign.id, list: list.id), onclick: "return confirm('Are you sure?');" } delete
 
 %p
   Created:
@@ -83,7 +83,7 @@
 
 %p
   In the pipeline:
-  %a{href: iri.cut('/pipeline').add(id: campaign.id)}= campaign.pipeline_count
+  %a{ href: iri.cut('/pipeline').add(id: campaign.id) }= campaign.pipeline_count
   letter(s).
 
 %p
@@ -110,19 +110,19 @@
   - deliveries.each do |d|
     %p
       - if d.bounced?
-        %span{title: "The recipient #{d.recipient.id} was bounced"}= '👎'
+        %span{ title: "The recipient #{d.recipient.id } was bounced"}= '👎'
       - unless d.opened.empty?
-        %span{title: d.opened}= '💌 '
-      %a{href: iri.cut('/delivery').add(id: d.id)}= "##{d.id}"
+        %span{ title: d.opened }= '💌 '
+      %a{ href: iri.cut('/delivery').add(id: d.id) }= "##{d.id}"
       = '/'
       = d.created.utc.iso8601
       = "(#{Ago.new(d.created)})"
       to
-      %a{href: iri.cut('/recipient').add(id: d.recipient.id), style: d.bounced? ? 'text-decoration:line-through' : ''}= "##{d.recipient.id}"
+      %a{ href: iri.cut('/recipient').add(id: d.recipient.id), style: d.bounced? ? 'text-decoration:line-through' : '' }= "##{d.recipient.id}"
       with letter
-      %a{href: iri.cut('/letter').add(id: d.letter.id)}= "##{d.letter.id}"
+      %a{ href: iri.cut('/letter').add(id: d.letter.id) }= "##{d.letter.id}"
       in campaign
-      %a{href: iri.cut('/campaign').add(id: d.campaign.id)}= "##{d.campaign.id}"
+      %a{ href: iri.cut('/campaign').add(id: d.campaign.id) }= "##{d.campaign.id}"
       = (d.relax ? "(relax is #{d.relax})" : '')
       = ':'
       - if d.details.empty?

@@ -11,53 +11,53 @@
     list! Its recipients will never receive any letters from you.
 
 %p
-  %a.item{onclick: '$("#save").show();'} Edit YAML
-  %a.item{onclick: '$("#add").show();$("#email").focus();'} Add Recipient
-  %a.item{onclick: '$("#find").show();$("#query").focus();'} Find Recipient
-  %a.item{onclick: '$("#upload").show();'} Upload CSV
-  %a.item{onclick: '$("#absorb").show();'} Absorb
-  %a.item{href: iri.cut('/download-recipients').add(id: list.id)} Download CSV
-  %a.item{href: iri.cut('/activate-all').add(id: list.id), onclick: "return confirm('Are you sure? All recipients will be activated in this list!');"} Activate All
+  %a.item{ onclick: '$("#save").show();' } Edit YAML
+  %a.item{ onclick: '$("#add").show();$("#email").focus();' } Add Recipient
+  %a.item{ onclick: '$("#find").show();$("#query").focus();' } Find Recipient
+  %a.item{ onclick: '$("#upload").show();' } Upload CSV
+  %a.item{ onclick: '$("#absorb").show();' } Absorb
+  %a.item{ href: iri.cut('/download-recipients').add(id: list.id) } Download CSV
+  %a.item{ href: iri.cut('/activate-all').add(id: list.id), onclick: "return confirm('Are you sure? All recipients will be activated in this list!');" } Activate All
 
-%form.hidden{method: 'POST', action: iri.cut('/save-list'), id: 'save'}
+%form.hidden{ method: 'POST', action: iri.cut('/save-list'), id: 'save' }
   %fieldset
-    %input{type: 'hidden', name: 'id', value: list.id}
+    %input{ type: 'hidden', name: 'id', value: list.id }
     %label
-      %a{href: 'https://github.com/yegor256/mailanes#list'} YAML
+      %a{ href: 'https://github.com/yegor256/mailanes#list' } YAML
       config:
-    %textarea{name: 'yaml', style: 'width:100%;height:12em;', required: 'true'}= list.yaml.to_yaml
-    %input{type: 'submit', value: 'Save'}
+    %textarea{ name: 'yaml', style: 'width:100%;height:12em;', required: 'true' }= list.yaml.to_yaml
+    %input{ type: 'submit', value: 'Save' }
 
-%form.hidden{method: 'POST', action: iri.cut('/add-recipient'), id: 'add'}
-  %input{type: 'hidden', name: 'id', value: list.id}
-  %input{type: 'text', name: 'email', id: 'email', placeholder: 'Email', size: 20, required: 'true', autocomplete: 'off'}
-  %input{type: 'text', name: 'first', placeholder: 'First name', size: 14, autocomplete: 'off'}
-  %input{type: 'text', name: 'last', placeholder: 'Last name', size: 16, autocomplete: 'off'}
-  %input{type: 'submit', value: 'Add Recipient'}
+%form.hidden{ method: 'POST', action: iri.cut('/add-recipient'), id: 'add' }
+  %input{ type: 'hidden', name: 'id', value: list.id }
+  %input{ type: 'text', name: 'email', id: 'email', placeholder: 'Email', size: 20, required: 'true', autocomplete: 'off' }
+  %input{ type: 'text', name: 'first', placeholder: 'First name', size: 14, autocomplete: 'off' }
+  %input{ type: 'text', name: 'last', placeholder: 'Last name', size: 16, autocomplete: 'off' }
+  %input{ type: 'submit', value: 'Add Recipient' }
 
-%form.hidden{method: 'GET', action: iri.cut('/list'), id: 'find'}
-  %input{type: 'hidden', name: 'id', value: list.id}
-  %input{type: 'text', name: 'query', id: 'query', placeholder: 'Email or name to find...', size: 32, required: 'true', autocomplete: 'off', value: (params[:query] || nil)}
-  %input{type: 'submit', value: 'Find'}
+%form.hidden{ method: 'GET', action: iri.cut('/list'), id: 'find' }
+  %input{ type: 'hidden', name: 'id', value: list.id }
+  %input{ type: 'text', name: 'query', id: 'query', placeholder: 'Email or name to find...', size: 32, required: 'true', autocomplete: 'off', value: (params[:query] || nil) }
+  %input{ type: 'submit', value: 'Find' }
   %label.small.gray Start with '=' if you are looking for an exact match.
 
-%form.hidden{method: 'POST', action: iri.cut('/absorb'), id: 'absorb'}
-  %input{type: 'hidden', name: 'id', value: list.id}
-  %select{name: 'list'}
+%form.hidden{ method: 'POST', action: iri.cut('/absorb'), id: 'absorb' }
+  %input{ type: 'hidden', name: 'id', value: list.id }
+  %select{ name: 'list' }
     - lists.all.each do |list|
-      %option{value: list.id}= "##{list.id}: #{list.title}"
-  %input{type: 'checkbox', name: 'dry', value: 'dry'}
+      %option{ value: list.id }= "##{list.id}: #{list.title}"
+  %input{ type: 'checkbox', name: 'dry', value: 'dry' }
   %label Dry run
-  %input{type: 'submit', value: 'Absorb'}
+  %input{ type: 'submit', value: 'Absorb' }
   %label.small.gray
     All emails from the selected list, which also exist in the
     current list, will migrate here. Only the duplicates will move.
     All other recipients will stay untouched.
 
-%form.hidden{method: 'POST', action: iri.cut('/upload-recipients'), id: 'upload', enctype: 'multipart/form-data'}
-  %input{type: 'hidden', name: 'id', value: list.id}
-  %input{name: 'file', type: 'file', accept: 'text/plain'}
-  %input{type: 'submit', value: 'Upload'}
+%form.hidden{ method: 'POST', action: iri.cut('/upload-recipients'), id: 'upload', enctype: 'multipart/form-data' }
+  %input{ type: 'hidden', name: 'id', value: list.id }
+  %input{ name: 'file', type: 'file', accept: 'text/plain' }
+  %input{ type: 'submit', value: 'Upload' }
   %br
   %label.small.gray
     Make sure it's a headerless CSV file,
@@ -78,12 +78,12 @@
   = list.recipients.per_day(10)
   per day (last 10 days statistics).
   This is your
-  %a{href: iri.cut('/weeks').add(id: list.id)} weekly contribution
+  %a{ href: iri.cut('/weeks').add(id: list.id) } weekly contribution
   summary.
 
 %p
   The link to share:
-  %a{href: "https://www.mailanes.com/add?list=#{list.id}"}
+  %a{ href: "https://www.mailanes.com/add?list=#{list.id }"}
     = "https://www.mailanes.com/add?list=#{list.id}"
 
 %p
@@ -93,9 +93,9 @@
   - else
     - campaigns.each do |c|
       = succeed ':' do
-        %a{href: iri.cut('/campaign').add(id: c.id)}= "C##{c.id}"
+        %a{ href: iri.cut('/campaign').add(id: c.id) }= "C##{c.id}"
         = '/'
-        %a{href: iri.cut('/lane').add(id: c.lane.id)}= "L##{c.lane.id}"
+        %a{ href: iri.cut('/lane').add(id: c.lane.id) }= "L##{c.lane.id}"
       &= "\"#{c.lane.title}\""
 
 - if !abs.empty?
@@ -109,7 +109,7 @@
       %li
         %span.red= a[:total]
         in
-        %a{href: iri.cut('/list').add(id: a[:list].id)}= "##{a[:list].id}"
+        %a{ href: iri.cut('/list').add(id: a[:list].id) }= "##{a[:list].id}"
         &= a[:list].title
 
 %p
@@ -118,7 +118,7 @@
   emails.
   Bounce rate:
   = succeed '.' do
-    %span{class: (rate > 0.05 ? 'red' : '')}= "#{(rate * 100).round(2)}%"
+    %span{ class: (rate > 0.05 ? 'red' : '') }= "#{(rate * 100).round(2)}%"
 
 %p
   There are
@@ -137,6 +137,6 @@
 
 %p
   - list.recipients.all(query: params[:query] || '').each do |r|
-    %span{class: ('cross' unless r.active?)}<
-      %a{href: iri.cut('/recipient').add(id: r.id)}<
+    %span{ class: ('cross' unless r.active?) }<
+      %a{ href: iri.cut('/recipient').add(id: r.id) }<
         = r.email
