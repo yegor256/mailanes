@@ -73,7 +73,7 @@
         %nav
           %ul
             %li
-              = "#{ENV.fetch('HEROKU_RELEASE_VERSION')}/#{ver}"
+              = "#{ENV.fetch('HEROKU_RELEASE_VERSION', nil)}/#{ver}"
             %li
               %a{ href: "https://iplocation.com/?ip=#{request_ip}" }
                 = "#{request_ip}/#{country}"

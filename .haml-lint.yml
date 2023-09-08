@@ -1,0 +1,10 @@
+---
+linters:
+  InlineStyles:
+    enabled: false
+  LineLength:
+    enabled: false
+  UnnecessaryStringOutput:
+    enabled: false
+  ViewLength:
+    enabled: false
