@@ -31,6 +31,10 @@ class YamlDoc
     @text = text
   end
 
+  def empty?
+    load.empty?
+  end
+
   def load
     hash = YAML.safe_load(@text)
     hash = {} unless hash.is_a?(Hash)

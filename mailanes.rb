@@ -797,7 +797,7 @@ get '/unsubscribe' do
       params[:d] ? "It was the reaction to [this](http://www.mailanes.com/delivery?id=#{params[:d]})." : '',
       "There are #{list.recipients.active_count} active subscribers in the list still,",
       "out of #{list.recipients.count} total.",
-      "This is what we know about the recipient:\n\n```\n#{recipient.yaml.to_yaml}\n```"
+      recipient.yaml.empty? ? '' : "This is what we know about the recipient:\n\n```\n#{recipient.yaml.to_yaml}\n```"
     )
     recipient.post_event("Unsubscribed#{@locals[:user] ? " by @#{current_user}" : ''}.")
   else

@@ -32,6 +32,12 @@ class YamlDocTest < Minitest::Test
     assert_equal(25, yaml['age'])
   end
 
+  def test_checks_emptiness
+    assert(YamlDoc.new('').empty?)
+    assert(YamlDoc.new("---\n").empty?)
+    assert(!YamlDoc.new("a: b\n").empty?)
+  end
+
   def test_saves_valid_yaml
     text = YamlDoc.new("title: \"Test\"\nage: 25").save
     assert(text.include?('title: Test'), text)
