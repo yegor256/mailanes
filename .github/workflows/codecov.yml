@@ -19,7 +19,7 @@ jobs:
           sudo ln -s /usr/lib/postgresql/14/bin/postgres /bin/postgres
       - run: bundle update
       - run: bundle exec rake
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: coverage/.resultset.json
