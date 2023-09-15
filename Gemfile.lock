@@ -323,7 +323,7 @@ DEPENDENCIES
   time_difference (= 0.7.0)
   total (>= 0.2.0)
   uuidtools (= 2.2.0)
-  webrick
+  webrick (= 1.8.1)
   xcop (= 0.7.1)
   zache (>= 0.12.0)
 
