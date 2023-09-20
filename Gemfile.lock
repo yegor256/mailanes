@@ -126,7 +126,7 @@ GEM
       net-protocol
     net-protocol (0.2.1)
       timeout
-    net-smtp (0.3.3)
+    net-smtp (0.4.0)
       net-protocol
     nokogiri (1.15.4)
       mini_portile2 (~> 2.8.2)
@@ -300,7 +300,7 @@ DEPENDENCIES
   minitest (= 5.19.0)
   minitest-reporters (= 1.6.0)
   net-pop (= 0.1.2)
-  net-smtp (= 0.3.3)
+  net-smtp (= 0.4.0)
   pgtk (= 0.8.1)
   rack (= 2.2.8)
   rack-ssl (= 1.4.1)
