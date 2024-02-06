@@ -108,7 +108,7 @@ GEM
       net-smtp
     method_source (1.0.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.4)
+    mini_portile2 (2.8.5)
     minitest (5.19.0)
     minitest-reporters (1.6.0)
       ansi
@@ -128,10 +128,10 @@ GEM
       timeout
     net-smtp (0.4.0)
       net-protocol
-    nokogiri (1.15.4)
+    nokogiri (1.16.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.15.4-x86_64-darwin)
+    nokogiri (1.16.2-x86_64-darwin)
       racc (~> 1.4)
     openssl (3.1.0)
     parallel (1.23.0)
@@ -144,7 +144,7 @@ GEM
       loog (~> 0.2)
       pg (~> 1.1)
       random-port (~> 0.3)
-    racc (1.7.1)
+    racc (1.7.3)
     rack (2.2.8)
     rack-protection (3.1.0)
       rack (~> 2.2, >= 2.2.4)
