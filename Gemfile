@@ -37,7 +37,7 @@ gem 'minitest-reporters', '1.6.0', require: false
 gem 'net-pop', '0.1.2'
 gem 'net-smtp', '0.4.0'
 gem 'pgtk', '0.8.1'
-gem 'rack', '2.2.8'
+gem 'rack', '3.0.9.1'
 gem 'rack-ssl', '1.4.1'
 gem 'rack-test', '2.1.0'
 gem 'rake', '13.0.6', require: false
