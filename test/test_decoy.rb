@@ -29,6 +29,7 @@ class DecoyTest < Minitest::Test
     skip
     decoy = Decoy.new(
       'pop.secureserver.net',
+      995,
       'decoy@mailanes.com',
       '----'
     )

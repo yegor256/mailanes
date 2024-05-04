@@ -27,8 +27,9 @@ require 'net/pop'
 # Copyright:: Copyright (c) 2018-2024 Yegor Bugayenko
 # License:: MIT
 class Decoy
-  def initialize(host, login, password, log: Loog::NULL)
+  def initialize(host, port, login, password, log: Loog::NULL)
     @host = host
+    @port = port
     @login = login
     @password = password
     @log = log
@@ -36,15 +37,14 @@ class Decoy
 
   def fetch
     start = Time.now
-    pop = Net::POP3.new(@host)
-    pop.start(@login, @password)
-    total = 0
-    pop.each_mail do |m|
-      m.delete
-      total += 1
-      GC.start if (total % 100).zero?
+    Net::POP3.start(@host, @port, @login, @password) do |pop|
+      total = 0
+      pop.each_mail do |m|
+        m.delete
+        total += 1
+        GC.start if (total % 100).zero?
+      end
     end
-    pop.finish
     @log.info("#{total} decoy emails processed in #{format('%.02f', Time.now - start)}s")
   end
 end

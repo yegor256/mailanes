@@ -71,6 +71,7 @@ configure do
     },
     'decoy_pop3' => {
       'host' => '',
+      'port' => '',
       'login' => '',
       'password' => ''
     },
@@ -136,6 +137,7 @@ configure do
           ).fetch(tbot: settings.tbot)
           Decoy.new(
             settings.config['decoy_pop3']['host'],
+            settings.config['decoy_pop3']['port'],
             settings.config['decoy_pop3']['login'],
             settings.config['decoy_pop3']['password'],
             log: settings.log
