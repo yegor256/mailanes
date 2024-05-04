@@ -46,5 +46,7 @@ class Decoy
       end
     end
     @log.info("#{total} decoy emails processed in #{format('%.02f', Time.now - start)}s")
+  rescue Net::ReadTimeout => e
+    @log.info("Failed to process decoy emails: #{e.message}")
   end
 end

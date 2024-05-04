@@ -65,13 +65,13 @@ configure do
     },
     'pop3' => {
       'host' => '',
-      'port' => '',
+      'port' => '995',
       'login' => '',
       'password' => ''
     },
     'decoy_pop3' => {
       'host' => '',
-      'port' => '',
+      'port' => '995',
       'login' => '',
       'password' => ''
     },
@@ -128,7 +128,7 @@ configure do
           settings.pipeline.exhaust
           Bounces.new(
             settings.config['pop3']['host'],
-            settings.config['pop3']['port'],
+            settings.config['pop3']['port'].to_i,
             settings.config['pop3']['login'],
             settings.config['pop3']['password'],
             settings.codec,
@@ -137,7 +137,7 @@ configure do
           ).fetch(tbot: settings.tbot)
           Decoy.new(
             settings.config['decoy_pop3']['host'],
-            settings.config['decoy_pop3']['port'],
+            settings.config['decoy_pop3']['port'].to_i,
             settings.config['decoy_pop3']['login'],
             settings.config['decoy_pop3']['password'],
             log: settings.log
