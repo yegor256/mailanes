@@ -37,6 +37,7 @@ class BouncesTest < Minitest::Test
     list.recipients.add('test@mailanes.com')
     Bounces.new(
       'pop.secureserver.net',
+      995,
       'reply@mailanes.com',
       '--',
       GLogin::Codec.new('--'),
@@ -53,7 +54,7 @@ class BouncesTest < Minitest::Test
     Deliveries.new(pgsql: t_pgsql).add(campaign, lane.letters.add, recipient)
     codec = GLogin::Codec.new('some key')
     msg = FakeMsg.new(recipient, codec)
-    Bounces.new([msg], '', '', codec, pgsql: t_pgsql).fetch
+    Bounces.new([msg], 995, '', '', codec, pgsql: t_pgsql).fetch
     assert(recipient.bounced?)
   end
 

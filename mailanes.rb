@@ -65,6 +65,7 @@ configure do
     },
     'pop3' => {
       'host' => '',
+      'port' => '',
       'login' => '',
       'password' => ''
     },
@@ -126,6 +127,7 @@ configure do
           settings.pipeline.exhaust
           Bounces.new(
             settings.config['pop3']['host'],
+            settings.config['pop3']['port'],
             settings.config['pop3']['login'],
             settings.config['pop3']['password'],
             settings.codec,

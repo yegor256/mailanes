@@ -86,12 +86,12 @@ GEM
       rainbow
       rubocop (>= 1.0)
       sysexits (~> 1.1)
-    i18n (1.14.1)
+    i18n (1.14.4)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     ipaddress (0.8.3)
     iri (0.7.0)
-    json (2.7.1)
+    json (2.7.2)
     language_server-protocol (3.17.0.3)
     liquid (4.0.4)
     listen (3.9.0)
@@ -106,9 +106,9 @@ GEM
       net-imap
       net-pop
       net-smtp
-    method_source (1.0.0)
+    method_source (1.1.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.5)
+    mini_portile2 (2.8.6)
     minitest (5.19.0)
     minitest-reporters (1.6.0)
       ansi
@@ -128,14 +128,14 @@ GEM
       timeout
     net-smtp (0.4.0)
       net-protocol
-    nokogiri (1.16.2)
+    nokogiri (1.16.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.16.2-x86_64-darwin)
+    nokogiri (1.16.4-x86_64-darwin)
       racc (~> 1.4)
     openssl (3.2.0)
     parallel (1.24.0)
-    parser (3.3.0.5)
+    parser (3.3.1.0)
       ast (~> 2.4.1)
       racc
     pg (1.5.6)
@@ -205,8 +205,8 @@ GEM
       rubocop-ast (>= 1.28.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.31.1)
-      parser (>= 3.3.0.4)
+    rubocop-ast (1.31.3)
+      parser (>= 3.3.1.0)
     rubocop-capybara (2.20.0)
       rubocop (~> 1.41)
     rubocop-factory_bot (2.25.1)

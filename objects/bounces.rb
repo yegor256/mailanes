@@ -31,8 +31,9 @@ require_relative 'hex'
 # Copyright:: Copyright (c) 2018-2024 Yegor Bugayenko
 # License:: MIT
 class Bounces
-  def initialize(host, login, password, codec, pgsql:, log: Loog::NULL)
+  def initialize(host, port, login, password, codec, pgsql:, log: Loog::NULL)
     @host = host
+    @port = port
     @login = login
     @password = password
     @pgsql = pgsql
@@ -55,15 +56,14 @@ class Bounces
 
   def fetch_pop(action)
     start = Time.now
-    pop = Net::POP3.new(@host)
-    pop.start(@login, @password)
-    total = 0
-    pop.each_mail do |m|
-      action.call(m)
-      total += 1
-      GC.start if (total % 10).zero?
+    Net::POP3.start(@host, @port, @login, @password) do |pop|
+      total = 0
+      pop.each_mail do |m|
+        action.call(m)
+        total += 1
+        GC.start if (total % 10).zero?
+      end
     end
-    pop.finish
     @log.info("#{total} bounce emails processed in #{format('%.02f', Time.now - start)}s")
   rescue Net::ReadTimeout => e
     @log.info("Failed to process bounce emails: #{e.message}")
