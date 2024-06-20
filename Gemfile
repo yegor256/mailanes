@@ -33,7 +33,7 @@ gem 'liquid', '4.0.4'
 gem 'loog', '0.5.1'
 gem 'mail', '2.8.1'
 gem 'minitest', '5.19.0', require: false
-gem 'minitest-reporters', '1.6.0', require: false
+gem 'minitest-reporters', '1.7.1', require: false
 gem 'net-pop', '0.1.2'
 gem 'net-smtp', '0.4.0'
 gem 'pgtk', '0.8.1'
