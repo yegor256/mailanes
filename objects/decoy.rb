@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018-2024 Yegor Bugayenko
+# Copyright (c) 2018-2025 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -24,7 +24,7 @@ require 'net/pop'
 
 # Just delete all emails from POP3 decoy account.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018-2024 Yegor Bugayenko
+# Copyright:: Copyright (c) 2018-2025 Yegor Bugayenko
 # License:: MIT
 class Decoy
   def initialize(host, port, login, password, log: Loog::NULL)
