@@ -218,4 +218,3 @@ $ bundle exec ruby test/test_campaign.rb -n test_iterates_lists
 ```
 
 Should work.
-
