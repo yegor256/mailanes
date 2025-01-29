@@ -12,6 +12,7 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3
+          bundler-cache: true
       - run: |
           sudo apt-get update
           sudo apt-get install -y postgresql-14
