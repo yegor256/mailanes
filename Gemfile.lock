@@ -84,8 +84,8 @@ GEM
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.50.0)
-      haml (>= 4.0, < 6.2)
+    haml_lint (0.60.0)
+      haml (>= 5.0)
       parallel (~> 1.10)
       rainbow
       rubocop (>= 1.0)
@@ -306,7 +306,7 @@ DEPENDENCIES
   glogin (= 0.13.0)
   gserver (= 0.0.1)
   haml (= 5.2.2)
-  haml_lint (= 0.50.0)
+  haml_lint (= 0.60.0)
   iri (= 0.7.0)
   liquid (= 4.0.4)
   loog (= 0.5.1)
