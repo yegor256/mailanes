@@ -10,7 +10,7 @@ install: |-
   sudo gem install openssl -- --with-openssl-dir=/usr/local/rvm/rubies/ruby-3.0.1/lib/ruby/3.0.0/openssl
   export PATH=$PATH:/usr/lib/postgresql/10/bin
   sudo apt-get -y update
-  sudo apt-get -y install libpq-dev
+  sudo apt-get install --yes libpq-dev
   git config --global user.email "server@mailanes.com"
   git config --global user.name "mailanes.com"
   sudo bundle install --no-color "--gemfile=$(pwd)/Gemfile"
