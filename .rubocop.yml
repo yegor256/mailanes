@@ -7,7 +7,6 @@ AllCops:
   TargetRubyVersion: 2.6.0
   NewCops: enable
   SuggestExtensions: false
-
 Layout/RescueEnsureAlignment:
   Enabled: false
 Metrics/CyclomaticComplexity:
@@ -42,3 +41,7 @@ Naming/MethodParameterName:
   MinNameLength: 1
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
+required:
+  - rubocop-rake
+  - rubocop-minitest
+  - rubocop-performance
