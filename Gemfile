@@ -14,7 +14,7 @@ gem 'haml', '5.2.2'
 gem 'haml_lint', '0.50.0', require: false
 gem 'iri', '0.7.0'
 gem 'liquid', '4.0.4'
-gem 'loog', '0.5.1'
+gem 'loog', '0.6.0'
 gem 'mail', '2.8.1'
 gem 'minitest', '5.19.0', require: false
 gem 'minitest-reporters', '1.6.0', require: false
