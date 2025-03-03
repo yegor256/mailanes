@@ -77,7 +77,7 @@ GEM
       json
     get_process_mem (0.2.7)
       ffi (~> 1.0)
-    glogin (0.13.0)
+    glogin (0.16.5)
       base58 (>= 0.2)
       openssl (>= 2.0)
     gserver (0.0.1)
@@ -311,7 +311,7 @@ DEPENDENCIES
   fakesmtpd (= 0.3.1)
   geoplugin (= 0.3.1)
   get_process_mem (~> 0.2)
-  glogin (= 0.13.0)
+  glogin (= 0.16.5)
   gserver (= 0.0.1)
   haml (= 5.2.2)
   haml_lint (= 0.50.0)
