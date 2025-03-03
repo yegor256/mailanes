@@ -38,7 +38,7 @@ gem 'sass', '3.7.4'
 gem 'sentry-raven', '3.1.2'
 gem 'simplecov', '0.22.0', require: false
 gem 'sinatra', '3.1.0'
-gem 'sinatra-contrib', '3.1.0'
+gem 'sinatra-contrib', '3.2.0'
 gem 'sprockets', '4.2.1'
 gem 'telebot', '0.1.2'
 gem 'threads', '0.4.0'
