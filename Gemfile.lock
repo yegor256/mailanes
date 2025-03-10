@@ -288,7 +288,7 @@ GEM
       axiom-types (~> 0.1)
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
-    webrick (1.8.1)
+    webrick (1.8.2)
     xcop (0.7.1)
       differ (~> 0.1.2)
       nokogiri (~> 1.10)
@@ -348,7 +348,7 @@ DEPENDENCIES
   time_difference (= 0.7.0)
   total (>= 0.2.0)
   uuidtools (= 2.2.0)
-  webrick (= 1.8.1)
+  webrick (= 1.8.2)
   xcop (= 0.7.1)
   zache (>= 0.12.0)
 
