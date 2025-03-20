@@ -11,7 +11,7 @@ gem 'get_process_mem', '~>0.2'
 gem 'glogin', '0.13.0'
 gem 'gserver', '0.0.1'
 gem 'haml', '5.2.2'
-gem 'haml_lint', '0.50.0', require: false
+gem 'haml_lint', '0.61.1', require: false
 gem 'iri', '0.7.0'
 gem 'liquid', '4.0.4'
 gem 'loog', '0.5.1'
