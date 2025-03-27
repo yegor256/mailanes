@@ -28,6 +28,7 @@ GEM
     backtrace (0.4.0)
     base58 (0.2.3)
     base64 (0.2.0)
+    bigdecimal (3.1.9)
     builder (3.3.0)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -78,7 +79,8 @@ GEM
       faraday
       ipaddress
       json
-    get_process_mem (0.2.7)
+    get_process_mem (1.0.0)
+      bigdecimal (>= 2.0)
       ffi (~> 1.0)
     glogin (0.16.5)
       base58 (>= 0.2)
@@ -333,7 +335,7 @@ PLATFORMS
 DEPENDENCIES
   fakesmtpd (~> 0.3)
   geoplugin (~> 0.3)
-  get_process_mem (~> 0.2)
+  get_process_mem (~> 1.0)
   glogin (~> 0.13)
   gserver (~> 0.0)
   haml (~> 5.2)
