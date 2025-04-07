@@ -1,11 +1,11 @@
 <img src="https://www.mailanes.com/logo.svg" width="92px" height="92px"/>
 
-[![EO principles respected here](http://www.elegantobjects.org/badge.svg)](http://www.elegantobjects.org)
-[![DevOps By Rultor.com](http://www.rultor.com/b/yegor256/mailanes)](http://www.rultor.com/p/yegor256/mailanes)
-[![We recommend RubyMine](http://www.elegantobjects.org/rubymine.svg)](https://www.jetbrains.com/ruby/)
+[![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
+[![DevOps By Rultor.com](https://www.rultor.com/b/yegor256/mailanes)](https://www.rultor.com/p/yegor256/mailanes)
+[![We recommend RubyMine](https://www.elegantobjects.org/rubymine.svg)](https://www.jetbrains.com/ruby/)
 
 [![rake](https://github.com/yegor256/mailanes/actions/workflows/rake.yml/badge.svg)](https://github.com/yegor256/mailanes/actions/workflows/rake.yml)
-[![PDD status](http://www.0pdd.com/svg?name=yegor256/mailanes)](http://www.0pdd.com/p?name=yegor256/mailanes)
+[![PDD status](https://www.0pdd.com/svg?name=yegor256/mailanes)](https://www.0pdd.com/p?name=yegor256/mailanes)
 [![Test Coverage](https://img.shields.io/codecov/c/github/yegor256/mailanes.svg)](https://codecov.io/github/yegor256/mailanes?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/451556110dacf73cc6f6/maintainability)](https://codeclimate.com/github/yegor256/mailanes/maintainability)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/mailanes/blob/master/LICENSE.txt)
