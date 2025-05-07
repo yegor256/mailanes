@@ -109,7 +109,8 @@ GEM
     loofah (2.24.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    loog (0.6.0)
+    loog (0.6.1)
+      logger (~> 1.0)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
@@ -155,7 +156,7 @@ GEM
       racc
     pg (1.5.9)
     pg (1.5.9-x64-mingw-ucrt)
-    pgtk (0.14.0)
+    pgtk (0.15.0)
       backtrace (> 0)
       loog (> 0)
       pg (~> 1.1)
@@ -168,7 +169,7 @@ GEM
       loog (> 0)
       tago (> 0)
     racc (1.8.1)
-    rack (2.2.13)
+    rack (2.2.14)
     rack-protection (3.2.0)
       base64 (>= 0.1.0)
       rack (~> 2.2, >= 2.2.4)
