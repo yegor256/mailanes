@@ -28,7 +28,7 @@ gem 'rake', '~>13.0', require: false
 gem 'random-port', '~>0.6', require: false
 gem 'redcarpet', '~>3.6'
 gem 'rerun', '~>0.14', require: false
-gem 'rspec-rails', '~>3.9', require: false
+gem 'rspec-rails', '~>8.0', require: false
 gem 'rubocop', '~>1.56', require: false
 gem 'rubocop-minitest', '>0', require: false
 gem 'rubocop-performance', '>0', require: false
