@@ -39,9 +39,9 @@ class Bounces
 
   def fetch_pop(action)
     start = Time.now
+    total = 0
     Net::POP3.enable_ssl
     Net::POP3.start(@host, @port, @login, @password) do |pop|
-      total = 0
       pop.each_mail do |m|
         action.call(m)
         total += 1
