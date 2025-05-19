@@ -14,6 +14,7 @@ require 'iri'
 require 'json'
 require 'loog'
 require 'pgtk/pool'
+require 'pgtk/stash'
 require 'raven'
 require 'sinatra'
 require 'sinatra/cookies'
@@ -82,18 +83,21 @@ configure do
     'https://www.mailanes.com/github-callback'
   )
   set :codec, GLogin::Codec.new(config['token_secret'])
-  if File.exist?('target/pgsql-config.yml')
-    set :pgsql, Pgtk::Pool.new(
-      Pgtk::Wire::Yaml.new(File.join(__dir__, 'target/pgsql-config.yml')),
-      log: settings.log
-    )
-  else
-    set :pgsql, Pgtk::Pool.new(
-      Pgtk::Wire::Env.new('DATABASE_URL'),
-      log: settings.log
-    )
-  end
-  settings.pgsql.start(4)
+  pg =
+    if File.exist?('target/pgsql-config.yml')
+      Pgtk::Pool.new(
+        Pgtk::Wire::Yaml.new(File.join(__dir__, 'target/pgsql-config.yml')),
+        log: settings.log
+      )
+    else
+      Pgtk::Pool.new(
+        Pgtk::Wire::Env.new('DATABASE_URL'),
+        log: settings.log
+      )
+    end
+  pg.start(4)
+  pg = Pgtk::Stash.new(pg)
+  set :pgsql, pg
   set :postman, Postman.new(settings.codec)
   set :tbot, Tbot.new(config['telegram_token'])
   set :pipeline, Pipeline.new(pgsql: settings.pgsql, tbot: settings.tbot, log: settings.log)
