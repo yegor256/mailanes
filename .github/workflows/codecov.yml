@@ -13,20 +13,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - run: sudo dockers/extras/install-postgres.sh
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3
           bundler-cache: true
-      - run: |
-          sudo apt-get update --yes --fix-missing
-          sudo apt-get install --yes postgresql-14
-          sudo ln -s /usr/lib/postgresql/14/bin/initdb /bin/initdb
-          sudo ln -s /usr/lib/postgresql/14/bin/postgres /bin/postgres
       - run: bundle config set --global path "$(pwd)/vendor/bundle"
       - run: bundle install --no-color
       - run: bundle exec rake
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage/.resultset.json
-          fail_ci_if_error: true

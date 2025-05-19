@@ -1,3 +1,5 @@
+# Mass E-Mailing Web Service
+
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![DevOps By Rultor.com](https://www.rultor.com/b/yegor256/mailanes)](https://www.rultor.com/p/yegor256/mailanes)
 [![We recommend RubyMine](https://www.elegantobjects.org/rubymine.svg)](https://www.jetbrains.com/ruby/)
