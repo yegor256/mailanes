@@ -8,12 +8,12 @@ require_relative '../objects/decoy'
 
 class DecoyTest < Minitest::Test
   def test_pop3
-    # skip('It is live test')
+    skip('It is live test')
     decoy = Decoy.new(
       'outlook.office365.com',
       995,
       'reply@mailanes.com',
-      'Kl7Jkm*jspO0MksEr3YY#$jks-O'
+      '--skipped--'
     )
     decoy.fetch
   end
