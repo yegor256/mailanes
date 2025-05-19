@@ -20,6 +20,7 @@ class Decoy
 
   def fetch
     start = Time.now
+    Net::POP3.enable_ssl
     Net::POP3.start(@host, @port, @login, @password) do |pop|
       total = 0
       pop.each_mail do |m|
