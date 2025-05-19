@@ -18,7 +18,7 @@ class LettersTest < Minitest::Test
     letters.add('First')
     letters.add('Second')
     letter = letters.add('Third')
-    assert(letter.id.positive?)
+    assert_predicate(letter.id, :positive?)
     assert_equal(3, letters.all.count)
     assert_equal(3, letter.place)
   end

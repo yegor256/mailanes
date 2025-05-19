@@ -10,7 +10,7 @@ require_relative '../objects/tbot'
 
 class TbotTest < Minitest::Test
   def test_sends_message
-    skip
+    skip('It is live test')
     tbot = Tbot.new('--put it here--')
     Thread.new do
       tbot.start

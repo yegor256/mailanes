@@ -16,11 +16,11 @@ class RecipientTest < Minitest::Test
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
     recipient = Recipients.new(list: list, pgsql: t_pgsql).add('test-98772@mailanes.com')
-    assert(recipient.active?)
+    assert_predicate(recipient, :active?)
     recipient.toggle
-    assert(!recipient.active?)
+    refute_predicate(recipient, :active?)
     recipient.toggle
-    assert(recipient.active?)
+    assert_predicate(recipient, :active?)
   end
 
   def test_deletes_recipient
@@ -28,18 +28,18 @@ class RecipientTest < Minitest::Test
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
     recipient = Recipients.new(list: list, pgsql: t_pgsql).add('test-01284@mailanes.com')
     recipient.delete
-    assert(list.recipients.count.zero?)
+    assert_predicate(list.recipients.count, :zero?)
   end
 
   def test_confirms
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
     recipient = Recipients.new(list: list, pgsql: t_pgsql).add('test-04492@mailanes.com')
-    assert(recipient.confirmed?)
+    assert_predicate(recipient, :confirmed?)
     recipient.confirm!(set: false)
-    assert(!recipient.confirmed?)
+    refute_predicate(recipient, :confirmed?)
     recipient.confirm!(set: true)
-    assert(recipient.confirmed?)
+    assert_predicate(recipient, :confirmed?)
   end
 
   def test_toggles_fetched_recipient
@@ -47,11 +47,11 @@ class RecipientTest < Minitest::Test
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
     id = Recipients.new(list: list, pgsql: t_pgsql).add('test98@mailanes.com').id
     recipient = Recipients.new(list: list, pgsql: t_pgsql).recipient(id)
-    assert(recipient.active?)
+    assert_predicate(recipient, :active?)
     recipient.toggle
-    assert(!recipient.active?)
+    refute_predicate(recipient, :active?)
     recipient.toggle
-    assert(recipient.active?)
+    assert_predicate(recipient, :active?)
   end
 
   def test_posts_event

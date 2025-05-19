@@ -60,18 +60,18 @@ class AppTest < Minitest::Test
     assert_equal(200, last_response.status, last_response.body)
     assert_equal(1, list.recipients.count)
     recipient = list.recipients.all[0]
-    assert(recipient.active?)
-    assert(recipient.yaml.to_yaml.include?("email: #{email}"), recipient.yaml.to_yaml)
-    assert(recipient.yaml.to_yaml.include?("reason: |-\n  Just :\n  love you"), recipient.yaml.to_yaml)
+    assert_predicate(recipient, :active?)
+    assert_includes(recipient.yaml.to_yaml, "email: #{email}", recipient.yaml.to_yaml)
+    assert_includes(recipient.yaml.to_yaml, "reason: |-\n  Just :\n  love you", recipient.yaml.to_yaml)
     token = GLogin::Codec.new.encrypt(recipient.id.to_s)
     get("/unsubscribe?token=#{CGI.escape(token)}")
     assert_equal(200, last_response.status, last_response.body)
     recipient = list.recipients.all[0]
-    assert(!recipient.active?)
+    refute_predicate(recipient, :active?)
     post("/subscribe?list=#{list.id}&email=#{email}")
     recipient = list.recipients.all[0]
     assert_equal(200, last_response.status, last_response.body)
-    assert(recipient.active?)
+    assert_predicate(recipient, :active?)
   end
 
   def test_adds_new_recipient_for_friend

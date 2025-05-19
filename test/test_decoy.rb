@@ -8,7 +8,7 @@ require_relative '../objects/decoy'
 
 class DecoyTest < Minitest::Test
   def test_pop3
-    skip
+    skip('It is live test')
     decoy = Decoy.new(
       'pop.secureserver.net',
       995,

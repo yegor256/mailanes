@@ -19,7 +19,7 @@ class CampaignsTest < Minitest::Test
     lane = lanes.add
     campaigns = Campaigns.new(owner: owner, pgsql: t_pgsql)
     campaign = campaigns.add(list, lane)
-    assert(campaign.id.positive?)
+    assert_predicate(campaign.id, :positive?)
     assert_equal(1, campaigns.all.count)
   end
 

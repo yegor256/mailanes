@@ -27,12 +27,12 @@ class ListTest < Minitest::Test
     lists = Lists.new(owner: owner, pgsql: t_pgsql)
     id = lists.add('boom').id
     list = List.new(id: id, pgsql: t_pgsql)
-    assert(list.exists?)
+    assert_predicate(list, :exists?)
   end
 
   def test_checks_for_non_existence
     list = List.new(id: 99_999, pgsql: t_pgsql)
-    assert(!list.exists?)
+    refute_predicate(list, :exists?)
   end
 
   def test_finds_friends
@@ -41,17 +41,17 @@ class ListTest < Minitest::Test
     list = lists.add
     list.yaml = "friends:\n- Jeff\n- john10"
     assert(list.friend?('jeff'))
-    assert(!list.friend?('john'))
+    refute(list.friend?('john'))
   end
 
   def test_sets_stop_status
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
-    assert(!list.stop?)
+    refute_predicate(list, :stop?)
     list.yaml = 'stop: true'
-    assert(list.stop?)
+    assert_predicate(list, :stop?)
     list.yaml = 'stop: false'
-    assert(!list.stop?)
+    refute_predicate(list, :stop?)
   end
 
   def test_counts_deliveries

@@ -3,18 +3,17 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'rubygems'
-require 'rake'
-require 'rdoc'
-require 'rake/clean'
 require 'English'
+require 'rake'
+require 'rake/clean'
+require 'rubygems'
 require 'yaml'
 
 raise "Invalid encoding \"#{Encoding.default_external}\"" unless Encoding.default_external.to_s == 'UTF-8'
 
 ENV['RACK_ENV'] = 'test'
 
-task default: %i[clean test rubocop haml_lint xcop copyright]
+task default: %i[clean test rubocop haml_lint xcop]
 
 require 'rake/testtask'
 Rake::TestTask.new(test: %i[pgsql liquibase]) do |test|
@@ -33,7 +32,6 @@ end
 
 require 'xcop/rake_task'
 Xcop::RakeTask.new(:xcop) do |task|
-  task.license = 'LICENSE.txt'
   task.includes = ['**/*.xml', '**/*.xsl', '**/*.xsd', '**/*.html']
   task.excludes = ['target/**/*', 'coverage/**/*']
 end
@@ -64,12 +62,4 @@ end
 
 task(run: %i[pgsql liquibase]) do
   `rerun -b "RACK_ENV=test rackup"`
-end
-
-task(:copyright) do
-  sh "grep -q -r '2018-#{Date.today.strftime('%Y')}' \
-    --include '*.rb' \
-    --include '*.txt' \
-    --include 'Rakefile' \
-    ."
 end

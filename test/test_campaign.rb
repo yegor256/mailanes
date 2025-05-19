@@ -20,7 +20,7 @@ class CampaignTest < Minitest::Test
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
     lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
-    assert(campaign.exists?)
+    assert_predicate(campaign, :exists?)
     assert_equal(1, campaign.lists.count)
     assert_equal(list.id, campaign.lists[0].id)
   end
@@ -120,7 +120,7 @@ class CampaignTest < Minitest::Test
   end
 
   def test_counts_pipeline_in_large_campaign
-    skip
+    skip('Does not work')
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
     total = 5_000

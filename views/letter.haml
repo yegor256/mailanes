@@ -8,7 +8,7 @@
 
 - unless letter.liquid.include?('{{unsubscribe}}') && !letter.liquid.include?('{{unsubscribe_query}}')
   %p.red
-    The Liquid template doesn't have the {{unsubsribe}} link!
+    The Liquid template doesn't have the {{unsubscribe}} link!
 
 %p
   %a.item{ onclick: '$("#save").show();' }

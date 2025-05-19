@@ -13,7 +13,7 @@ class ListsTest < Minitest::Test
     lists = Lists.new(owner: random_owner, pgsql: t_pgsql)
     title = 'My friends'
     list = lists.add(title)
-    assert(list.id.positive?)
+    assert_predicate(list.id, :positive?)
     assert_equal(1, lists.all.count)
     assert_equal(title, lists.all[0].title)
   end
@@ -49,9 +49,9 @@ class ListsTest < Minitest::Test
     r2 = lists.add.recipients.add('dm2@mailanes.com')
     r3 = lists.add.recipients.add('dm3@mailanes.com')
     lists.deactivate_recipients(['dm1@mailanes.com', 'dm2@mailanes.com'])
-    assert(!r1.active?)
-    assert(!r2.active?)
-    assert(r3.active?)
+    refute_predicate(r1, :active?)
+    refute_predicate(r2, :active?)
+    assert_predicate(r3, :active?)
   end
 
   def test_counts_duplicates

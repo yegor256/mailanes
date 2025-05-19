@@ -2,6 +2,13 @@
 # SPDX-License-Identifier: MIT
 ---
 linters:
+  RuboCop:
+    enabled: true
+    ignored_cops:
+      - Layout/ArgumentAlignment
+      - Style/TrailingCommaInArguments
+      - Layout/MultilineMethodCallBraceLayout
+      - Layout/SpaceInsideHashLiteralBraces
   InlineStyles:
     enabled: false
   LineLength:
@@ -9,4 +16,6 @@ linters:
   UnnecessaryStringOutput:
     enabled: false
   ViewLength:
+    enabled: false
+  ConsecutiveComments:
     enabled: false

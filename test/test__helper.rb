@@ -31,7 +31,6 @@ require 'minitest/reporters'
 Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
 
 require 'loog'
-require 'minitest/autorun'
 require 'pgtk/pool'
 require 'yaml'
 

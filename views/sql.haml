@@ -28,7 +28,7 @@
     %tbody
       - result.take(max).each do |r|
         %tr
-          - r.each do |_k, v|
+          - r.each_value do |v|
             %td
               - if v.nil?
                 = '&mdash;'

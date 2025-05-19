@@ -38,6 +38,8 @@ Metrics/ParameterLists:
   Max: 10
 Layout/ParameterAlignment:
   Enabled: false
+Minitest/MultipleAssertions:
+  Max: 10
 Metrics/PerceivedComplexity:
   Max: 25
 Layout/LineLength:

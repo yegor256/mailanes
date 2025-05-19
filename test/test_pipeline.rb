@@ -33,7 +33,7 @@ class PipelineTest < Minitest::Test
     # assert(!post1.deliveries.find { |d| d.letter.id == noise.id })
     post2 = Postman::Fake.new
     Pipeline.new(pgsql: t_pgsql).fetch(post2)
-    assert(!post2.deliveries.find { |d| d.letter.id == letter.id })
+    refute(post2.deliveries.find { |d| d.letter.id == letter.id })
   end
 
   def test_ignores_relaxed_letters
@@ -52,7 +52,7 @@ class PipelineTest < Minitest::Test
     second = lane.letters.add
     second.toggle
     Pipeline.new(pgsql: t_pgsql).fetch(post)
-    assert(!post.deliveries.find { |d| d.letter.id == second.id })
+    refute(post.deliveries.find { |d| d.letter.id == second.id })
   end
 
   def test_sends_one_recipient_at_a_time
@@ -70,18 +70,18 @@ class PipelineTest < Minitest::Test
     post = Postman::Fake.new
     Pipeline.new(pgsql: t_pgsql).fetch(post, cycles: 1)
     assert(post.deliveries.find { |d| d.letter.id == second.id })
-    assert(!post.deliveries.find { |d| d.letter.id == first.id })
+    refute(post.deliveries.find { |d| d.letter.id == first.id })
   end
 
   def test_doesnt_send_if_stop_list
     owner = random_owner
     email = 'test90@mailanes.com'
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
-    assert(!list.stop?)
+    refute_predicate(list, :stop?)
     list.recipients.add(email)
     stop = Lists.new(owner: owner, pgsql: t_pgsql).add
     stop.yaml = 'stop: true'
-    assert(stop.stop?)
+    assert_predicate(stop, :stop?)
     stop.recipients.add(email)
     lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
@@ -90,7 +90,7 @@ class PipelineTest < Minitest::Test
     letter.toggle
     post = Postman::Fake.new
     Pipeline.new(pgsql: t_pgsql).fetch(post)
-    assert(!post.deliveries.find { |d| d.letter.id == letter.id })
+    refute(post.deliveries.find { |d| d.letter.id == letter.id })
   end
 
   def test_send_if_only_a_friend_stopped
@@ -115,7 +115,7 @@ class PipelineTest < Minitest::Test
     email = 'test932@mailanes.com'
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
     list.yaml = 'stop: true'
-    assert(list.stop?)
+    assert_predicate(list, :stop?)
     list.recipients.add(email)
     lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
     campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
@@ -124,7 +124,7 @@ class PipelineTest < Minitest::Test
     letter.toggle
     post = Postman::Fake.new
     Pipeline.new(pgsql: t_pgsql).fetch(post)
-    assert(!post.deliveries.find { |d| d.letter.id == letter.id })
+    refute(post.deliveries.find { |d| d.letter.id == letter.id })
   end
 
   def test_deactivates_letter
@@ -134,7 +134,7 @@ class PipelineTest < Minitest::Test
     letter.toggle
     letter.yaml = 'until: 01-01-1970'
     Pipeline.new(pgsql: t_pgsql).deactivate
-    assert(!letter.active?)
+    refute_predicate(letter, :active?)
   end
 
   def test_exhausts_campaigns
@@ -145,7 +145,7 @@ class PipelineTest < Minitest::Test
     campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
     campaign.toggle
     Pipeline.new(pgsql: t_pgsql).exhaust
-    assert(campaign.exhausted?)
+    assert_predicate(campaign, :exhausted?)
   end
 
   def test_sends_via_telegram
@@ -161,8 +161,8 @@ class PipelineTest < Minitest::Test
     tbot = Tbot::Fake.new
     Pipeline.new(tbot: tbot, pgsql: t_pgsql).fetch(Postman.new)
     assert_equal(1, campaign.deliveries.count)
-    assert(tbot.sent.count >= 1)
+    assert_operator(tbot.sent.count, :>=, 1)
     delivery = campaign.deliveries[0]
-    assert(1, delivery.details.include?('Telegram chat ID #1'))
+    assert_includes(delivery.details, 'Telegram chat ID #1')
   end
 end

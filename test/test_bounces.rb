@@ -13,7 +13,7 @@ require_relative '../objects/campaigns'
 
 class BouncesTest < Minitest::Test
   def test_deactives_recipients
-    skip
+    skip('It is live test')
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
     list.recipients.add('test@mailanes.com')
@@ -37,7 +37,7 @@ class BouncesTest < Minitest::Test
     codec = GLogin::Codec.new('some key')
     msg = FakeMsg.new(recipient, codec)
     Bounces.new([msg], 995, '', '', codec, pgsql: t_pgsql).fetch
-    assert(recipient.bounced?)
+    assert_predicate(recipient, :bounced?)
   end
 
   class FakeMsg

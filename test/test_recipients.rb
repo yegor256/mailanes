@@ -21,7 +21,7 @@ class RecipientsTest < Minitest::Test
     list = lists.add
     recipients = Recipients.new(list: list, pgsql: t_pgsql)
     recipient = recipients.add('tes.met@mailanes.com')
-    assert(recipient.id.positive?)
+    assert_predicate(recipient.id, :positive?)
     assert_equal(1, recipients.all.count)
   end
 
@@ -36,9 +36,9 @@ class RecipientsTest < Minitest::Test
     second = lists.add
     second.yaml = 'exclusive: true'
     j2 = Recipients.new(list: second, pgsql: t_pgsql).add(jeff).id
-    assert(!Recipient.new(id: j1, pgsql: t_pgsql).active?)
-    assert(Recipient.new(id: j2, pgsql: t_pgsql).active?)
-    assert(Recipient.new(id: s1, pgsql: t_pgsql).active?)
+    refute_predicate(Recipient.new(id: j1, pgsql: t_pgsql), :active?)
+    assert_predicate(Recipient.new(id: j2, pgsql: t_pgsql), :active?)
+    assert_predicate(Recipient.new(id: s1, pgsql: t_pgsql), :active?)
   end
 
   def test_groups_recipients_by_weeks
@@ -47,7 +47,7 @@ class RecipientsTest < Minitest::Test
     recipients = Recipients.new(list: list, pgsql: t_pgsql)
     recipients.add('tiu-1@mailanes.com', source: owner)
     recipients.add('tiu-2@mailanes.com', source: owner)
-    assert(1, recipients.weeks(owner).count)
+    assert_equal(1, recipients.weeks(owner).count)
     assert(recipients.weeks(owner)[0][:week])
     assert(recipients.weeks(owner)[0][:total])
     assert(recipients.weeks(owner)[0][:bad])
@@ -91,7 +91,7 @@ class RecipientsTest < Minitest::Test
     list = lists.add
     recipients = Recipients.new(list: list, pgsql: t_pgsql)
     recipients.add('tes-672@mailanes.com')
-    assert_equal(0.25, recipients.per_day(4))
+    assert_in_delta(0.25, recipients.per_day(4))
   end
 
   def test_bounce_rate
@@ -107,7 +107,7 @@ class RecipientsTest < Minitest::Test
     deliveries.add(campaign, letter, first)
     second = recipients.add('tes-110@mailanes.com')
     deliveries.add(campaign, letter, second).bounce
-    assert_equal(0.5, recipients.bounce_rate)
+    assert_in_delta(0.5, recipients.bounce_rate)
   end
 
   def test_upload_recipients

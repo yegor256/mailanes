@@ -52,7 +52,7 @@ exclusive: true
 # If this is TRUE, all new recipients that get into the list via the
 # /subscribe link, will be marked as non-yet-confirmed. They will have
 # to click the link, which is available in your Markdown template
-# as {{confirm}} (similar to the {{unsubsribe}} you have there).
+# as {{confirm}} (similar to the {{unsubscribe}} you have there).
 # The default is FALSE.
 confirmation_required: true
 ```
@@ -185,7 +185,7 @@ to see the total count of all active subscribers of your list:
 
 All URIs:
 
-  * `/api/lists/:id/active_count.json`: total active subscibers in the list
+  * `/api/lists/:id/active_count.json`: total active subscribers in the list
   * `/api/lists/:id/per_day.json`: new subscribers per day (last 10 days stat, change with `days`)
   * `/api/campaigns/:id/deliveries_count.json`: deliveries per day (last day, change with `days`)
   * more coming...

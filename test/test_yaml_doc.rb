@@ -15,18 +15,18 @@ class YamlDocTest < Minitest::Test
   end
 
   def test_checks_emptiness
-    assert(YamlDoc.new('').empty?)
-    assert(YamlDoc.new("---\n").empty?)
-    assert(!YamlDoc.new("a: b\n").empty?)
+    assert_empty(YamlDoc.new(''))
+    assert_empty(YamlDoc.new("---\n"))
+    refute_empty(YamlDoc.new("a: b\n"))
   end
 
   def test_saves_valid_yaml
     text = YamlDoc.new("title: \"Test\"\nage: 25").save
-    assert(text.include?('title: Test'), text)
+    assert_includes(text, 'title: Test', text)
   end
 
   def test_safely_loads_broken_yaml
-    assert(YamlDoc.new('\"oops...').load.is_a?(Hash))
+    assert_kind_of(Hash, YamlDoc.new('\"oops...').load)
   end
 
   def test_rejects_broken_yaml

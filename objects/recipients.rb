@@ -92,7 +92,7 @@ class Recipients
   end
 
   def add(email, first: '', last: '', source: '')
-    raise UserError, "Invalid email #{email.inspect}" unless email =~ Recipients::REGEX
+    raise UserError, "Invalid email #{email.inspect}" unless Recipients::REGEX.match?(email)
     recipient = Recipient.new(
       id: @pgsql.exec(
         'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
@@ -185,7 +185,7 @@ with the same email '#{email}' was added to the list ##{@list.id}, which has EXC
       GC.start if (pos % 1000).zero?
       next if row[0].nil?
       next if exists?(row[0])
-      next unless row[0] =~ Recipients::REGEX
+      next unless Recipients::REGEX.match?(row[0])
       recipient = add(row[0], first: row[1] || '', last: row[2] || '', source: source)
       next unless row[3]
       row[3].strip.split(';').each do |dlv|

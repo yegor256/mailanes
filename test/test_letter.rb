@@ -25,8 +25,8 @@ class LetterTest < Minitest::Test
     lane = lanes.add
     letters = Letters.new(lane: lane, pgsql: t_pgsql)
     letter = letters.add
-    assert(letter.exists?)
-    assert_equal(false, letter.active?)
+    assert_predicate(letter, :exists?)
+    refute_predicate(letter, :active?)
   end
 
   def test_moves_up_and_down
@@ -62,7 +62,7 @@ class LetterTest < Minitest::Test
       letter.download(name, f.path)
       assert_equal(body, File.read(f.path).force_encoding('UTF-8'))
       letter.detach(name)
-      assert(letter.attachments.empty?)
+      assert_empty(letter.attachments)
     end
   end
 
@@ -73,9 +73,9 @@ class LetterTest < Minitest::Test
     letters = Letters.new(lane: lane, pgsql: t_pgsql)
     letter = letters.add
     letter.toggle
-    assert_equal(true, letter.active?)
+    assert_predicate(letter, :active?)
     letter.toggle
-    assert_equal(false, letter.active?)
+    refute_predicate(letter, :active?)
   end
 
   def test_creates_and_updates_letter
@@ -153,13 +153,13 @@ class LetterTest < Minitest::Test
         Dir[File.join(dir, 'messages/**/*.json')].each do |f|
           body = JSON.parse(File.read(f))['body'].join("\n")
           next if body.include?('fake-decoy')
-          assert(body.include?('X-Complaints-To: reply@mailanes.com'))
-          assert(body.include?('List-Unsubscribe: '))
-          assert(body.include?('Return-Path: <reply@mailanes.com>'))
-          assert(body.include?("List-Id: #{delivery.id}"))
-          assert(body.include?("X-Mailanes-Recipient: #{recipient.id}:"))
+          assert_includes(body, 'X-Complaints-To: reply@mailanes.com')
+          assert_includes(body, 'List-Unsubscribe: ')
+          assert_includes(body, 'Return-Path: <reply@mailanes.com>')
+          assert_includes(body, "List-Id: #{delivery.id}")
+          assert_includes(body, "X-Mailanes-Recipient: #{recipient.id}:")
           match = body.match(/#{recipient.id}:(?<sign>[a-f0-9]{20,}):(?<did>#{delivery.id})\n/)
-          assert(!match.nil?)
+          refute_nil(match)
           sign = Hex::ToText.new(match[:sign]).to_s
           assert_equal(recipient.id, codec.decrypt(sign).to_i, body)
           assert_equal(delivery.id, match[:did].to_i, body)
@@ -221,6 +221,6 @@ class LetterTest < Minitest::Test
     ].join("\n")
     letter.deliver(recipient)
     assert_equal(1, tbot.sent.count)
-    assert(tbot.sent[0].include?('How are you?'))
+    assert_includes(tbot.sent[0], 'How are you?')
   end
 end

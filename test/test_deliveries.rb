@@ -22,7 +22,7 @@ class DeliveriesTest < Minitest::Test
     deliveries = Deliveries.new(pgsql: t_pgsql)
     delivery = deliveries.add(campaign, letter, recipient)
     delivery.save_relax(Time.now)
-    assert(delivery.id.positive?)
+    assert_predicate(delivery.id, :positive?)
     assert_equal(letter.id, delivery.letter.id)
     assert_equal(recipient.id, delivery.recipient.id)
     assert_equal(campaign.id, delivery.campaign.id)
@@ -37,7 +37,7 @@ class DeliveriesTest < Minitest::Test
     letter = lane.letters.add
     deliveries = Deliveries.new(pgsql: t_pgsql)
     delivery = deliveries.add(campaign, letter, recipient)
-    assert(delivery.details.empty?)
+    assert_empty(delivery.details)
     msg = 'DONE with it, друг'
     delivery.close(msg)
     assert_equal(msg, delivery.details)
