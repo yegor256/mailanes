@@ -1,5 +1,3 @@
-<img src="https://www.mailanes.com/logo.svg" width="92px" height="92px"/>
-
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![DevOps By Rultor.com](https://www.rultor.com/b/yegor256/mailanes)](https://www.rultor.com/p/yegor256/mailanes)
 [![We recommend RubyMine](https://www.elegantobjects.org/rubymine.svg)](https://www.jetbrains.com/ruby/)
@@ -15,7 +13,7 @@
 It's an e-mail sending web app.
 
 Read this blog post, it explains how it works:
-[_Mailanes.com Helps Manage Newsletters and Mailing Lists_](https://www.yegor256.com/2018/10/30/mailanes.html).
+[_Mailanes.com Helps Manage Newsletters and Mailing Lists_][blog].
 
 ## How to Configure?
 
@@ -177,30 +175,34 @@ Not implemented yet...
 ## API
 
 You can retrieve the data from the system via the API. First, you have
-to get the authorization code from the [API page](https://www.mailaines.com/api).
-Then, add it to each HTTP request you make, as `auth` URI parameter. For example,
+to get the authorization code from the
+[API page](https://www.mailaines.com/api).
+Then, add it to each HTTP request you make, as `auth` URI parameter.
+For example,
 to see the total count of all active subscribers of your list:
 
 `/api/lists/123/active_count.json?auth=74fa8672...`
 
 All URIs:
 
-  * `/api/lists/:id/active_count.json`: total active subscribers in the list
-  * `/api/lists/:id/per_day.json`: new subscribers per day (last 10 days stat, change with `days`)
-  * `/api/campaigns/:id/deliveries_count.json`: deliveries per day (last day, change with `days`)
-  * more coming...
+* `/api/lists/:id/active_count.json`: total active subscribers in the list
+* `/api/lists/:id/per_day.json`: new subscribers per day
+(last 10 days stat, change with `days`)
+* `/api/campaigns/:id/deliveries_count.json`: deliveries per day
+(last day, change with `days`)
+* more coming...
 
 ## How to contribute
 
-Read [these guidelines](https://www.yegor256.com/2014/04/15/github-guidelines.html).
+Read these [guidelines].
 Make sure your build is green before you contribute
-your pull request. You will need to have [Ruby](https://www.ruby-lang.org/en/) 2.3+,
+your pull request. You will need to have [Ruby] 2.3+,
 Java 8+, Maven 3.2+, PostgreSQL 10+, and
 [Bundler](https://bundler.io/) installed. Then:
 
 ```bash
-$ bundle update
-$ bundle exec rake
+bundle update
+bundle exec rake
 ```
 
 If it's clean and you don't see any error messages, submit your pull request.
@@ -208,13 +210,17 @@ If it's clean and you don't see any error messages, submit your pull request.
 To run a single unit test you should first do this:
 
 ```bash
-$ bundle exec rake pgsql liquibase run
+bundle exec rake pgsql liquibase run
 ```
 
 And then, in another terminal (for example):
 
 ```bash
-$ bundle exec ruby test/test_campaign.rb -n test_iterates_lists
+bundle exec ruby test/test_campaign.rb -n test_iterates_lists
 ```
 
 Should work.
+
+[blog]: https://www.yegor256.com/2018/10/30/mailanes.html
+[guidelines]: https://www.yegor256.com/2014/04/15/github-guidelines.html
+[Ruby]: https://www.ruby-lang.org/en/
