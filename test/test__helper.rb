@@ -6,16 +6,35 @@
 ENV['RACK_ENV'] = 'test'
 
 require 'simplecov'
-SimpleCov.root(File.expand_path(File.join(__dir__, '..')))
-SimpleCov.start
+require 'simplecov-cobertura'
+unless SimpleCov.running || ENV['PICKS']
+  SimpleCov.command_name('test')
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
+    [
+      SimpleCov::Formatter::HTMLFormatter,
+      SimpleCov::Formatter::CoberturaFormatter
+    ]
+  )
+  SimpleCov.minimum_coverage 60
+  SimpleCov.minimum_coverage_by_file 20
+  SimpleCov.start do
+    add_filter 'test/'
+    add_filter 'vendor/'
+    add_filter 'target/'
+    track_files 'lib/**/*.rb'
+    track_files '*.rb'
+  end
+end
 
+require 'minitest/autorun'
 require 'minitest/reporters'
 Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
 
-require 'yaml'
+require 'loog'
 require 'minitest/autorun'
 require 'pgtk/pool'
-require 'loog'
+require 'yaml'
+
 module Minitest
   class Test
     def random_owner
@@ -24,7 +43,7 @@ module Minitest
     end
 
     def t_log
-      @t_log ||= ENV['TEST_QUIET_LOG'] ? Loog::NULL : Loog::VERBOSE
+      @t_log ||= ENV['TEST_VERBOSE_LOG'] ? Loog::VERBOSE : Loog::NULL
     end
 
     def t_pgsql

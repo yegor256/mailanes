@@ -55,7 +55,7 @@
 %p
   Created:
   = recipient.created.utc.iso8601
-  = "(#{Ago.new(recipient.created)})"
+  = "(#{recipient.created.ago})"
 
 - unless recipient.source.empty?
   %p
@@ -103,7 +103,7 @@
       %a{ href: iri.cut('/delivery').add(id: d.id) }= "##{d.id}"
       = '/'
       = d.created.utc.iso8601
-      = "(#{Ago.new(d.created)})"
+      = "(#{d.created.ago})"
       - if d.letter?
         with letter
         %a{ href: iri.cut('/letter').add(id: d.letter.id) }= "##{d.letter.id}"

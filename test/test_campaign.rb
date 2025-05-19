@@ -3,7 +3,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'minitest/autorun'
 require 'rack/test'
 require 'yaml'
 require 'tmpdir'

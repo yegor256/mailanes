@@ -17,16 +17,16 @@ require 'pgtk/pool'
 require 'raven'
 require 'sinatra'
 require 'sinatra/cookies'
+require 'tago'
 require 'time'
 require 'total'
 require 'yaml'
 require 'zache'
-require_relative 'objects/ago'
 require_relative 'objects/bounces'
+require_relative 'objects/decoy'
 require_relative 'objects/hex'
 require_relative 'objects/owner'
 require_relative 'objects/pipeline'
-require_relative 'objects/decoy'
 require_relative 'objects/postman'
 require_relative 'objects/tbot'
 require_relative 'objects/user_error'
@@ -160,7 +160,7 @@ before '/*' do
   if params[:auth]
     begin
       @locals[:user] = {
-        login: settings.codec.decrypt(Hex::ToText.new(params[:auth]).to_s)
+        'login' => settings.codec.decrypt(Hex::ToText.new(params[:auth]).to_s)
       }
     rescue OpenSSL::Cipher::CipherError, GLogin::Codec::DecodingError => _e
       redirect to('/')
@@ -965,7 +965,7 @@ end
 
 def current_user
   redirect '/hello' unless @locals[:user]
-  @locals[:user][:login].downcase
+  @locals[:user]['login'].downcase
 end
 
 def auth_code

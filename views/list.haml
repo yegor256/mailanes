@@ -74,7 +74,7 @@
 %p
   Created:
   = list.created.utc.iso8601
-  = "(#{Ago.new(list.created)})"
+  = "(#{list.created.ago})"
 
 %p
   It grows by

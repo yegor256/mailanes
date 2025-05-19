@@ -72,7 +72,7 @@
 %p
   Created:
   = campaign.created.utc.iso8601
-  = "(#{Ago.new(campaign.created)})"
+  = "(#{campaign.created.ago})"
 
 %p
   Speed:
@@ -119,7 +119,7 @@
       %a{ href: iri.cut('/delivery').add(id: d.id) }= "##{d.id}"
       = '/'
       = d.created.utc.iso8601
-      = "(#{Ago.new(d.created)})"
+      = "(#{d.created.ago})"
       to
       %a{ href: iri.cut('/recipient').add(id: d.recipient.id), style: d.bounced? ? 'text-decoration:line-through' : '' }= "##{d.recipient.id}"
       with letter

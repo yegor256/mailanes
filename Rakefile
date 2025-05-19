@@ -18,7 +18,7 @@ task default: %i[clean test rubocop haml_lint xcop copyright]
 
 require 'rake/testtask'
 Rake::TestTask.new(test: %i[pgsql liquibase]) do |test|
-  ENV['TEST_QUIET_LOG'] = 'true' if ARGV.include?('--quiet')
+  ENV['TEST_VERBOSE_LOG'] = 'true' if ARGV.include?('--verbose')
   Rake::Cleaner.cleanup_files(['coverage'])
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/test_*.rb'
@@ -29,7 +29,6 @@ end
 require 'rubocop/rake_task'
 RuboCop::RakeTask.new(:rubocop) do |task|
   task.fail_on_error = true
-  task.requires << 'rubocop-rspec'
 end
 
 require 'xcop/rake_task'
