@@ -33,7 +33,7 @@ end
 require 'xcop/rake_task'
 Xcop::RakeTask.new(:xcop) do |task|
   task.includes = ['**/*.xml', '**/*.xsl', '**/*.xsd', '**/*.html']
-  task.excludes = ['target/**/*', 'coverage/**/*']
+  task.excludes = ['target/**/*', 'coverage/**/*', 'vendor/**/*']
 end
 
 require 'pgtk/pgsql_task'

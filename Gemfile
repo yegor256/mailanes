@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 
 gem 'fakesmtpd', '~>0.3'
 gem 'geoplugin', '~>0.3'
-gem 'get_process_mem', '~>0.2'
+gem 'get_process_mem', '~>1.0'
 gem 'glogin', '~>0.13'
 gem 'gserver', '~>0.0'
 gem 'haml', '~>5.2'
