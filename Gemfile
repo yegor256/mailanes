@@ -4,11 +4,10 @@
 # SPDX-License-Identifier: MIT
 
 source 'https://rubygems.org'
-ruby '>=3.2'
 
 gem 'fakesmtpd', '~>0.3'
 gem 'geoplugin', '~>0.3'
-gem 'get_process_mem', '~>1.0'
+gem 'get_process_mem', '~>0.2'
 gem 'glogin', '~>0.13'
 gem 'gserver', '~>0.0'
 gem 'haml', '~>5.2'
@@ -29,22 +28,23 @@ gem 'rake', '~>13.0', require: false
 gem 'random-port', '~>0.6', require: false
 gem 'redcarpet', '~>3.6'
 gem 'rerun', '~>0.14', require: false
+gem 'rspec-rails', '~>3.9', require: false
 gem 'rubocop', '~>1.56', require: false
 gem 'rubocop-minitest', '>0', require: false
 gem 'rubocop-performance', '>0', require: false
 gem 'rubocop-rake', '>0', require: false
+gem 'rubocop-rspec', '~>2.23', require: false
 gem 'sass', '~>3.7'
 gem 'sentry-raven', '~>3.1'
 gem 'simplecov', '~>0.22', require: false
-gem 'simplecov-cobertura', '~>2.1', require: false
 gem 'sinatra', '~>3.1'
 gem 'sinatra-contrib', '~>3.1'
 gem 'sprockets', '~>4.2'
-gem 'tago', '~>0.1'
 gem 'telebot', '~>0.1'
 gem 'threads', '~>0.4'
+gem 'time_difference', '~>0.7'
 gem 'total', '>=0.2.0'
-gem 'uuidtools', '~>3.0'
+gem 'uuidtools', '~>2.2'
 gem 'webrick', '~>1.8'
 gem 'xcop', '~>0.7'
 gem 'zache', '>=0.12.0'
