@@ -4,7 +4,6 @@
 # SPDX-License-Identifier: MIT
 
 source 'https://rubygems.org'
-ruby '>=3.2'
 
 gem 'fakesmtpd', '~>0.3'
 gem 'geoplugin', '~>0.3'

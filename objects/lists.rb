@@ -16,6 +16,10 @@ class Lists
     @pgsql = pgsql
   end
 
+  def empty?
+    count.zero?
+  end
+
   def count
     @pgsql.exec('SELECT COUNT(*) FROM list WHERE owner=$1', [@owner])[0]['count'].to_i
   end

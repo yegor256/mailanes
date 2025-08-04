@@ -790,7 +790,7 @@ get '/unsubscribe' do
       "out of #{list.recipients.count} total.",
       recipient.yaml.empty? ? '' : "This is what we know about the recipient:\n\n```\n#{recipient.yaml.to_yaml}\n```"
     )
-    recipient.post_event("Unsubscribed#{@locals[:user] ? " by @#{current_user}" : ''}.")
+    recipient.post_event("Unsubscribed#{" by @#{current_user}" if @locals[:user]}.")
   else
     recipient.post_event(
       [
@@ -840,7 +840,7 @@ get '/confirm' do
     "with the email `#{recipient.email}` just confirmed their participation in the list",
     "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})."
   )
-  recipient.post_event("Subscription confirmed#{@locals[:user] ? " by @#{current_user}" : ''}.")
+  recipient.post_event("Subscription confirmed#{" by @#{current_user}" if @locals[:user]}.")
   haml :confirmed, layout: :layout, locals: merged(
     title: '/confirmed',
     list: recipient.list,
@@ -942,8 +942,6 @@ error do
     )
   end
 end
-
-private
 
 def context
   "#{request.ip} #{request.user_agent} #{VERSION} #{Time.now.strftime('%Y/%m')}"

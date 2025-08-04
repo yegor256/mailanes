@@ -8,10 +8,10 @@
   %a.item{ onclick: '$("#add").show();$("#title").focus();' }
     Start a Campaign
 
-- if lists.count.zero?
+- if lists.empty?
   %p.red
     You have no lists, can't have any campaigns.
-- elsif lanes.count.zero?
+- elsif lanes.empty?
   %p.red
     You have no lanes, can't have any campaigns.
 - else
