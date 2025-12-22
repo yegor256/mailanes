@@ -80,8 +80,8 @@ class Bounces
             'has already been bounced once,',
             "but we just received a new bounce report to their email `#{recipient.email}`,",
             "in the list [\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id});",
-            'this may be happen due to some internal mistake,',
-            'please [report it](https://github.com/yegor256/mailanes)'
+            'maybe this has happened because of some some internal mistake;',
+            'please, [report it](https://github.com/yegor256/mailanes)'
           )
         end
         recipient.toggle(msg: 'Deactivated because the email bounced back') if recipient.active?
