@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 docker:
-  image: yegor256/rultor-image:1.24.0
+  image: yegor256/java
 readers:
   - "urn:github:526301"
 assets:
@@ -11,14 +11,11 @@ assets:
   id_rsa: yegor256/home#assets/heroku-key
   id_rsa.pub: yegor256/home#assets/heroku-key.pub
 install: |-
-  sudo gem install openssl -- --with-openssl-dir=/usr/local/rvm/rubies/ruby-3.0.1/lib/ruby/3.0.0/openssl
-  export PATH=$PATH:/usr/lib/postgresql/10/bin
-  sudo apt-get -y update
-  sudo apt-get install --yes libpq-dev
+  sudo /usr/bin/install-postgres.sh
+  pdd -f /dev/null
+  bundle install --no-color
   git config --global user.email "server@mailanes.com"
   git config --global user.name "mailanes.com"
-  sudo bundle install --no-color "--gemfile=$(pwd)/Gemfile"
-  pdd -f /dev/null
 release:
   sensitive:
     - config.yml
