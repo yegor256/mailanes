@@ -102,10 +102,18 @@ configure do
   set :postman, Postman.new(settings.codec)
   set :tbot, Tbot.new(config['telegram_token'])
   set :pipeline, Pipeline.new(pgsql: settings.pgsql, tbot: settings.tbot, log: settings.log)
-  if ENV['RACK_ENV'] != 'test'
+end
+
+unless ENV['RACK_ENV'] == 'test'
+  configure do
     Thread.new do
       settings.tbot.start
     end
+  end
+end
+
+unless ENV['RACK_ENV'] == 'test'
+  configure do
     Thread.new do
       loop do
         elapsed(settings.log) do
