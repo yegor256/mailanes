@@ -50,7 +50,7 @@ class Bounces
           GC.start if (total % 10).zero?
         end
       end
-      throw :"#{total} bounce emails processed by #{@login}"
+      throw :"#{total} bounce email(s) processed by #{@login.inspect}"
     rescue Net::ReadTimeout => e
       throw :"Failed to process bounce emails: #{e.message}"
     end
