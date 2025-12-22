@@ -87,12 +87,12 @@ configure do
     if File.exist?('target/pgsql-config.yml')
       Pgtk::Pool.new(
         Pgtk::Wire::Yaml.new(File.join(__dir__, 'target/pgsql-config.yml')),
-        log: settings.log
+        log: settings.log, max: 2
       )
     else
       Pgtk::Pool.new(
         Pgtk::Wire::Env.new('DATABASE_URL'),
-        log: settings.log
+        log: settings.log, max: 2
       )
     end
   pg.start!
