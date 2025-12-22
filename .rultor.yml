@@ -8,8 +8,6 @@ readers:
   - "urn:github:526301"
 assets:
   config.yml: yegor256/home#assets/mailanes/config.yml
-  id_rsa: yegor256/home#assets/heroku-key
-  id_rsa.pub: yegor256/home#assets/heroku-key.pub
 install: |-
   sudo /usr/bin/install-postgres.sh
   pdd -f /dev/null
