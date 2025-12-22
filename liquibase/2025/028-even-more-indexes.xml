@@ -7,6 +7,18 @@
   <changeSet id="028" author="yegor256">
     <sql>
       CREATE INDEX IF NOT EXISTS idx_delivery_created_details ON delivery (created, details);
+      CREATE INDEX IF NOT EXISTS idx_delivery_recipient_campaign_letter ON delivery (recipient, campaign, letter);
+      CREATE INDEX IF NOT EXISTS idx_delivery_recipient_campaign_relax ON delivery (recipient, campaign, relax) WHERE relax IS NOT NULL;
+      CREATE INDEX IF NOT EXISTS idx_delivery_campaign_created ON delivery (campaign, created);
+      CREATE INDEX IF NOT EXISTS idx_delivery_letter_created ON delivery (letter, created);
+      CREATE INDEX IF NOT EXISTS idx_recipient_list_active_confirmed_created ON recipient (list, created, id) WHERE active = true AND confirmed = true;
+      CREATE INDEX IF NOT EXISTS idx_recipient_email_active ON recipient (email) WHERE active = true;
+      CREATE INDEX IF NOT EXISTS idx_list_id_not_stopped ON list (id) WHERE stop = false;
+      CREATE INDEX IF NOT EXISTS idx_source_list_campaign ON source (list, campaign);
+    </sql>
+    <sql>
+      CREATE EXTENSION IF NOT EXISTS pg_trgm;
+      CREATE INDEX idx_recipient_email_trgm_active_confirmed ON recipient USING gin (email gin_trgm_ops) WHERE active = true AND confirmed = true;
     </sql>
   </changeSet>
 </databaseChangeLog>

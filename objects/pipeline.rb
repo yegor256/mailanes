@@ -100,8 +100,8 @@ class Pipeline
     ].join(' ')
     [
       'SELECT DISTINCT ON (recipient.id, letter.place)',
-      'recipient.id AS rid, c.id AS cid, letter.place, letter.id AS lid,',
-      'list.id AS list_id, recipient.email AS email',
+      '  recipient.id AS rid, c.id AS cid, letter.place, letter.id AS lid,',
+      '  list.id AS list_id, recipient.email AS email',
       'FROM recipient',
       'JOIN list ON list.id = recipient.list AND list.stop = false',
       'JOIN source ON source.list = list.id',
@@ -120,7 +120,7 @@ class Pipeline
       '  ON recipient.email = stop.email',
       '    AND stop.id != recipient.id',
       '    AND stop.active = true',
-      '    AND (SELECT COUNT(*) FROM list AS s WHERE s.id=stop.list AND s.owner=list.owner AND s.stop=true) > 0',
+      '    AND EXISTS (SELECT 1 FROM list AS s WHERE s.id=stop.list AND s.owner=list.owner AND s.stop=true)',
       'WHERE d.id IS NULL',
       '  AND r.id IS NULL',
       '  AND stop.id IS NULL',
