@@ -21,6 +21,7 @@ release:
     - config.yml
   script: |-
     bundle exec rake
+    rm -rf target
     cp ../config.yml config.yml
     bundle exec rake liquibase
     rm -rf config.yml
