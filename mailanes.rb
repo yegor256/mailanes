@@ -5,6 +5,7 @@
 
 $stdout.sync = true
 
+require 'elapsed'
 require 'geoplugin'
 require 'get_process_mem'
 require 'glogin'
@@ -107,33 +108,34 @@ configure do
     end
     Thread.new do
       loop do
-        sleep 60
-        start = Time.now
-        begin
-          settings.pipeline.fetch(settings.postman)
-          settings.pipeline.deactivate
-          settings.pipeline.exhaust
-          Bounces.new(
-            settings.config['pop3']['host'],
-            settings.config['pop3']['port'].to_i,
-            settings.config['pop3']['login'],
-            settings.config['pop3']['password'],
-            settings.codec,
-            pgsql: settings.pgsql,
-            log: settings.log
-          ).fetch(tbot: settings.tbot)
-          Decoy.new(
-            settings.config['decoy_pop3']['host'],
-            settings.config['decoy_pop3']['port'].to_i,
-            settings.config['decoy_pop3']['login'],
-            settings.config['decoy_pop3']['password'],
-            log: settings.log
-          ).fetch
-        rescue StandardError => e
-          settings.log.error("#{e.message}\n\t#{e.backtrace.join("\n\t")}")
-          Raven.capture_exception(e)
+        elapsed(settings.log) do
+          sleep 60
+          begin
+            settings.pipeline.fetch(settings.postman)
+            settings.pipeline.deactivate
+            settings.pipeline.exhaust
+            Bounces.new(
+              settings.config['pop3']['host'],
+              settings.config['pop3']['port'].to_i,
+              settings.config['pop3']['login'],
+              settings.config['pop3']['password'],
+              settings.codec,
+              pgsql: settings.pgsql,
+              log: settings.log
+            ).fetch(tbot: settings.tbot)
+            Decoy.new(
+              settings.config['decoy_pop3']['host'],
+              settings.config['decoy_pop3']['port'].to_i,
+              settings.config['decoy_pop3']['login'],
+              settings.config['decoy_pop3']['password'],
+              log: settings.log
+            ).fetch
+          rescue StandardError => e
+            settings.log.error("#{e.message}\n\t#{e.backtrace.join("\n\t")}")
+            Raven.capture_exception(e)
+          end
+          throw :'Pipeline done'
         end
-        settings.log.info("Pipeline done in #{(Time.now - start).round(2)}s")
       end
     end
   end
