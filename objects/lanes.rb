@@ -21,7 +21,7 @@ class Lanes
   end
 
   def count
-    @pgsql.exec('SELECT COUNT(*) FROM lane WHERE owner=$1', [@owner])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM lane WHERE owner=$1', [@owner]).first['count'].to_i
   end
 
   def all
@@ -36,7 +36,7 @@ class Lanes
       id: @pgsql.exec(
         'INSERT INTO lane (owner, yaml) VALUES ($1, $2) RETURNING id',
         [@owner, yaml]
-      )[0]['id'].to_i,
+      ).first['id'].to_i,
       pgsql: @pgsql
     )
   end
@@ -45,7 +45,7 @@ class Lanes
     hash = @pgsql.exec(
       'SELECT * FROM lane WHERE owner=$1 AND id=$2',
       [@owner, id]
-    )[0]
+    ).first
     raise UserError, "Lane ##{id} not found @#{@owner} account" if hash.nil?
     Lane.new(
       id: hash['id'].to_i,
@@ -62,7 +62,7 @@ class Lanes
         'WHERE lane.owner=$1 AND letter.id=$2'
       ],
       [@owner, id]
-    )[0]
+    ).first
     raise UserError, "Letter ##{id} not found in any lanes owned by @#{@owner}" if hash.nil?
     Letter.new(
       id: hash['id'].to_i,

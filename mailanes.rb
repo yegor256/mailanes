@@ -537,7 +537,7 @@ end
 post '/test-letter' do
   letter = owner.lanes.letter(params[:id].to_i, tbot: settings.tbot)
   list = owner.lists.list(params[:list].to_i)
-  recipient = list.recipients.all(active_only: true).sample(1)[0]
+  recipient = list.recipients.all(active_only: true).sample(1).first
   raise UserError, "There are no recipients in the list ##{list.id}" if recipient.nil?
   letter.deliver(recipient, settings.codec)
   flash("/letter?id=#{letter.id}", "Test email has been sent to #{recipient.email}")
@@ -700,7 +700,7 @@ post '/subscribe' do
   email = params[:email].downcase.strip
   notify = []
   if list.recipients.exists?(email)
-    recipient = list.recipients.all(query: "=#{email}")[0]
+    recipient = list.recipients.all(query: "=#{email}").first
     if recipient.active?
       recipient.post_event(
         [

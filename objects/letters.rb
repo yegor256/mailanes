@@ -18,7 +18,7 @@ class Letters
   end
 
   def count
-    @pgsql.exec('SELECT COUNT(*) FROM letter WHERE lane=$1', [@lane.id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM letter WHERE lane=$1', [@lane.id]).first['count'].to_i
   end
 
   def all
@@ -37,14 +37,14 @@ class Letters
           'RETURNING id'
         ],
         [@lane.id, yaml]
-      )[0]['id'].to_i,
+      ).first['id'].to_i,
       pgsql: @pgsql,
       tbot: tbot
     )
   end
 
   def letter(id, tbot: Tbot.new)
-    hash = @pgsql.exec('SELECT * FROM letter WHERE lane=$1 AND id=$2', [@lane.id, id])[0]
+    hash = @pgsql.exec('SELECT * FROM letter WHERE lane=$1 AND id=$2', [@lane.id, id]).first
     raise UserError, "Letter ##{id} not found in the lane ##{@lane.id}" if hash.nil?
     Letter.new(
       id: hash['id'].to_i,

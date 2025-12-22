@@ -27,7 +27,7 @@ class Campaigns
       id: @pgsql.exec(
         'INSERT INTO campaign (owner, lane, yaml) VALUES ($1, $2, $3) RETURNING id',
         [@owner, lane.id, yaml]
-      )[0]['id'].to_i,
+      ).first['id'].to_i,
       pgsql: @pgsql
     )
     campaign.add(list)
@@ -38,7 +38,7 @@ class Campaigns
     hash = @pgsql.exec(
       'SELECT * FROM campaign WHERE id=$1 AND owner=$2',
       [id, @owner]
-    )[0]
+    ).first
     Campaign.new(
       id: hash['id'].to_i,
       pgsql: @pgsql,
@@ -54,7 +54,7 @@ class Campaigns
         "WHERE campaign.owner = $1 AND delivery.created > NOW() - INTERVAL '#{days} DAYS'"
       ],
       [@owner]
-    )[0]['count'].to_i
+    ).first['count'].to_i
   end
 
   def total_bounced(days = 7)
@@ -66,6 +66,6 @@ class Campaigns
         "WHERE list.owner = $1 AND delivery.bounced > NOW() - INTERVAL '#{days} DAYS'"
       ],
       [@owner]
-    )[0]['count'].to_i
+    ).first['count'].to_i
   end
 end

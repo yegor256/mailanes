@@ -28,14 +28,14 @@ class Campaign
     @pgsql.exec(
       'INSERT INTO source (list, campaign) VALUES ($1, $2) RETURNING id',
       [list.id, @id]
-    )[0]
+    ).first
   end
 
   def delete(list)
     @pgsql.exec(
       'DELETE FROM source WHERE list = $1 AND campaign = $2',
       [list.id, @id]
-    )[0]
+    ).first
   end
 
   def lists
@@ -49,7 +49,7 @@ class Campaign
     hash = @pgsql.exec(
       'SELECT lane.* FROM lane JOIN campaign ON campaign.lane=lane.id WHERE campaign.id=$1',
       [@id]
-    )[0]
+    ).first
     Lane.new(
       id: hash['id'].to_i,
       pgsql: @pgsql,
@@ -71,7 +71,7 @@ class Campaign
 
   def yaml
     YamlDoc.new(
-      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM campaign WHERE id=$1', [@id])[0]['yaml']
+      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM campaign WHERE id=$1', [@id]).first['yaml']
     ).load
   end
 
@@ -89,15 +89,15 @@ class Campaign
   end
 
   def speed
-    (@hash['speed'] || @pgsql.exec('SELECT speed FROM campaign WHERE id=$1', [@id])[0]['speed']).to_i
+    (@hash['speed'] || @pgsql.exec('SELECT speed FROM campaign WHERE id=$1', [@id]).first['speed']).to_i
   end
 
   def active?
-    (@hash['active'] || @pgsql.exec('SELECT active FROM campaign WHERE id=$1', [@id])[0]['active']) == 't'
+    (@hash['active'] || @pgsql.exec('SELECT active FROM campaign WHERE id=$1', [@id]).first['active']) == 't'
   end
 
   def exhausted?
-    !(@hash['exhausted'] || @pgsql.exec('SELECT exhausted FROM campaign WHERE id=$1', [@id])[0]['exhausted']).nil?
+    !(@hash['exhausted'] || @pgsql.exec('SELECT exhausted FROM campaign WHERE id=$1', [@id]).first['exhausted']).nil?
   end
 
   def toggle
@@ -107,7 +107,7 @@ class Campaign
 
   def created
     Time.parse(
-      @hash['created'] || @pgsql.exec('SELECT created FROM campaign WHERE id=$1', [@id])[0]['created']
+      @hash['created'] || @pgsql.exec('SELECT created FROM campaign WHERE id=$1', [@id]).first['created']
     )
   end
 
@@ -140,14 +140,14 @@ class Campaign
         days.positive? ? "AND delivery.created > NOW() - INTERVAL '#{days} DAYS'" : ''
       ],
       [@id]
-    )[0]['count'].to_i
+    ).first['count'].to_i
   end
 
   def recipients_count
     @pgsql.exec(
       'SELECT COUNT(*) FROM recipient JOIN source ON source.list = recipient.list WHERE source.campaign=$1',
       [@id]
-    )[0]['count'].to_i
+    ).first['count'].to_i
   end
 
   def bounce_count(days: -1)
@@ -159,7 +159,7 @@ class Campaign
         days.positive? ? "AND delivery.created > NOW() - INTERVAL '#{days} DAYS'" : ''
       ],
       [@id]
-    )[0]['count'].to_i
+    ).first['count'].to_i
   end
 
   def unsubscribe_count(days: -1)
@@ -171,7 +171,7 @@ class Campaign
         days.positive? ? "AND delivery.created > NOW() - INTERVAL '#{days} DAYS'" : ''
       ],
       [@id]
-    )[0]['count'].to_i
+    ).first['count'].to_i
   end
 
   def pipeline
@@ -179,6 +179,6 @@ class Campaign
   end
 
   def pipeline_count
-    @pgsql.exec(['SELECT COUNT(*) FROM ('] + Pipeline.query(@id) + [') x'])[0]['count'].to_i
+    @pgsql.exec(['SELECT COUNT(*) FROM ('] + Pipeline.query(@id) + [') x']).first['count'].to_i
   end
 end

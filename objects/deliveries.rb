@@ -28,7 +28,7 @@ class Deliveries
   end
 
   def delivery(id)
-    hash = @pgsql.exec('SELECT * FROM delivery WHERE id=$1', [id])[0]
+    hash = @pgsql.exec('SELECT * FROM delivery WHERE id=$1', [id]).first
     raise UserError, "Delivery ##{id} not found" if hash.nil?
     Delivery.new(
       id: id,

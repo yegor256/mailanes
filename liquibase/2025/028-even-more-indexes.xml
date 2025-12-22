@@ -13,7 +13,9 @@
       CREATE INDEX IF NOT EXISTS idx_delivery_letter_created ON delivery (letter, created);
       CREATE INDEX IF NOT EXISTS idx_recipient_list_active_confirmed_created ON recipient (list, created, id) WHERE active = true AND confirmed = true;
       CREATE INDEX IF NOT EXISTS idx_recipient_email_active ON recipient (email) WHERE active = true;
+      CREATE INDEX IF NOT EXISTS idx_recipient_list_email ON recipient (list, email);
       CREATE INDEX IF NOT EXISTS idx_list_id_not_stopped ON list (id) WHERE stop = false;
+      CREATE INDEX IF NOT EXISTS idx_list_owner_id_not_stopped ON list (owner, id) WHERE stop = false;
       CREATE INDEX IF NOT EXISTS idx_source_list_campaign ON source (list, campaign);
     </sql>
     <sql>

@@ -26,7 +26,7 @@ class Recipient
     hash = @pgsql.exec(
       'SELECT list.* FROM list JOIN recipient ON recipient.list=list.id WHERE recipient.id=$1',
       [@id]
-    )[0]
+    ).first
     raise UserError, "Recipient #{@id} is outside of the list?" if hash.nil?
     List.new(
       id: hash['id'].to_i,
@@ -37,7 +37,7 @@ class Recipient
 
   def yaml
     YamlDoc.new(
-      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM recipient WHERE id=$1', [@id])[0]['yaml']
+      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM recipient WHERE id=$1', [@id]).first['yaml']
     ).load
   end
 
@@ -52,7 +52,7 @@ class Recipient
   end
 
   def email
-    @hash['email'] || @pgsql.exec('SELECT email FROM recipient WHERE id=$1', [@id])[0]['email']
+    @hash['email'] || @pgsql.exec('SELECT email FROM recipient WHERE id=$1', [@id]).first['email']
   end
 
   def confirm!(set: true)
@@ -64,7 +64,7 @@ class Recipient
   end
 
   def confirmed?
-    (@hash['confirmed'] || @pgsql.exec('SELECT confirmed FROM recipient WHERE id=$1', [@id])[0]['confirmed']) == 't'
+    (@hash['confirmed'] || @pgsql.exec('SELECT confirmed FROM recipient WHERE id=$1', [@id]).first['confirmed']) == 't'
   end
 
   def toggle(msg: nil)
@@ -85,32 +85,32 @@ class Recipient
   end
 
   def active?
-    (@hash['active'] || @pgsql.exec('SELECT active FROM recipient WHERE id=$1', [@id])[0]['active']) == 't'
+    (@hash['active'] || @pgsql.exec('SELECT active FROM recipient WHERE id=$1', [@id]).first['active']) == 't'
   end
 
   # Amount of days to wait until something new can
   # be delivered to this guy (can be zero)
   def relax
-    max = @pgsql.exec('SELECT MAX(relax) FROM delivery WHERE recipient = $1', [@id])[0]['max']
+    max = @pgsql.exec('SELECT MAX(relax) FROM delivery WHERE recipient = $1', [@id]).first['max']
     relax = max.nil? ? Time.now : Time.parse(max)
     ((relax - Time.now) / (24 * 60 * 60)).round.to_i
   end
 
   def first
-    @hash['first'] || @pgsql.exec('SELECT first FROM recipient WHERE id=$1', [@id])[0]['first']
+    @hash['first'] || @pgsql.exec('SELECT first FROM recipient WHERE id=$1', [@id]).first['first']
   end
 
   def last
-    @hash['last'] || @pgsql.exec('SELECT last FROM recipient WHERE id=$1', [@id])[0]['last']
+    @hash['last'] || @pgsql.exec('SELECT last FROM recipient WHERE id=$1', [@id]).first['last']
   end
 
   def source
-    @hash['source'] || @pgsql.exec('SELECT source FROM recipient WHERE id=$1', [@id])[0]['source']
+    @hash['source'] || @pgsql.exec('SELECT source FROM recipient WHERE id=$1', [@id]).first['source']
   end
 
   def created
     Time.parse(
-      @hash['created'] || @pgsql.exec('SELECT created FROM recipient WHERE id=$1', [@id])[0]['created']
+      @hash['created'] || @pgsql.exec('SELECT created FROM recipient WHERE id=$1', [@id]).first['created']
     )
   end
 
@@ -129,7 +129,7 @@ class Recipient
   end
 
   def bounced?
-    d = @pgsql.exec('SELECT bounced FROM delivery WHERE recipient = $1 AND bounced IS NOT NULL', [@id])[0]
+    d = @pgsql.exec('SELECT bounced FROM delivery WHERE recipient = $1 AND bounced IS NOT NULL', [@id]).first
     return false if d.nil?
     !d['bounced'].nil?
   end

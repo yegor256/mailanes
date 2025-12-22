@@ -31,7 +31,7 @@ class Lane
 
   def yaml
     YamlDoc.new(
-      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM lane WHERE id=$1', [@id])[0]['yaml']
+      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM lane WHERE id=$1', [@id]).first['yaml']
     ).load
   end
 
@@ -48,6 +48,6 @@ class Lane
         'WHERE letter.lane = $1'
       ],
       [@id]
-    )[0]['count'].to_i
+    ).first['count'].to_i
   end
 end

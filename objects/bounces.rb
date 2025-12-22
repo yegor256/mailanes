@@ -89,7 +89,7 @@ class Bounces
           Delivery.new(id: did.to_i, pgsql: @pgsql).bounce
           recipient.post_event("SMTP delivery ##{did} bounced back:\n#{body[0..1024]}")
         else
-          delivery = recipient.deliveries(limit: 1)[0]
+          delivery = recipient.deliveries(limit: 1).first
           raise "The recipient #{recipient.id} has no deliveries" if delivery.nil?
           delivery.bounce
           recipient.post_event("Unrecognized SMTP delivery bounced back:\n#{body[0..1024]}")

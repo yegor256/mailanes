@@ -21,7 +21,7 @@ class Lists
   end
 
   def count
-    @pgsql.exec('SELECT COUNT(*) FROM list WHERE owner=$1', [@owner])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM list WHERE owner=$1', [@owner]).first['count'].to_i
   end
 
   def all
@@ -49,7 +49,7 @@ class Lists
       id: @pgsql.exec(
         'INSERT INTO list (owner, yaml) VALUES ($1, $2) RETURNING id',
         [@owner, yaml]
-      )[0]['id'].to_i,
+      ).first['id'].to_i,
       pgsql: @pgsql
     )
   end
@@ -58,7 +58,7 @@ class Lists
     hash = @pgsql.exec(
       'SELECT * FROM list WHERE owner=$1 AND id=$2',
       [@owner, id]
-    )[0]
+    ).first
     raise UserError, "List ##{id} not found in @#{@owner} account" if hash.nil?
     List.new(
       id: hash['id'].to_i,
@@ -69,16 +69,19 @@ class Lists
 
   def duplicates_count
     @pgsql.exec(
-      [
-        'SELECT COUNT(*) FROM',
-        '(SELECT COUNT(1) AS dups FROM recipient',
-        'JOIN list ON recipient.list = list.id',
-        'WHERE list.owner = $1 AND list.stop = false',
-        'GROUP BY recipient.email) x',
-        'WHERE x.dups > 1'
-      ],
+      '
+      SELECT COUNT(*)
+      FROM (
+        SELECT recipient.email
+        FROM recipient
+        JOIN list ON list.id = recipient.list
+        WHERE list.owner = $1 AND list.stop = false
+        GROUP BY recipient.email
+        HAVING COUNT(*) > 1
+      ) t
+      ',
       [@owner]
-    )[0]['count'].to_i
+    ).first['count'].to_i
   end
 
   def total_recipients
@@ -89,7 +92,7 @@ class Lists
         'WHERE list.owner = $1 AND list.stop = false'
       ],
       [@owner]
-    )[0]['count'].to_i
+    ).first['count'].to_i
   end
 
   # Deactivate them all

@@ -23,7 +23,7 @@ class List
   end
 
   def exists?
-    @pgsql.exec('SELECT COUNT(id) FROM list WHERE id=$1', [@id])[0]['count'].to_i == 1
+    @pgsql.exec('SELECT COUNT(id) FROM list WHERE id=$1', [@id]).first['count'].to_i == 1
   end
 
   def recipients
@@ -38,7 +38,7 @@ class List
 
   def yaml
     YamlDoc.new(
-      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM list WHERE id=$1', [@id])[0]['yaml']
+      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM list WHERE id=$1', [@id]).first['yaml']
     ).load
   end
 
@@ -56,11 +56,11 @@ class List
   end
 
   def owner
-    @hash['owner'] || @pgsql.exec('SELECT owner FROM list WHERE id=$1', [@id])[0]['owner']
+    @hash['owner'] || @pgsql.exec('SELECT owner FROM list WHERE id=$1', [@id]).first['owner']
   end
 
   def stop?
-    (@hash['stop'] || @pgsql.exec('SELECT stop FROM list WHERE id=$1', [@id])[0]['stop']) == 't'
+    (@hash['stop'] || @pgsql.exec('SELECT stop FROM list WHERE id=$1', [@id]).first['stop']) == 't'
   end
 
   def friend?(login)
@@ -71,7 +71,7 @@ class List
 
   def created
     Time.parse(
-      @hash['created'] || @pgsql.exec('SELECT created FROM list WHERE id=$1', [@id])[0]['created']
+      @hash['created'] || @pgsql.exec('SELECT created FROM list WHERE id=$1', [@id]).first['created']
     )
   end
 
@@ -96,7 +96,7 @@ class List
         'WHERE list.id=$1'
       ],
       [@id]
-    )[0]['count'].to_i
+    ).first['count'].to_i
   end
 
   def opened_count
@@ -107,7 +107,7 @@ class List
         'WHERE recipient.list = $1'
       ],
       [@id]
-    )[0]['count'].to_i
+    ).first['count'].to_i
   end
 
   def absorb_counts

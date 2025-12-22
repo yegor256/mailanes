@@ -38,7 +38,7 @@ class Letter
   end
 
   def lane
-    id = @hash['lane'] || @pgsql.exec('SELECT lane FROM letter WHERE id=$1', [@id])[0]['lane']
+    id = @hash['lane'] || @pgsql.exec('SELECT lane FROM letter WHERE id=$1', [@id]).first['lane']
     Lane.new(
       id: id.to_i,
       pgsql: @pgsql
@@ -61,19 +61,19 @@ class Letter
   end
 
   def deliveries_count
-    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE letter=$1', [@id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE letter=$1', [@id]).first['count'].to_i
   end
 
   def opened_count
-    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE letter=$1 AND opened != \'\'', [@id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE letter=$1 AND opened != \'\'', [@id]).first['count'].to_i
   end
 
   def bounce_count
-    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE letter=$1 AND bounced IS NOT NULL', [@id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE letter=$1 AND bounced IS NOT NULL', [@id]).first['count'].to_i
   end
 
   def unsubscribe_count
-    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE letter=$1 AND unsubscribed IS NOT NULL', [@id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM delivery WHERE letter=$1 AND unsubscribed IS NOT NULL', [@id]).first['count'].to_i
   end
 
   def exists?
@@ -81,16 +81,16 @@ class Letter
   end
 
   def active?
-    (@hash['active'] || @pgsql.exec('SELECT active FROM letter WHERE id=$1', [@id])[0]['active']) == 't'
+    (@hash['active'] || @pgsql.exec('SELECT active FROM letter WHERE id=$1', [@id]).first['active']) == 't'
   end
 
   def liquid
-    @hash['liquid'] || @pgsql.exec('SELECT liquid FROM letter WHERE id=$1', [@id])[0]['liquid']
+    @hash['liquid'] || @pgsql.exec('SELECT liquid FROM letter WHERE id=$1', [@id]).first['liquid']
   end
 
   def yaml
     YamlDoc.new(
-      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM letter WHERE id=$1', [@id])[0]['yaml']
+      @hash['yaml'] || @pgsql.exec('SELECT yaml FROM letter WHERE id=$1', [@id]).first['yaml']
     ).load
   end
 
@@ -100,7 +100,7 @@ class Letter
   end
 
   def place
-    (@hash['place'] || @pgsql.exec('SELECT place FROM letter WHERE id=$1', [@id])[0]['place']).to_i
+    (@hash['place'] || @pgsql.exec('SELECT place FROM letter WHERE id=$1', [@id]).first['place']).to_i
   end
 
   def move(inc = 1)
@@ -113,7 +113,7 @@ class Letter
           "ORDER BY place #{inc.positive? ? 'ASC' : 'DESC'}"
         ],
         [place, lane.id]
-      )[0]
+      ).first
       raise UserError, 'Can\'t move in this direction' if other.nil?
       mine = place
       t.exec('UPDATE letter SET place=$1 WHERE id = $2', [65_536, other['id'].to_i])

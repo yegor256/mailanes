@@ -50,11 +50,11 @@ class Recipients
 
   def count
     return @hash['total'].to_i if @hash['total']
-    @pgsql.exec('SELECT COUNT(*) FROM recipient WHERE list=$1', [@list.id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM recipient WHERE list=$1', [@list.id]).first['count'].to_i
   end
 
   def active_count
-    @pgsql.exec('SELECT COUNT(*) FROM recipient WHERE list=$1 AND active=true', [@list.id])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM recipient WHERE list=$1 AND active=true', [@list.id]).first['count'].to_i
   end
 
   def activate_all
@@ -78,13 +78,13 @@ class Recipients
       'JOIN delivery ON delivery.recipient = recipient.id',
       'WHERE list = $1'
     ]
-    sent = @pgsql.exec(q, [@list.id])[0]['count'].to_i
-    bounced = @pgsql.exec(q + [' AND bounced IS NOT NULL'], [@list.id])[0]['count'].to_i
+    sent = @pgsql.exec(q, [@list.id]).first['count'].to_i
+    bounced = @pgsql.exec(q + [' AND bounced IS NOT NULL'], [@list.id]).first['count'].to_i
     sent.zero? ? 0 : bounced.to_f / sent
   end
 
   def count_by_source(source)
-    @pgsql.exec('SELECT COUNT(*) FROM recipient WHERE list=$1 AND source=$2', [@list.id, source])[0]['count'].to_i
+    @pgsql.exec('SELECT COUNT(*) FROM recipient WHERE list=$1 AND source=$2', [@list.id, source]).first['count'].to_i
   end
 
   def exists?(email)
@@ -97,7 +97,7 @@ class Recipients
       id: @pgsql.exec(
         'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
         [@list.id, email.downcase.strip, first.strip, last.strip, source.downcase.strip]
-      )[0]['id'].to_i,
+      ).first['id'].to_i,
       pgsql: @pgsql
     )
     if @list.yaml['exclusive']
@@ -138,7 +138,7 @@ with the same email '#{email}' was added to the list ##{@list.id}, which has EXC
     hash = @pgsql.exec(
       'SELECT * FROM recipient WHERE list=$1 AND id=$2',
       [@list.id, id]
-    )[0]
+    ).first
     raise UserError, "Recipient ##{id} not found in the list ##{@list.id}" if hash.nil?
     Recipient.new(id: id, pgsql: @pgsql, hash: hash)
   end
@@ -164,7 +164,7 @@ with the same email '#{email}' was added to the list ##{@list.id}, which has EXC
     total = @pgsql.exec(
       "SELECT COUNT(*) FROM recipient WHERE list=$1 AND created > NOW() - INTERVAL '#{days} DAYS'",
       [@list.id]
-    )[0]['count'].to_f
+    ).first['count'].to_f
     total.zero? ? 0 : total / days
   end
 

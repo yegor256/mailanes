@@ -48,9 +48,9 @@ class RecipientsTest < Minitest::Test
     recipients.add('tiu-1@mailanes.com', source: owner)
     recipients.add('tiu-2@mailanes.com', source: owner)
     assert_equal(1, recipients.weeks(owner).count)
-    assert(recipients.weeks(owner)[0][:week])
-    assert(recipients.weeks(owner)[0][:total])
-    assert(recipients.weeks(owner)[0][:bad])
+    assert(recipients.weeks(owner).first[:week])
+    assert(recipients.weeks(owner).first[:total])
+    assert(recipients.weeks(owner).first[:bad])
   end
 
   def test_fetches_recipients

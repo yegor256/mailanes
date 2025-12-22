@@ -23,16 +23,16 @@ class Delivery
   end
 
   def recipient
-    id = @hash['recipient'] || @pgsql.exec('SELECT recipient FROM delivery WHERE id=$1', [@id])[0]['recipient']
+    id = @hash['recipient'] || @pgsql.exec('SELECT recipient FROM delivery WHERE id=$1', [@id]).first['recipient']
     Recipient.new(id: id.to_i, pgsql: @pgsql, hash: @hash.slice('bounced'))
   end
 
   def letter?
-    !(@hash['letter'] || @pgsql.exec('SELECT letter FROM delivery WHERE id=$1', [@id])[0]['letter']).nil?
+    !(@hash['letter'] || @pgsql.exec('SELECT letter FROM delivery WHERE id=$1', [@id]).first['letter']).nil?
   end
 
   def letter(tbot: Tbot.new)
-    id = @hash['letter'] || @pgsql.exec('SELECT letter FROM delivery WHERE id=$1', [@id])[0]['letter']
+    id = @hash['letter'] || @pgsql.exec('SELECT letter FROM delivery WHERE id=$1', [@id]).first['letter']
     Letter.new(
       id: id.to_i,
       pgsql: @pgsql,
@@ -41,18 +41,18 @@ class Delivery
   end
 
   def campaign?
-    !(@hash['campaign'] || @pgsql.exec('SELECT campaign FROM delivery WHERE id=$1', [@id])[0]['campaign']).nil?
+    !(@hash['campaign'] || @pgsql.exec('SELECT campaign FROM delivery WHERE id=$1', [@id]).first['campaign']).nil?
   end
 
   def campaign
-    id = @hash['campaign'] || @pgsql.exec('SELECT campaign FROM delivery WHERE id=$1', [@id])[0]['campaign']
+    id = @hash['campaign'] || @pgsql.exec('SELECT campaign FROM delivery WHERE id=$1', [@id]).first['campaign']
     Campaign.new(id: id.to_i, pgsql: @pgsql)
   end
 
   def details
     @hash['details'] || @pgsql.exec(
       'SELECT details FROM delivery WHERE id=$1', [@id]
-    )[0]['details'].force_encoding('UTF-8')
+    ).first['details'].force_encoding('UTF-8')
   end
 
   def close(details)
@@ -62,7 +62,7 @@ class Delivery
 
   def created
     Time.parse(
-      @hash['created'] || @pgsql.exec('SELECT created FROM delivery WHERE id=$1', [@id])[0]['created']
+      @hash['created'] || @pgsql.exec('SELECT created FROM delivery WHERE id=$1', [@id]).first['created']
     )
   end
 
@@ -72,7 +72,7 @@ class Delivery
   end
 
   def relax
-    @hash['relax'] || @pgsql.exec('SELECT relax FROM delivery WHERE id=$1', [@id])[0]['relax']
+    @hash['relax'] || @pgsql.exec('SELECT relax FROM delivery WHERE id=$1', [@id]).first['relax']
   end
 
   def just_opened(details = '')
@@ -81,7 +81,7 @@ class Delivery
   end
 
   def opened
-    @hash['opened'] || @pgsql.exec('SELECT opened FROM delivery WHERE id=$1', [@id])[0]['opened']
+    @hash['opened'] || @pgsql.exec('SELECT opened FROM delivery WHERE id=$1', [@id]).first['opened']
   end
 
   def delete
@@ -89,7 +89,7 @@ class Delivery
   end
 
   def bounced?
-    !(@hash['bounced'] || @pgsql.exec('SELECT bounced FROM delivery WHERE id=$1', [@id])[0]['bounced']).nil?
+    !(@hash['bounced'] || @pgsql.exec('SELECT bounced FROM delivery WHERE id=$1', [@id]).first['bounced']).nil?
   end
 
   def bounce
