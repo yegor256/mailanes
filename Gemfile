@@ -5,6 +5,7 @@
 
 source 'https://rubygems.org'
 
+gem 'csv', '~>3.3'
 gem 'elapsed', '~>0.1'
 gem 'fakesmtpd', '~>0.3'
 gem 'geoplugin', '~>0.3'
@@ -30,9 +31,9 @@ gem 'random-port', '~>0.6', require: false
 gem 'redcarpet', '~>3.6'
 gem 'rerun', '~>0.14', require: false
 gem 'rubocop', '~>1.56', require: false
-gem 'rubocop-minitest', '>0', require: false
-gem 'rubocop-performance', '>0', require: false
-gem 'rubocop-rake', '>0', require: false
+gem 'rubocop-minitest', '~>0.38', require: false
+gem 'rubocop-performance', '>1.26', require: false
+gem 'rubocop-rake', '~>0.7', require: false
 gem 'sass', '~>3.7'
 gem 'sentry-raven', '~>3.1'
 gem 'simplecov', '~>0.22', require: false
