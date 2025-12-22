@@ -5,6 +5,7 @@
 
 source 'https://rubygems.org'
 
+gem 'elapsed', '~>0.1'
 gem 'fakesmtpd', '~>0.3'
 gem 'geoplugin', '~>0.3'
 gem 'get_process_mem', '~>1.0'

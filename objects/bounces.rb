@@ -3,11 +3,13 @@
 # SPDX-FileCopyrightText: Copyright (c) 2018-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'net/pop'
+require 'elapsed'
+require 'logger'
 require 'loog'
+require 'net/pop'
+require_relative 'hex'
 require_relative 'recipient'
 require_relative 'tbot'
-require_relative 'hex'
 
 # Fetch all bounces and deactivate recipients.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -38,19 +40,20 @@ class Bounces
   private
 
   def fetch_pop(action)
-    start = Time.now
-    total = 0
-    Net::POP3.enable_ssl
-    Net::POP3.start(@host, @port, @login, @password) do |pop|
-      pop.each_mail do |m|
-        action.call(m)
-        total += 1
-        GC.start if (total % 10).zero?
+    elapsed(@log, level: Logger::INFO) do
+      total = 0
+      Net::POP3.enable_ssl
+      Net::POP3.start(@host, @port, @login, @password) do |pop|
+        pop.each_mail do |m|
+          action.call(m)
+          total += 1
+          GC.start if (total % 10).zero?
+        end
       end
+      throw :"#{total} bounce emails processed by #{@login}"
+    rescue Net::ReadTimeout => e
+      throw :"Failed to process bounce emails: #{e.message}"
     end
-    @log.info("#{total} bounce emails processed in #{format('%.02f', Time.now - start)}s")
-  rescue Net::ReadTimeout => e
-    @log.info("Failed to process bounce emails: #{e.message}")
   end
 
   def fetch_array(action)
