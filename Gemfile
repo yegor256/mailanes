@@ -16,7 +16,7 @@ gem 'iri', '~>0.7'
 gem 'liquid', '~>4.0'
 gem 'loog', '~>0.5'
 gem 'mail', '~>2.8'
-gem 'minitest', '~>5.19', require: false
+gem 'minitest', '~>6.0', require: false
 gem 'minitest-reporters', '~>1.6', require: false
 gem 'net-pop', '~>0.1'
 gem 'net-smtp', '~>0.4'

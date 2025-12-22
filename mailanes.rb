@@ -95,7 +95,7 @@ configure do
         log: settings.log
       )
     end
-  pg.start(4)
+  pg.start!
   pg = Pgtk::Stash.new(pg)
   set :pgsql, pg
   set :postman, Postman.new(settings.codec)

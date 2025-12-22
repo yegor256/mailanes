@@ -48,10 +48,15 @@ module Minitest
 
     def t_pgsql
       # rubocop:disable Style/ClassVars
-      @@t_pgsql ||= Pgtk::Pool.new(
-        Pgtk::Wire::Yaml.new(File.join(__dir__, '../target/pgsql-config.yml')),
-        log: t_log
-      ).start
+      @@t_pgsql ||=
+        begin
+          x = Pgtk::Pool.new(
+            Pgtk::Wire::Yaml.new(File.join(__dir__, '../target/pgsql-config.yml')),
+            log: t_log
+          )
+          x.start!
+          x
+        end
       # rubocop:enable Style/ClassVars
     end
   end
