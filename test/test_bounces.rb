@@ -51,7 +51,7 @@ class BouncesTest < Minitest::Test
       [
         "X-Mailanes-Recipient: #{@recipient.id}:there+is+some+garbage",
         "X-Mailanes-Recipient: #{@recipient.id}:#{sign[0..31]}=",
-        "#{sign[32..250]}=3D=3D",
+        "#{sign[32..]}=3D=3D",
         'How are you doing?'
       ].join("\n")
     end

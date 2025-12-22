@@ -254,7 +254,7 @@ class Letter
         '<https://www.mailanes.com/unsubscribe?',
         unsubscribe(codec, recipient, delivery),
         ">, <mailto:#{bounces}?subject=",
-        CGI.escape("MAILANES:#{rid}:#{codec.encrypt(rid.to_s)}:#{did}"),
+        CGI.escape("MAILANES:#{rid}:#{Hex::FromText.new(codec.encrypt(rid.to_s))}:#{did}"),
         '>'
       ].join
       mail.header['List-Id'] = did.to_s

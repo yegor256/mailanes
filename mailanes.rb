@@ -131,13 +131,15 @@ unless ENV['RACK_ENV'] == 'test'
               pgsql: settings.pgsql,
               log: settings.log
             ).fetch(tbot: settings.tbot)
-            Decoy.new(
-              settings.config['decoy_pop3']['host'],
-              settings.config['decoy_pop3']['port'].to_i,
-              settings.config['decoy_pop3']['login'],
-              settings.config['decoy_pop3']['password'],
-              log: settings.log
-            ).fetch
+            unless settings.config['decoy_pop3']['login'] == settings.config['pop3']['login']
+              Decoy.new(
+                settings.config['decoy_pop3']['host'],
+                settings.config['decoy_pop3']['port'].to_i,
+                settings.config['decoy_pop3']['login'],
+                settings.config['decoy_pop3']['password'],
+                log: settings.log
+              ).fetch
+            end
           rescue StandardError => e
             settings.log.error("#{e.message}\n\t#{e.backtrace.join("\n\t")}")
             Raven.capture_exception(e)
