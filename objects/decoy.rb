@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# SPDX-FileCopyrightText: Copyright (c) 2018-2025 Yegor Bugayenko
+# SPDX-FileCopyrightText: Copyright (c) 2018-2026 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
 require 'elapsed'
@@ -9,7 +9,7 @@ require 'net/pop'
 
 # Just delete all emails from POP3 decoy account.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018-2025 Yegor Bugayenko
+# Copyright:: Copyright (c) 2018-2026 Yegor Bugayenko
 # License:: MIT
 class Decoy
   def initialize(host, port, login, password, log: Loog::NULL)

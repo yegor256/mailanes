@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# SPDX-FileCopyrightText: Copyright (c) 2018-2025 Yegor Bugayenko
+# SPDX-FileCopyrightText: Copyright (c) 2018-2026 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
 require 'elapsed'
@@ -13,7 +13,7 @@ require_relative 'tbot'
 
 # Fetch all bounces and deactivate recipients.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018-2025 Yegor Bugayenko
+# Copyright:: Copyright (c) 2018-2026 Yegor Bugayenko
 # License:: MIT
 class Bounces
   def initialize(host, port, login, password, codec, pgsql:, log: Loog::NULL)
