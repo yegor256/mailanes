@@ -23,7 +23,7 @@ gem 'minitest-reporters', '~>1.6', require: false
 gem 'net-pop', '~>0.1'
 gem 'net-smtp', '~>0.4'
 gem 'pgtk', '~>0.29'
-gem 'rack', '~>2.2'
+gem 'rack', '~>3.0'
 gem 'rack-ssl', '~>1.4'
 gem 'rack-test', '~>2.1'
 gem 'rake', '~>13.0', require: false
