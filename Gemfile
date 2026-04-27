@@ -26,7 +26,7 @@ gem 'pgtk', '~>0.29'
 gem 'rack', '~>2.2'
 gem 'rack-ssl', '~>1.4'
 gem 'rack-test', '~>2.1'
-gem 'rake', '~>13.0', require: false
+gem 'rake', '~>13.3.0', require: false
 gem 'random-port', '~>0.6', require: false
 gem 'redcarpet', '~>3.6'
 gem 'rerun', '~>0.14', require: false
