@@ -12,7 +12,7 @@ gem 'geoplugin', '~>0.3'
 gem 'get_process_mem', '~>1.0'
 gem 'glogin', '~>0.13'
 gem 'gserver', '~>0.0'
-gem 'haml', '~>5.2'
+gem 'haml', '~>7.0'
 gem 'haml_lint', '~>0.50', require: false
 gem 'iri', '~>0.7'
 gem 'liquid', '~>4.0'
