@@ -31,7 +31,7 @@ GEM
       tago (~> 0.1)
     ellipsized (0.3.0)
     fakesmtpd (0.3.1)
-    faraday (1.10.5)
+    faraday (1.10.6)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
