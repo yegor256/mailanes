@@ -23,7 +23,7 @@ gem 'minitest-reporters', '~>1.6', require: false
 gem 'net-pop', '~>0.1'
 gem 'net-smtp', '~>0.4'
 gem 'pgtk', '~>0.29'
-gem 'rack', '~>2.2'
+gem 'rack', '~>3.2'
 gem 'rack-ssl', '~>1.4'
 gem 'rack-test', '~>2.1'
 gem 'rake', '~>13.3.0', require: false
@@ -38,8 +38,8 @@ gem 'sass', '~>3.7'
 gem 'sentry-raven', '~>3.1'
 gem 'simplecov', '~>0.22', require: false
 gem 'simplecov-cobertura', '~>3.1', require: false
-gem 'sinatra', '~>3.1'
-gem 'sinatra-contrib', '~>3.1'
+gem 'sinatra', '~>4.2'
+gem 'sinatra-contrib', '~>4.2'
 gem 'sprockets', '~>4.2'
 gem 'tago', '~>0.1'
 gem 'telebot', '~>0.1'
