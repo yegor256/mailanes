@@ -14,7 +14,7 @@ require_relative 'user_error'
 # License:: MIT
 class Recipients
   # All emails have to match this
-  REGEX = /\A[\w+\-.]+@[a-z\d-]+(\.[a-z\d-]+)*\.[a-z]+\z/i.freeze
+  REGEX = /\A[\w+\-.]+@[a-z\d-]+(\.[a-z\d-]+)*\.[a-z]+\z/i
 
   def initialize(list:, pgsql:, hash: {})
     @list = list
