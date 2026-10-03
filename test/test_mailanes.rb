@@ -74,6 +74,24 @@ class AppTest < Minitest::Test
     assert_predicate(recipient, :active?)
   end
 
+  def test_rejects_subscribe_when_honeypot_filled
+    list = Lists.new(owner: random_owner, pgsql: t_pgsql).add
+    list.yaml = "captcha:\n  honeypot: website"
+    email = "h-#{SecureRandom.hex[0..8]}@mailanes.com"
+    post("/subscribe?list=#{list.id}&email=#{email}&website=http%3A%2F%2Fspam.example")
+    assert_equal(503, last_response.status, last_response.body)
+    assert_equal(0, list.recipients.count)
+  end
+
+  def test_accepts_subscribe_when_honeypot_empty
+    list = Lists.new(owner: random_owner, pgsql: t_pgsql).add
+    list.yaml = "captcha:\n  honeypot: website"
+    email = "h-#{SecureRandom.hex[0..8]}@mailanes.com"
+    post("/subscribe?list=#{list.id}&email=#{email}&website=")
+    assert_equal(200, last_response.status, last_response.body)
+    assert_equal(1, list.recipients.count)
+  end
+
   def test_adds_new_recipient_for_friend
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
