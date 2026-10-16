@@ -697,6 +697,8 @@ end
 
 post '/subscribe' do
   list = List.new(id: params[:list].to_i, pgsql: settings.pgsql)
+  trap = list.yaml['captcha'].is_a?(Hash) ? list.yaml['captcha']['honeypot'].to_s : ''
+  raise UserError, 'Submission flagged as automated' unless trap.empty? || params[trap].to_s.strip.empty?
   email = params[:email].downcase.strip
   notify = []
   if list.recipients.exists?(email)
