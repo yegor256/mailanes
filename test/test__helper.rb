@@ -5,9 +5,10 @@
 
 ENV['RACK_ENV'] = 'test'
 
+require 'coverage'
 require 'simplecov'
 require 'simplecov-cobertura'
-unless SimpleCov.running || ENV['PICKS']
+unless Coverage.running? || ENV['PICKS']
   SimpleCov.command_name('test')
   SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
     [
@@ -47,7 +48,7 @@ module Minitest
     end
 
     def t_pgsql
-      # rubocop:disable Style/ClassVars
+      # rubocop:disable-next Style/ClassVars
       @@t_pgsql ||=
         begin
           x = Pgtk::Pool.new(
@@ -57,7 +58,6 @@ module Minitest
           x.start!
           x
         end
-      # rubocop:enable Style/ClassVars
     end
   end
 end
