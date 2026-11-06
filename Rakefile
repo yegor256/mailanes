@@ -21,7 +21,8 @@ Rake::TestTask.new(test: %i[pgsql liquibase]) do |test|
   Rake::Cleaner.cleanup_files(['coverage'])
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
+  # Rake 13.4 forwards -v, which Sinatra parses as a version request while loading the app.
+  test.verbose = false
   test.warning = false
 end
 
