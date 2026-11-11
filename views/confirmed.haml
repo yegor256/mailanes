@@ -14,5 +14,5 @@
 
 %p
   If you want to unsubscribe,
-  = succeed '.' do
+  != succeed '.' do
     %a{ href: iri.cut('/unsubscribe').add(token: token) } click here

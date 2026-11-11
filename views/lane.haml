@@ -3,7 +3,7 @@
 
 %h2
   Lane
-  = succeed ':' do
+  != succeed ':' do
     = "##{lane.id}"
   &= lane.title
 
@@ -46,7 +46,7 @@
       %a{ href: iri.cut('/letter-up').add(id: r.id), title: 'Move it up' }= '⬆'
     - if idx < letters.count - 1
       %a{ href: iri.cut('/letter-down').add(id: r.id), title: 'Move it down' }= '⬇'
-    = succeed ':' do
+    != succeed ':' do
       %a{ href: iri.cut('/letter').add(id: r.id) }= "##{r.id}"
     %span{ class: ('cross' unless r.active?), title: "Place: #{r.place}" }
       &= r.title

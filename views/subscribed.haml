@@ -9,13 +9,13 @@
   %code
     = recipient.email
   has been added to the list
-  = succeed '.' do
+  != succeed '.' do
     = "##{list.id}"
   Your position in the list is
-  = succeed '.' do
+  != succeed '.' do
     = "##{list.recipients.count}"
 
 %p
   If you want to unsubscribe,
-  = succeed '.' do
+  != succeed '.' do
     %a{ href: iri.cut('/unsubscribe').add(token: token) } click here

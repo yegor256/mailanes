@@ -3,7 +3,7 @@
 
 %h2
   Add recipient to the list
-  = succeed ':' do
+  != succeed ':' do
     = "##{list.id}"
   = list.title
 
@@ -47,5 +47,5 @@
 
 %p
   The list is owned by
-  = succeed '.' do
+  != succeed '.' do
     = "@#{list.owner}"

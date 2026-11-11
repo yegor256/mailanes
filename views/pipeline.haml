@@ -3,7 +3,7 @@
 
 %h2
   Pipeline of Campaign
-  = succeed ':' do
+  != succeed ':' do
     = "##{campaign.id}"
   &= campaign.title
 

@@ -20,7 +20,7 @@
       %a{ href: iri.cut('/recipient').add(id: recipient.id) }
         = "##{recipient.id}"
       from the list
-      = succeed ':' do
+      != succeed ':' do
         %a{ href: iri.cut('/list').add(id: list.id) }= "##{list.id}"
       &= "\"#{list.title}\"."
 
