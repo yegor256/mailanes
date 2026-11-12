@@ -3,7 +3,7 @@
 
 %h2
   Lists
-  = succeed ':' do
+  != succeed ':' do
     = "##{list.id}"
   &= list.title
 
@@ -95,7 +95,7 @@
     %span.red no campaigns
   - else
     - campaigns.each do |c|
-      = succeed ':' do
+      != succeed ':' do
         %a{ href: iri.cut('/campaign').add(id: c.id) }= "C##{c.id}"
         = '/'
         %a{ href: iri.cut('/lane').add(id: c.lane.id) }= "L##{c.lane.id}"
@@ -120,7 +120,7 @@
   = list.deliveries_count
   emails.
   Bounce rate:
-  = succeed '.' do
+  != succeed '.' do
     %span{ class: (rate > 0.05 ? 'red' : '') }= "#{(rate * 100).round(2)}%"
 
 %p

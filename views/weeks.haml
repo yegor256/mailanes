@@ -8,7 +8,7 @@
   This is weekly contribution of
   %code= source
   to the
-  = succeed ':' do
+  != succeed ':' do
     %a{ href: iri.cut('/add').add(list: list.id) }= "List ##{list.id}"
   = list.title
 
