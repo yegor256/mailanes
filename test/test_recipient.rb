@@ -19,6 +19,7 @@ class RecipientTest < Minitest::Test
     assert_predicate(recipient, :active?)
     recipient.toggle
     refute_predicate(recipient, :active?)
+    assert_equal('Deactivated by the owner of the list', recipient.deliveries.first.details)
     recipient.toggle
     assert_predicate(recipient, :active?)
   end

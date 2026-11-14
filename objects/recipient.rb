@@ -68,7 +68,7 @@ class Recipient
   end
 
   def toggle(msg: nil)
-    msg = "#{active? ? 'Dectivated' : 'Activated'} by the owner of the list" if msg.nil?
+    msg = "#{active? ? 'Deactivated' : 'Activated'} by the owner of the list" if msg.nil?
     @pgsql.transaction do |t|
       t.exec('UPDATE recipient SET active=NOT(active) WHERE id=$1', [@id])
       t.exec(
