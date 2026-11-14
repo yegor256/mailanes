@@ -71,6 +71,7 @@ class Bounces
         decoded = @codec.decrypt(sign).to_i
         raise "Invalid signature #{encrypted} for recipient ID ##{plain}" unless plain == decoded
         recipient = Recipient.new(id: plain, pgsql: @pgsql)
+        list = recipient.list
         if recipient.bounced?
           tbot.notify(
             'error',
@@ -94,7 +95,6 @@ class Bounces
           delivery.bounce
           recipient.post_event("Unrecognized SMTP delivery bounced back:\n#{body[0..1024]}")
         end
-        list = recipient.list
         rate = list.recipients.bounce_rate
         tbot.notify(
           'bounce',

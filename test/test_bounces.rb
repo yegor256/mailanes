@@ -40,6 +40,27 @@ class BouncesTest < Minitest::Test
     assert_predicate(recipient, :bounced?)
   end
 
+  def test_processes_repeated_bounce
+    owner = random_owner
+    list = Lists.new(owner: owner, pgsql: t_pgsql).add
+    recipient = list.recipients.add('test@mailanes.com')
+    lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
+    campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
+    deliveries = Deliveries.new(pgsql: t_pgsql)
+    deliveries.add(campaign, lane.letters.add, recipient).bounce
+    recipient.toggle
+    delivery = deliveries.add(campaign, lane.letters.add, recipient)
+    codec = GLogin::Codec.new('some key')
+    tbot = Tbot::Fake.new
+    Bounces.new([FakeMsg.new(recipient, codec)], 995, '', '', codec, pgsql: t_pgsql).fetch(tbot: tbot)
+    assert_equal(2, tbot.sent.count)
+    assert_includes(tbot.sent.first, 'has already been bounced once')
+    assert_includes(tbot.sent.first, "[\"#{list.title}\"](https://www.mailanes.com/list?id=#{list.id})")
+    assert_predicate(delivery, :bounced?)
+    refute_predicate(recipient, :active?)
+    assert_includes(recipient.deliveries.first.details, 'Unrecognized SMTP delivery bounced back:')
+  end
+
   class FakeMsg
     def initialize(recipient, codec)
       @recipient = recipient
