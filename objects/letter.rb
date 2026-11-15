@@ -189,8 +189,7 @@ class Letter
       Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(content),
       delivery
     )
-    tracking = cfg('on', 'tracking') == true || cfg('on', 'tracking').downcase.strip == 'on'
-    if tracking && !delivery.nil?
+    if tracking? && !delivery.nil?
       html += [
         "<img src=\"https://www.mailanes.com/opened?token=#{CGI.escape(codec.encrypt(delivery.id.to_s))}\"",
         'alt="" width="1" height="1" border="0"',
@@ -344,6 +343,14 @@ in #{format('%.02f', Time.now - start)}")
       r += delivery.nil? ? '0' : delivery.campaign.id.to_s
       r
     end
+  end
+
+  # Returns TRUE if the opening tracking is ON for this letter.
+  # The value may be a boolean, since YAML 1.1 turns the unquoted
+  # +off+/+on+ into +false+/+true+ (see README), or a string, when quoted.
+  def tracking?
+    value = cfg('on', 'tracking')
+    value == true || (value.is_a?(String) && value.downcase.strip == 'on')
   end
 
   def cfg(default, *items)
