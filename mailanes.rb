@@ -844,6 +844,7 @@ get '/confirm' do
     raise UserError, "Token is invalid, can't confirm: #{e.message}"
   end
   recipient = Recipient.new(id: id, pgsql: settings.pgsql)
+  list = recipient.list
   recipient.confirm!
   settings.tbot.notify(
     'confirm',

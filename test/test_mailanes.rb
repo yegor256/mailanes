@@ -74,6 +74,19 @@ class AppTest < Minitest::Test
     assert_predicate(recipient, :active?)
   end
 
+  def test_confirms_subscription_with_valid_token
+    list = Lists.new(owner: random_owner, pgsql: t_pgsql).add
+    recipient = list.recipients.add("#{SecureRandom.hex[0..8]}@mailanes.com")
+    recipient.confirm!(set: false)
+    refute_predicate(recipient, :confirmed?)
+    token = GLogin::Codec.new.encrypt(recipient.id.to_s)
+    get("/confirm?token=#{CGI.escape(token)}")
+    assert_equal(200, last_response.status, last_response.body)
+    recipient = list.recipients.all[0]
+    assert_predicate(recipient, :confirmed?)
+    assert_includes(recipient.deliveries.map(&:details), 'Subscription confirmed.')
+  end
+
   def test_adds_new_recipient_for_friend
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
