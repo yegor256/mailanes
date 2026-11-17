@@ -856,6 +856,7 @@ get '/confirm' do
   recipient.post_event("Subscription confirmed#{" by @#{current_user}" if @locals[:user]}.")
   haml :confirmed, layout: :layout, locals: merged(
     title: '/confirmed',
+    email: recipient.email,
     list: recipient.list,
     recipient: recipient,
     token: settings.codec.encrypt(recipient.id.to_s)
