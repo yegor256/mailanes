@@ -224,10 +224,10 @@ class LetterTest < Minitest::Test
         rows
       end
     end.new([{ 'yaml' => 'tracking: "off"' }])
-    lane = Letter.new(id: 1, pgsql: pgsql, hash: { 'lane' => 1 })
+    lane = Letter.new(id: 1, pgsql: pgsql, hash: { 'lane' => 1, 'yaml' => '{}' })
     refute(lane.send(:tracking?), 'tracking from the lane YAML must be OFF')
     pgsql.rows = [{ 'yaml' => 'speed: 100' }]
-    letter = Letter.new(id: 1, pgsql: pgsql, hash: { 'lane' => 1 })
+    letter = Letter.new(id: 1, pgsql: pgsql, hash: { 'lane' => 1, 'yaml' => '{}' })
     assert(letter.send(:tracking?), 'tracking must be ON by default')
   end
 
