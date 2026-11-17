@@ -40,7 +40,6 @@ if ENV['RACK_ENV'] != 'test'
 end
 
 configure do
-  Haml::Options.defaults[:format] = :xhtml
   config = {
     'geoplugin_token' => '?',
     'github' => {
@@ -953,6 +952,10 @@ error do
       )
     )
   end
+end
+
+def succeed(suffix)
+  "#{yield.chomp}#{suffix}"
 end
 
 def context

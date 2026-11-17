@@ -3,7 +3,7 @@
 
 %h2
   Campaign
-  = succeed ':' do
+  != succeed ':' do
     = "##{campaign.id}"
   &= campaign.title
 
@@ -54,7 +54,7 @@
 
 %p
   - lane = campaign.lane
-  = succeed ':' do
+  != succeed ':' do
     %a{ href: iri.cut('/lane').add(id: lane.id) }= "Lane ##{lane.id}"
   &= "\"#{lane.title}\""
 
@@ -64,7 +64,7 @@
 %ul
   - campaign.lists.each do |list|
     %li
-      = succeed ':' do
+      != succeed ':' do
         %a{ href: iri.cut('/list').add(id: list.id) }= "List ##{list.id}"
       &= "\"#{list.title}\""
       %a.item{ href: iri.cut('/delete-source').add(campaign: campaign.id, list: list.id), onclick: "return confirm('Are you sure?');" } delete

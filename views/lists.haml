@@ -33,7 +33,7 @@
       %li
         %a{ href: iri.cut('/recipient').add(id: r.id), class: (r.active? ? '' : 'cross') }= r.email
         in
-        = succeed ':' do
+        != succeed ':' do
           %a{ href: iri.cut('/list').add(id: list.id) }= "List ##{list.id}"
         &= "\"#{list.title}\""
 
@@ -54,7 +54,7 @@
 
   - lists.all.each do |list|
     %p
-      = succeed ':' do
+      != succeed ':' do
         %a{ href: iri.cut('/list').add(id: list.id) }= "##{list.id}"
       = list.title
       = "(#{list.recipients.count} recipients)"

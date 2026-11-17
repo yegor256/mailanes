@@ -3,30 +3,30 @@
 
 %p
   First, you keep your recipients in
-  = succeed '.' do
+  != succeed '.' do
     %a{ href: iri.cut('/lists') } Lists
   Each list contains
   a collection of unique emails, which will receive your marketing messages.
   Then, you create Letters in
-  = succeed '.' do
+  != succeed '.' do
     %a{ href: iri.cut('/lanes') } Lanes
   Then, you link your
   %a{ href: iri.cut('/lists') } Lists
   with Lanes, by
-  = succeed '.' do
+  != succeed '.' do
     %a{ href: iri.cut('/campaigns') } Campaigns
   Finally, you make your Letters and Campaigns
   active and they start delivering messages.
 
 %p
   More information about configuration options you can find in
-  = succeed '.' do
+  != succeed '.' do
     %a{ href: 'https://github.com/yegor256/mailanes/blob/master/README.md' } README
 
 - unless total.zero?
   %p
     Total recipients in all lists:
-    = succeed '.' do
+    != succeed '.' do
       %a{ href: iri.cut('/lists') }= total
 
 - unless delivered.zero?
@@ -37,7 +37,7 @@
       = bounced
       of them bounced back, which is
       - rate = bounced.to_f / delivered
-      = succeed '.' do
+      != succeed '.' do
         %span{ class: (rate > 0.05 ? 'red' : '') }= "#{(rate * 100).round(2)}%"
 
 %p

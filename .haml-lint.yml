@@ -9,6 +9,8 @@ linters:
       - Style/TrailingCommaInArguments
       - Layout/MultilineMethodCallBraceLayout
       - Layout/SpaceInsideHashLiteralBraces
+  UnescapedHtml:
+    enabled: false
   InlineStyles:
     enabled: false
   LineLength:

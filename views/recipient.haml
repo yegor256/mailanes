@@ -3,7 +3,7 @@
 
 %h2
   Recipient
-  = succeed ':' do
+  != succeed ':' do
     = "##{recipient.id}"
 
 %p
@@ -25,7 +25,7 @@
     It was bounced at least once!
 
 %p
-  = succeed ':' do
+  != succeed ':' do
     %a{ href: iri.cut('/list').add(id: list.id) }= "List ##{list.id}"
   &= "\"#{list.title}\""
   = "(owned by @#{current_user})" unless current_user == list.owner

@@ -59,7 +59,7 @@
 %p
   It belongs to the lane
   - lane = letter.lane
-  = succeed ':' do
+  != succeed ':' do
     %a{ href: iri.cut('/lane').add(id: lane.id) }= "##{lane.id}"
   = "\"#{lane.title}\""
 
@@ -84,7 +84,7 @@
     - attachments.each do |a|
       %a{ href: iri.cut('/download-attachment').add(letter: letter.id, name: a) }<
         &= a
-      = succeed ';' do
+      != succeed ';' do
         %a{ href: iri.cut('/detach').add(letter: letter.id, name: a), onclick: "return confirm('Are you sure?');" } delete
 
 %p
@@ -94,18 +94,18 @@
   times.
 
 %p
-  = succeed ';' do
+  != succeed ';' do
     Opened:
     - opened = letter.opened_count
     = opened
     times
     = "/ #{format('%.02f', 100.0 * opened / delivered)}%" unless delivered.zero?
-  = succeed ';' do
+  != succeed ';' do
     bounced:
     - bounced = letter.bounce_count
     = bounced
     = "/ #{format('%.02f', 100.0 * bounced / delivered)}%" unless delivered.zero?
-  = succeed '.' do
+  != succeed '.' do
     unsubscribed:
     - unsubscribed = letter.unsubscribe_count
     = unsubscribed
