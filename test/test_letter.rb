@@ -204,6 +204,33 @@ class LetterTest < Minitest::Test
     end
   end
 
+  def test_tracking_reads_yaml_booleans
+    {
+      'tracking: off' => false,
+      'tracking: "off"' => false,
+      'tracking: false' => false,
+      'tracking: on' => true,
+      'tracking: "on"' => true,
+      'tracking: true' => true
+    }.each do |yaml, on|
+      letter = Letter.new(id: 1, pgsql: nil, hash: { 'yaml' => yaml })
+      assert_equal(on, letter.send(:tracking?), yaml)
+    end
+  end
+
+  def test_tracking_defaults_and_lane_yaml
+    pgsql = Struct.new(:rows) do
+      def exec(_sql, _params)
+        rows
+      end
+    end.new([{ 'yaml' => 'tracking: "off"' }])
+    lane = Letter.new(id: 1, pgsql: pgsql, hash: { 'lane' => 1, 'yaml' => '{}' })
+    refute(lane.send(:tracking?), 'tracking from the lane YAML must be OFF')
+    pgsql.rows = [{ 'yaml' => 'speed: 100' }]
+    letter = Letter.new(id: 1, pgsql: pgsql, hash: { 'lane' => 1, 'yaml' => '{}' })
+    assert(letter.send(:tracking?), 'tracking must be ON by default')
+  end
+
   def test_sends_via_telegram
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
