@@ -47,7 +47,7 @@ class Letter
 
   def campaigns
     q = [
-      'SELECT * FROM campaign',
+      'SELECT campaign.* FROM campaign',
       'JOIN letter ON letter.lane=campaign.lane',
       'WHERE letter.id=$1'
     ]

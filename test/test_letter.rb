@@ -112,10 +112,37 @@ class LetterTest < Minitest::Test
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
     list.recipients.add('test@mailanes.com')
     lane = Lanes.new(owner: owner, pgsql: t_pgsql).add
-    campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane)
+    campaign = Campaigns.new(owner: owner, pgsql: t_pgsql).add(list, lane, 'campaign-one')
     campaign.toggle
-    letter = lane.letters.add
-    assert_equal(1, letter.campaigns.count)
+    lane.letters.add('letter-placeholder') # to make letter and campaign IDs distinct
+    letter = lane.letters.add('letter-one')
+    found = letter.campaigns
+    assert_equal(1, found.count)
+    assert_equal(campaign.id, found.first.id, 'campaign ID must not be overwritten by the letter ID')
+    assert_equal('campaign-one', found.first.title, 'campaign YAML must not be overwritten by the letter YAML')
+  end
+
+  def test_campaigns_query_reads_campaign_columns_only
+    fake = Object.new
+    def fake.exec(q, _params)
+      @q = q
+      [{ 'id' => '17', 'yaml' => "title: big\n" }]
+    end
+    def fake.query
+      @q
+    end
+    letter = Letter.new(id: 42, pgsql: fake)
+    found = letter.campaigns
+    assert_equal(
+      [
+        'SELECT campaign.* FROM campaign',
+        'JOIN letter ON letter.lane=campaign.lane',
+        'WHERE letter.id=$1'
+      ],
+      fake.query
+    )
+    assert_equal(17, found.first.id)
+    assert_equal('big', found.first.title)
   end
 
   def test_sends_via_smtp
