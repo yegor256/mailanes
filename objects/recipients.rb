@@ -93,10 +93,11 @@ class Recipients
 
   def add(email, first: '', last: '', source: '')
     raise UserError, "Invalid email #{email.inspect}" unless Recipients::REGEX.match?(email)
+    email = email.downcase.strip
     recipient = Recipient.new(
       id: @pgsql.exec(
         'INSERT INTO recipient (list, email, first, last, source) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-        [@list.id, email.downcase.strip, first.strip, last.strip, source.downcase.strip]
+        [@list.id, email, first.strip, last.strip, source.downcase.strip]
       ).first['id'].to_i,
       pgsql: @pgsql
     )

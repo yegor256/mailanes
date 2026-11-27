@@ -41,6 +41,28 @@ class RecipientsTest < Minitest::Test
     assert_predicate(Recipient.new(id: s1, pgsql: t_pgsql), :active?)
   end
 
+  def test_add_exclusive_recipient_from_csv_with_uppercase_email
+    owner = random_owner
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
+    first = lists.add
+    jeff = 'jeff7383@mailanes.com'
+    sarah = 'sarah8484@mailanes.com'
+    j1 = Recipients.new(list: first, pgsql: t_pgsql).add(jeff).id
+    s1 = Recipients.new(list: first, pgsql: t_pgsql).add(sarah).id
+    second = lists.add
+    second.yaml = 'exclusive: true'
+    Tempfile.open do |f|
+      File.write(f.path, "JEFF7383@MAILANES.COM,Jeff,Lebowski\n")
+      Recipients.new(list: second, pgsql: t_pgsql).upload(f.path)
+    end
+    s2 = Recipients.new(list: second, pgsql: t_pgsql).add('Sarah8484@Mailanes.com').id
+    j2 = Recipients.new(list: second, pgsql: t_pgsql).all.find { |r| r.email == jeff }.id
+    refute_predicate(Recipient.new(id: j1, pgsql: t_pgsql), :active?)
+    refute_predicate(Recipient.new(id: s1, pgsql: t_pgsql), :active?)
+    assert_predicate(Recipient.new(id: j2, pgsql: t_pgsql), :active?)
+    assert_predicate(Recipient.new(id: s2, pgsql: t_pgsql), :active?)
+  end
+
   def test_groups_recipients_by_weeks
     owner = random_owner
     list = Lists.new(owner: owner, pgsql: t_pgsql).add
