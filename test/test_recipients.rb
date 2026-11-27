@@ -75,6 +75,26 @@ class RecipientsTest < Minitest::Test
     assert_equal(3, recipients.all(active_only: true).count)
   end
 
+  def test_activate_all_records_reactivation_history
+    owner = random_owner
+    lists = Lists.new(owner: owner, pgsql: t_pgsql)
+    list = lists.add
+    recipients = Recipients.new(list: list, pgsql: t_pgsql)
+    inactive = recipients.add('boom3401@mailanes.com')
+    inactive.toggle
+    active = recipients.add('boom3402@mailanes.com')
+    recipients.activate_all
+    assert_equal(2, recipients.all(active_only: true).count)
+    assert_equal(
+      1,
+      inactive.deliveries.count { |d| d.details == 'Re-activated on request of the list owner' }
+    )
+    assert_equal(
+      0,
+      active.deliveries.count { |d| d.details == 'Re-activated on request of the list owner' }
+    )
+  end
+
   def test_count_by_source
     owner = random_owner
     lists = Lists.new(owner: owner, pgsql: t_pgsql)
