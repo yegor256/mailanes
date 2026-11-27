@@ -843,6 +843,7 @@ get '/confirm' do
     raise UserError, "Token is invalid, can't confirm: #{e.message}"
   end
   recipient = Recipient.new(id: id, pgsql: settings.pgsql)
+  list = recipient.list
   recipient.confirm!
   settings.tbot.notify(
     'confirm',
@@ -854,6 +855,7 @@ get '/confirm' do
   recipient.post_event("Subscription confirmed#{" by @#{current_user}" if @locals[:user]}.")
   haml :confirmed, layout: :layout, locals: merged(
     title: '/confirmed',
+    email: recipient.email,
     list: recipient.list,
     recipient: recipient,
     token: settings.codec.encrypt(recipient.id.to_s)
